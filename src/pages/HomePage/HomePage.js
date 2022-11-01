@@ -3,7 +3,7 @@ import { useLocation, useParams, useRouteMatch } from "react-router-dom";
 
 const HomePage = (props) => {
     const path = useRouteMatch(); 
-    console.log("My Path is " + path.path);
+    console.log(`${path.path}/sales` );
     
     return (
         <div>

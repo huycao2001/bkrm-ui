@@ -10,8 +10,8 @@ const PrivateRoute = ({ children, ...rest }) => {
 
   console.log("private route is called");
   console.log("mylocaltion is : " + location.pathname);
-  console.log("children " + children.name );
-  console.log("rest " + rest);
+  console.log("children " + children);
+  console.log("rest " + JSON.stringify(rest));
   return (
     <Route
       {...rest}
