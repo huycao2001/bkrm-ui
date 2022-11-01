@@ -9,7 +9,9 @@ import {
   BrowserRouter,
 } from "react-router-dom";
 
+import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import HomePage from "./pages/HomePage/HomePage";
+import LoginPage from "./pages/LoginPage/LoginPage";
 
 
 
@@ -22,8 +24,17 @@ function App() {
   return (
     <BrowserRouter>
         <Switch>
-            <Route path='/home'>
+
+            <Route path="/" exact>
+              <Redirect to="/home" />
+            </Route>
+
+            <PrivateRoute path='/home'>
               <HomePage />
+            </PrivateRoute>
+
+            <Route path="/login" exact>
+              {isLoggedIn ? <Redirect to={"/home"} /> : <LoginPage />}
             </Route>
         </Switch>
     </BrowserRouter>
