@@ -19,9 +19,11 @@ import LoginPage from "./pages/LoginPage/LoginPage";
 function App() {
 
   var isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  const dispatch = useDispatch()
+  const customization = useSelector((state) => state.customize);
   console.log(isLoggedIn);
+  console.log("Customization : " + customization);
   return (
+    
     <BrowserRouter>
         <Switch>
 
