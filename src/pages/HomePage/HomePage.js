@@ -5,7 +5,9 @@ import { useTheme, styled } from "@material-ui/core/styles";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { AppBar, Toolbar, Typography, AdbIcon, Grid, Button } from "@material-ui/core";
+import { AppBar, Toolbar, Typography, AdbIcon, Grid, Button, Box, IconButton } from "@material-ui/core";
+
+import PersonIcon from "@material-ui/icons/Person";
 
 import InventoryIcon from '@mui/icons-material/Inventory';
 
@@ -21,23 +23,23 @@ const HomePage = (props) => {
     const classes = useStyles(theme);
     console.log("home page called with path " + `/${path}`);
     console.log(useLocation());
-    console.log( "DD : "+ classes.appBar)
+    console.log("DD : " + classes.appBar)
 
     const ColorButton = styled(Button)(({ theme }) => ({
         color: "#ffffff",
         backgroundColor: "#ff906d",
-        padding : "5px",
+        padding: "5px",
         width: 100,
         "&:hover": {
-          backgroundColor: "#fa6232",
+            backgroundColor: "#fa6232",
         },
-      }));
+    }));
 
     return (
         <div className={classes.root}>
             <AppBar className={classes.appBar}>
                 <Toolbar>
-                    <Grid container direction="row" alignItems="center" >
+                    {/* <Grid container direction="row" alignItems="center" >
                         <Grid item sm={2}>
                             <Typography variant="h3" noWrap className={classes.searchEngine}>
                                 BKRM
@@ -60,15 +62,59 @@ const HomePage = (props) => {
                             sm={2}
                             direction="row"
                             justifyContent="flex-end"
-                            spacing={1}
+                            alignItems="center"
                         >
 
-                            
-                            <Grid item xs={6}><ColorButton> Đăng nhập</ColorButton></Grid>
-                            <Grid item xs={6}><ColorButton> Đăng kí</ColorButton></Grid>
+                            <Grid item sm ={8}>
+                                <IconButton color="text" size="small">
+                                    <PersonIcon fontSize="large" />
+                                </IconButton>
+
+                                <Typography variant ="h4">
+                                    Chủ cửa hàng
+                                </Typography>
+                            </Grid>
+
+                            <Grid item sm={4} ><ColorButton> Đăng xuất</ColorButton></Grid>
                         </Grid>
 
-                    </Grid>
+                    </Grid> */}
+
+                    <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" style={{ width: "100%" }}>
+                        <Typography variant="h3" className={classes.searchEngine}>
+                            BKRM
+                        </Typography>
+
+
+
+                        <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
+                            {/* <Button style = {{textTransform: "none"}}>Bán hàng</Button> */}
+                            <Button >Bán hàng</Button>
+                            <Button >Kho hàng</Button>
+                            <Button >Nhân sự</Button>
+                            <Button >Quản lý</Button>
+                            <Button >Giới thiệu</Button>
+
+                        </Box>
+
+                        <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between"  >
+                            <Box display="flex" flexDirection="column" alignItems="center">
+                                <IconButton  size="small">
+                                    <PersonIcon fontSize="large" />
+                                </IconButton>
+
+                                <Typography variant="h4">
+                                    Chủ cửa hàng
+                                </Typography>
+
+                            </Box>
+
+                            <Button color = "secondary" style = {{textTransform: "none" ,color :"pink", marginRight:10, marginLeft:10}}>Đăng xuất</Button>
+
+
+
+                        </Box>
+                    </Box>
 
                 </Toolbar>
             </AppBar>
