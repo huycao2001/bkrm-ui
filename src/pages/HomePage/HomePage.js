@@ -9,9 +9,13 @@ import { AppBar, Toolbar, Typography, AdbIcon, Grid, Button, Box, IconButton } f
 
 import PersonIcon from "@material-ui/icons/Person";
 
-import InventoryIcon from '@mui/icons-material/Inventory';
+
 
 import BasicMenu from "../../components/Menu/BasicMenu";
+
+import NotificationsIcon from '@mui/icons-material/Notifications';
+
+import LogoutIcon from '@mui/icons-material/Logout';
 
 // import AdbIcon from '@mui/icons-material/Adb';
 
@@ -91,28 +95,36 @@ const HomePage = (props) => {
 
                         <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
                             {/* <Button style = {{textTransform: "none"}}>Bán hàng</Button> */}
-                            <Button >Bán hàng</Button>
-                            <Button >Kho hàng</Button>
-                            <Button >Nhân sự</Button>
-                            <Button >Quản lý</Button>
-                            <Button >Giới thiệu</Button>
+                            <Button style ={{color : "white"}}>Bán hàng</Button>
+                            <Button style ={{color : "white"}} >Kho hàng</Button>
+                            <Button style ={{color : "white"}} >Nhân sự</Button>
+                            <Button style ={{color : "white"}} >Quản lý</Button>
+                            <Button style ={{color : "white"}} >Giới thiệu</Button>
                             <BasicMenu />
 
                         </Box>
 
                         <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between"  >
-                            <Box display="flex" flexDirection="column" alignItems="center">
+                            {/* <Box display="flex" flexDirection="column" alignItems="center"> */}
                                 <IconButton  size="small">
                                     <PersonIcon fontSize="large" />
                                 </IconButton>
 
-                                <Typography variant="h4">
+                                <IconButton  size="small">
+                                    <NotificationsIcon fontSize ="large"/>
+                                </IconButton>
+
+                                <IconButton  size = "small">
+                                    <LogoutIcon fontSize ="large" color ="white"/>
+                                </IconButton>
+
+                                {/* <Typography variant="h4">
                                     Chủ cửa hàng
-                                </Typography>
+                                </Typography> */}
 
-                            </Box>
+                            {/* </Box> */}
 
-                            <Button color = "secondary" style = {{textTransform: "none" ,color :"pink", marginRight:10, marginLeft:10}}>Đăng xuất</Button>
+                            
 
 
 
