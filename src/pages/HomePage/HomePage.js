@@ -11,6 +11,8 @@ import PersonIcon from "@material-ui/icons/Person";
 
 import InventoryIcon from '@mui/icons-material/Inventory';
 
+import BasicMenu from "../../components/Menu/BasicMenu";
+
 // import AdbIcon from '@mui/icons-material/Adb';
 
 import useStyles from "./styles";
@@ -94,6 +96,7 @@ const HomePage = (props) => {
                             <Button >Nhân sự</Button>
                             <Button >Quản lý</Button>
                             <Button >Giới thiệu</Button>
+                            <BasicMenu />
 
                         </Box>
 

@@ -15,6 +15,7 @@ import theme from "./theme";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import HomePage from "./pages/HomePage/HomePage";
 import LoginPage from "./pages/LoginPage/LoginPage";
+import SignUpPage from "./pages/SignUpPage/SignUpPage";
 
 
 
@@ -39,6 +40,10 @@ function App() {
 
               <Route path="/login" exact>
                 {isLoggedIn ? <Redirect to={"/home"} /> : <LoginPage />}
+              </Route>
+
+              <Route path = "/signup" exact>
+                  <SignUpPage/>
               </Route>
           </Switch>
         </BrowserRouter>
