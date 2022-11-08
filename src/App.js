@@ -9,7 +9,7 @@ import theme from "./theme";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import HomePage from "./pages/HomePage/HomePage";
 import LoginPage from "./pages/LoginPage/LoginPage";
-import SignUp from "./pages/SignupPage/SignupPage";
+import SignUp from "./pages/SignupPage/SignUpPage";
 
 function App() {
   var isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
