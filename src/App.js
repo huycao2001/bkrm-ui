@@ -5,8 +5,7 @@ import {
   Route,
   Switch,
   Redirect,
-  HashRouter,
-  BrowserRouter,
+  HashRouter
 } from "react-router-dom";
 
 import { ThemeProvider } from "@material-ui/core/styles";
@@ -28,7 +27,7 @@ function App() {
   console.log("Customization : " + JSON.stringify(customization));
   return (
     <ThemeProvider theme={theme(customization)}>
-        <BrowserRouter>
+        <HashRouter>
           <Switch>
               <Route path="/" exact>
                 <Redirect to="/home" />
@@ -46,7 +45,7 @@ function App() {
                   <SignUpPage/>
               </Route>
           </Switch>
-        </BrowserRouter>
+        </HashRouter>
     </ThemeProvider>
 
   );
