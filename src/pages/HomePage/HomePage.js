@@ -95,12 +95,17 @@ const HomePage = (props) => {
 
                         <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
                             {/* <Button style = {{textTransform: "none"}}>Bán hàng</Button> */}
-                            <Button style ={{color : "white"}}>Bán hàng</Button>
+                            {/* <Button style ={{color : "white"}}>Bán hàng</Button>
                             <Button style ={{color : "white"}} >Kho hàng</Button>
                             <Button style ={{color : "white"}} >Nhân sự</Button>
                             <Button style ={{color : "white"}} >Quản lý</Button>
-                            <Button style ={{color : "white"}} >Giới thiệu</Button>
-                            <BasicMenu />
+                            <Button style ={{color : "white"}} >Giới thiệu</Button> */}
+                            <BasicMenu section = "Bán hàng" />
+                            <BasicMenu section = "Kho hàng" />
+                            <BasicMenu section = "Nhân sự" />
+                            <BasicMenu section = "Quản lý" />
+                            <BasicMenu section = "Cài đặt" />
+                            <BasicMenu section = "Thống kê" />
 
                         </Box>
 
