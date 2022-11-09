@@ -5,7 +5,7 @@ const PrivateRoute = ({ children, ...rest }) => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const location = useLocation()
   if(isLoggedIn){
-    sessionStorage.setItem("BKRMprev",location.pathname)
+    sessionStorage.setItem("BKRMprev",location.pathname);
   }
 
   console.log("private route is called");
