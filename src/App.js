@@ -9,7 +9,8 @@ import theme from "./theme";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import HomePage from "./pages/HomePage/HomePage";
 import LoginPage from "./pages/LoginPage/LoginPage";
-import SignUp from "./pages/SignupPage/SignUpPage";
+import SignUp from "./pages/SignUpPage/SignUpPage.js";
+// const SignupPage = React.lazy(() => import("./pages/SignupPage/SignupPage.js"));
 
 function App() {
   var isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
