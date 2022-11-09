@@ -10,6 +10,7 @@ import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import HomePage from "./pages/HomePage/HomePage";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import SignUp from "./pages/SignUpPage/SignUpPage.js";
+import { useState, useEffect } from "react";
 // const SignupPage = React.lazy(() => import("./pages/SignupPage/SignupPage.js"));
 
 function App() {
@@ -17,6 +18,8 @@ function App() {
   const customization = useSelector((state) => state.customize);
   console.log(isLoggedIn);
   console.log("Customization : " + JSON.stringify(customization));
+  const [path, setPath] = useState("/home");
+
   return (
     <ThemeProvider theme={theme(customization)}>
       <HashRouter>
@@ -25,20 +28,20 @@ function App() {
             <Redirect to="/home" />
           </Route>
 
-          <Route path="/signup" exact>
+          {/* <Route path="/signup" exact>
             <SignUp />
-          </Route>
+          </Route> */}
 
           <PrivateRoute path="/home">
             <HomePage />
           </PrivateRoute>
 
           <Route path="/login" exact>
-            {isLoggedIn ? <Redirect to={"/home"} /> : <LoginPage />}
+            {isLoggedIn ? <Redirect to={path} /> : <LoginPage />}
           </Route>
 
           <Route path="/signup" exact>
-            <SignUp />
+            {isLoggedIn ? <Redirect to={path} /> : <SignUp/>}
           </Route>
         </Switch>
       </HashRouter>

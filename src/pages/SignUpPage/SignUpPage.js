@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
-//import userApi from "../../api/userApi";
+import userApi from "../../api/userApi";
 import Typography from "@material-ui/core/Typography";
 import { Button, Paper, Step, StepLabel, Stepper } from "@material-ui/core";
 import useStyles from "./styles";
@@ -16,12 +16,18 @@ import * as Yup from "yup";
 // import { statusAction } from "../../store/slice/statusSlice";
 // import getGeoCode from "../../components/BranchMap/Geocode";
 import Image from "../../asset/images/background.jpg";
+// import { authActions } from "../../store/slice/authSlice";
+import { authActions } from "../../store/slice/authSlice";
 
 const styles = {
   paperContainer: {
     backgroundImage: `url(${Image})`,
   },
 };
+
+
+
+
 export default function SignUp() {
   const classes = useStyles();
   const info = useSelector((state) => state.info);
@@ -58,6 +64,9 @@ export default function SignUp() {
         .oneOf([Yup.ref("password"), null], "Mật khẩu không khớp"),
     }),
   });
+
+
+
   const store_formik = useFormik({
     initialValues: {
       name: "",
@@ -75,18 +84,21 @@ export default function SignUp() {
       ward: Yup.string().required("Chọn phường/xã"),
     }),
   });
+
+
+
   const dispatch = useDispatch();
   const handleSignUp = async () => {
-    // const ward = wardList.find(
-    //   (ward) => ward.id === store_formik.values.ward
-    // ).name;
-    // const province = cityList.find(
-    //   (city) => city.id === store_formik.values.city
-    // ).name;
-    // const district = districtList.find(
-    //   (district) => district.id === store_formik.values.district
-    // ).name;
-    // let lat, lng;
+    const ward = wardList.find(
+      (ward) => ward.id === store_formik.values.ward
+    ).name;
+    const province = cityList.find(
+      (city) => city.id === store_formik.values.city
+    ).name;
+    const district = districtList.find(
+      (district) => district.id === store_formik.values.district
+    ).name;
+    let lat = null, lng = null;
     // try {
     //   ({ lat, lng } = await getGeoCode(
     //     store_formik.values.address +
@@ -101,82 +113,86 @@ export default function SignUp() {
     // } catch (error) {
     //   console.log(error);
     // }
-    // const body = {
-    //   name: user_formik.values.name,
-    //   email: user_formik.values.email,
-    //   user_name: user_formik.values.user_name,
-    //   password: user_formik.values.password,
-    //   password_confirmation: user_formik.values.passwordConfirm,
-    //   phone: user_formik.values.phone,
-    //   date_of_birth: user_formik.values.dateOfBirth,
-    //   status: "active",
-    //   store_name: store_formik.values.name,
-    //   address: store_formik.values.address,
-    //   ward: ward,
-    //   district: district,
-    //   province: province,
-    //   store_phone: store_formik.values.phone,
-    //   default_branch: true,
-    //   lat: lat ? lat.toString() : "",
-    //   lng: lng ? lng.toString() : "",
-    // };
-    // try {
-    //   const response = await userApi.ownerRegister(body);
-    //   if (response.message === "error") {
-    //     dispatch(statusAction.failedStatus("Tên tài khoản đã được sử dụng"));
-    //   } else {
-    //     dispatch(statusAction.successfulStatus("Tạo cửa hàng thành công"));
-    //     dispatch(
-    //       logInHandler(
-    //         user_formik.values.user_name,
-    //         user_formik.values.password
-    //       )
-    //     );
-    //   }
-    // } catch (error) {
-    //   dispatch(statusAction.failedStatus("Tạo tài khoản thất bại"));
-    // }
+    const body = {
+      name: user_formik.values.name,
+      email: user_formik.values.email,
+      user_name: user_formik.values.user_name,
+      password: user_formik.values.password,
+      password_confirmation: user_formik.values.passwordConfirm,
+      phone: user_formik.values.phone,
+      date_of_birth: user_formik.values.dateOfBirth,
+      status: "active",
+      store_name: store_formik.values.name,
+      address: store_formik.values.address,
+      ward: ward,
+      district: district,
+      province: province,
+      store_phone: store_formik.values.phone,
+      default_branch: true,
+      lat: lat ? lat.toString() : "",
+      lng: lng ? lng.toString() : "",
+    };
+    try {
+      const response = await userApi.ownerRegister(body);
+      if (response.message === "error") {
+        //dispatch(statusAction.failedStatus("Tên tài khoản đã được sử dụng"));
+        console.log("error when creating an account");
+      } else {
+        // dispatch(statusAction.successfulStatus("Tạo cửa hàng thành công"));
+        // dispatch(
+        //   logInHandler(
+        //     user_formik.values.user_name,
+        //     user_formik.values.password
+        //   )
+        // );
+        console.log("Account created successfully");
+        dispatch(authActions.logIn());
+      }
+    } catch (error) {
+      //dispatch(statusAction.failedStatus("Tạo tài khoản thất bại"));
+      console.log("can not create an account")
+    }
   };
   const [cityList, setCityList] = useState([]);
   const [districtList, setDistrictList] = useState([]);
   const [wardList, setWardList] = useState([]);
-  // useEffect(() => {
-  //   const loadCity = async () => {
-  //     try {
-  //       const res = await userApi.getCity();
-  //       setCityList(res.provinces);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   loadCity();
-  // }, []);
-  // useEffect(() => {
-  //   const loadDistrict = async (city_id) => {
-  //     if (city_id) {
-  //       try {
-  //         const res = await userApi.getDistrict(city_id);
-  //         setDistrictList(res.data);
-  //       } catch (error) {
-  //         console.log(error);
-  //       }
-  //     }
-  //   };
-  //   loadDistrict(store_formik.values.city);
-  // }, [store_formik.values.city]);
-  // useEffect(() => {
-  //   const loadWard = async (city_id, district_id) => {
-  //     if (city_id && district_id) {
-  //       try {
-  //         const res = await userApi.getWard(city_id, district_id);
-  //         setWardList(res.data);
-  //       } catch (error) {
-  //         console.log(error);
-  //       }
-  //     }
-  //   };
-  //   loadWard(store_formik.values.city, store_formik.values.district);
-  // }, [store_formik.values.city, store_formik.values.district]);
+  useEffect(() => {
+    const loadCity = async () => {
+      try {
+        const res = await userApi.getCity();
+        setCityList(res.provinces);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    loadCity();
+  }, []);
+  useEffect(() => {
+    const loadDistrict = async (city_id) => {
+      if (city_id) {
+        try {
+          const res = await userApi.getDistrict(city_id);
+          setDistrictList(res.data);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    loadDistrict(store_formik.values.city);
+  }, [store_formik.values.city]);
+  useEffect(() => {
+    const loadWard = async (city_id, district_id) => {
+      if (city_id && district_id) {
+        try {
+          const res = await userApi.getWard(city_id, district_id);
+          setWardList(res.data);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    loadWard(store_formik.values.city, store_formik.values.district);
+  }, [store_formik.values.city, store_formik.values.district]);
   return (
     // <Box className={classes.background}>
     <Paper style={styles.paperContainer}>
@@ -185,7 +201,7 @@ export default function SignUp() {
         spacing={0}
         direction="column"
         alignItems="center"
-        justify="center"
+        justifyContent="center"
         style={{ minHeight: "100vh" }}
       >
         <Paper className={classes.container}>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { authActions } from "../../store/slice/authSlice";
 import Typography from "@material-ui/core/Typography";
@@ -16,7 +16,8 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
-
+import { useFormik  } from "formik";
+import * as Yup from "yup";
 import Image from "../../asset/images/background.jpg";
 const styles = {
   paperContainer: {
@@ -26,8 +27,28 @@ const styles = {
 
 const LoginPage = (props) => {
   const [isOwner, setIsOwner] = useState(true);
+  const [storeType, setStoreType] = useState("");
   const classes = useStyles();
   const dispatch = useDispatch();
+
+  const loginFormik = useFormik({
+    initialValues: {
+      user_name: "",
+      password: "", 
+      storeType : ""
+    },
+    validationSchema : Yup.object({
+      user_name: Yup.string()
+        .required("Nhập tên đăng nhập"),
+      password: Yup.string().required("Nhập mật khẩu"),
+    })
+  }
+  )
+  useEffect(() => {
+    // action on update of movies
+    console.log("StoreType is " + storeType);
+}, [storeType]);
+
   return (
     <Paper style={styles.paperContainer}>
       <Grid
@@ -48,7 +69,7 @@ const LoginPage = (props) => {
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
-                  dispatch(authActions.logIn());
+                  dispatch(authActions.logIn()); // Remove this
                 }}
               >
                 <TextField
@@ -59,17 +80,17 @@ const LoginPage = (props) => {
                   label="Tên đăng nhập"
                   name="user_name"
                   autoFocus
-                  // value={loginFormik.values.user_name}
-                  // onChange={loginFormik.handleChange}
-                  // error={
-                  //   loginFormik.touched.user_name && loginFormik.errors.user_name
-                  // }
-                  // helperText={
-                  //   loginFormik.touched.user_name
-                  //     ? loginFormik.errors.user_name
-                  //     : null
-                  // }
-                  // onBlur={loginFormik.handleBlur}
+                  value={loginFormik.values.user_name}
+                  onChange={loginFormik.handleChange}
+                  error={
+                    loginFormik.touched.user_name && loginFormik.errors.user_name
+                  }
+                  helperText={
+                    loginFormik.touched.user_name
+                      ? loginFormik.errors.user_name
+                      : null
+                  }
+                  onBlur={loginFormik.handleBlur}
                 />
                 <TextField
                   variant="outlined"
@@ -79,33 +100,36 @@ const LoginPage = (props) => {
                   name="password"
                   label="Mật khẩu"
                   type="password"
-                  // value={loginFormik.values.password}
-                  // onChange={loginFormik.handleChange}
-                  // error={
-                  //   loginFormik.touched.password && loginFormik.errors.password
-                  // }
-                  // helperText={
-                  //   loginFormik.touched.password
-                  //     ? loginFormik.errors.password
-                  //     : null
-                  // }
-                  //onBlur={loginFormik.handleBlur}
+                  value={loginFormik.values.password}
+                  onChange={loginFormik.handleChange}
+                  error={
+                    loginFormik.touched.password && loginFormik.errors.password
+                  }
+                  helperText={
+                    loginFormik.touched.password
+                      ? loginFormik.errors.password
+                      : null
+                  }
+                  onBlur={loginFormik.handleBlur}
                 />
-                {/* <Grid justifyContent="flex-end"> */}
-                {/* <Box style={{ display: "flex", justifyContent: "flex-end" }}>
+                <Grid justifyContent="flex-end">
+                <Box style={{ display: "flex", justifyContent: "flex-end" }}>
                   <FormControlLabel
                     control={
                       <Checkbox
                         value={isOwner}
                         color="primary"
-                        onChange={() => setIsOwner(!isOwner)}
+                        onChange={() => {
+                          setIsOwner(!isOwner);
+                          // console.log("isowner : " + isOwner);
+                        }}
                       />
                     }
                     label="Nhân viên"
                     labelPlacement="start"
                   />
-                </Box> */}
-                {/* </Grid> */}
+                </Box>
+                </Grid>
                 <FormControl>
                   <FormLabel id="demo-row-radio-buttons-group-label">
                     Chọn loại cửa hàng
@@ -119,11 +143,19 @@ const LoginPage = (props) => {
                       value="F&B"
                       control={<Radio />}
                       label="F&B"
+                      onClick={() => {
+                        setStoreType("fnb");
+                        //console.log("Store type : " + storeType);
+                      }}
                     />
                     <FormControlLabel
                       value="Tạp hoá"
                       control={<Radio />}
                       label="Tạp hoá"
+                      onClick={() => {
+                        setStoreType("grocery");
+                        //console.log("Store type : " + storeType);
+                      }}
                     />
                   </RadioGroup>
                 </FormControl>
