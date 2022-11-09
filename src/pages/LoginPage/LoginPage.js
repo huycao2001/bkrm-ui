@@ -10,7 +10,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
-import Link from "@mui/material/Link";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
