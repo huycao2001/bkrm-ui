@@ -19,11 +19,18 @@ import Radio from "@mui/material/Radio";
 import { useFormik  } from "formik";
 import * as Yup from "yup";
 import Image from "../../asset/images/background.jpg";
+import {logInHandler} from "../../store/actionCreator"
+import userAPi from "../../api/userApi";
+
+
 const styles = {
   paperContainer: {
     backgroundImage: `url(${Image})`,
   },
 };
+
+
+
 
 const LoginPage = (props) => {
   const [isOwner, setIsOwner] = useState(true);
@@ -69,7 +76,7 @@ const LoginPage = (props) => {
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
-                  dispatch(authActions.logIn()); // Remove this
+                  //dispatch(authActions.logIn()); // Remove this
                 }}
               >
                 <TextField
@@ -121,7 +128,7 @@ const LoginPage = (props) => {
                         color="primary"
                         onChange={() => {
                           setIsOwner(!isOwner);
-                          // console.log("isowner : " + isOwner);
+                        
                         }}
                       />
                     }
@@ -166,24 +173,24 @@ const LoginPage = (props) => {
                   color="primary"
                   className={classes.submit}
                   // && Object.keys(loginFormik.touched).length > 0
-                  // disabled={!loginFormik.isValid}
-                  // onClick={() => {
-                  //   if (isOwner) {
-                  //     dispatch(
-                  //       logInHandler(
-                  //         loginFormik.values.user_name,
-                  //         loginFormik.values.password
-                  //       )
-                  //     );
-                  //   } else {
-                  //     dispatch(
-                  //       empLogInHandler(
-                  //         loginFormik.values.user_name,
-                  //         loginFormik.values.password
-                  //       )
-                  //     );
-                  //   }
-                  // }}
+                  disabled={!loginFormik.isValid}
+                  onClick={() => {
+                    //if (isOwner) {
+                      dispatch(
+                        logInHandler(
+                          loginFormik.values.user_name,
+                          loginFormik.values.password
+                        )
+                      );
+                    // } else {
+                    //   dispatch(
+                    //     empLogInHandler(
+                    //       loginFormik.values.user_name,
+                    //       loginFormik.values.password
+                    //     )
+                    //   );
+                    // }
+                  }}
                 >
                   Đăng nhập
                 </Button>
