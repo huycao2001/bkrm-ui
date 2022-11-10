@@ -8,6 +8,8 @@ import { ListItem } from '@mui/material';
 import { Link, Redirect } from 'react-router-dom';
 
 
+import { useTheme, makeStyles, createStyles } from "@material-ui/core/styles";
+
 export const salesModule = {
   title: "Bán hàng",
   key: 'salesModule',
@@ -278,6 +280,8 @@ export default function BasicMenu(props) {
     console.log(target);
   }
 
+  const theme = useTheme();
+
   return (
     <div>
   
@@ -288,7 +292,8 @@ export default function BasicMenu(props) {
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
         onMouseOver={handleClick}
-        style={{ color: "white" }}
+        style={{ color: "black", fontWeight : "200" }}
+        //color = "secondary"
       >
         {section}
       </Button>

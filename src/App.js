@@ -11,6 +11,8 @@ import HomePage from "./pages/HomePage/HomePage";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import SignUp from "./pages/SignUpPage/SignUpPage.js";
 import { useState, useEffect } from "react";
+import {verifyToken} from "./store/actionCreator"
+
 // const SignupPage = React.lazy(() => import("./pages/SignupPage/SignupPage.js"));
 
 function App() {
@@ -19,6 +21,15 @@ function App() {
   console.log(isLoggedIn);
   console.log("Customization : " + JSON.stringify(customization));
   const [path, setPath] = useState("/home");
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(verifyToken());
+    setPath(sessionStorage.getItem("BKRMprev"));
+    // dispatch(loadBranches(store_uuid));
+
+  }, [dispatch]);
+
 
   return (
     <ThemeProvider theme={theme(customization)}>
