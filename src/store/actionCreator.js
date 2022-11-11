@@ -92,12 +92,12 @@ export const logInHandler = (userName, password) => {
         );
         dispatch(infoActions.setStore(rs.store));
         dispatch(infoActions.setRole(rs.role));
-        // dispatch(statusAction.successfulStatus("Login successfully"));
+        dispatch(statusAction.successfulStatus("Login successfully"));
       }
     } catch (error) {
       dispatch(authActions.logOut());
       dispatch(loadingActions.finishLoad());
-      // dispatch(statusAction.failedStatus("Login failed"));
+      dispatch(statusAction.failedStatus("Login failed"));
       dispatch(statusAction.failedStatus("Tên đăng nhập hoặc mật khẩu không đúng"));
     }
   };
