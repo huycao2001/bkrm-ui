@@ -2,12 +2,13 @@ import { authActions } from "./slice/authSlice";
 import { loadingActions } from "./slice/loadingSlice";
 import { infoActions } from "./slice/infoSlice";
 
+import { statusAction } from "./slice/statusSlice";
+
 import { customizeAction } from "./slice/customizeSlice";
 import userApi from "../api/userApi";
 // import branchApi from "../api/branchApi";
 
 import { pink, blue, grey } from "@material-ui/core/colors";
-import { statusAction } from "./slice/statusSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 
@@ -77,6 +78,7 @@ export const logInHandler = (userName, password) => {
         localStorage.setItem("token", rs.access_token);
         dispatch(authActions.logIn());
         dispatch(loadingActions.finishLoad());
+        dispatch(statusAction.successfulStatus("Đăng nhập thành công"));
         dispatch(setCustomization(rs.user.customization));
         dispatch(
           infoActions.setUser({

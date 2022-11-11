@@ -1,5 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-const initialStatusSlice = { status: null, message: "", open: false };
+const initialStatusSlice = { 
+  status: null, 
+  message: "", 
+  open: false 
+};
 const statusSlice = createSlice({
   name: "loading",
   initialState: initialStatusSlice,
