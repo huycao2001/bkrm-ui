@@ -114,7 +114,7 @@ const HomePage = (props) => {
                                         display="flex"
                                         flexDirection="column"
                                         justifyContent="center"
-                                        style={{ width : "100%", padding : "0 20px 0 20px", textAlign:"left"}}
+                                        style={{ width : "100%", padding : "0 20px 0 20px", textAlign:"right"}}
                                         
                                     >
                                         <Typography variant="h5" style={{ fontWeight: 700, fontSize: 13 }}>
@@ -133,9 +133,13 @@ const HomePage = (props) => {
                                         <NotificationsIcon fontSize="large" />
                                     </IconButton>
 
-                                    <IconButton size="small">
+                                    <Button style={{color:"black"}} onClick={() => logOutHandler()}>
+                                        Đăng xuất
+                                    </Button>
+
+                                    {/* <IconButton size="small">
                                         <LogoutIcon fontSize="large" color="white" onClick={() => logOutHandler()} />
-                                    </IconButton>
+                                    </IconButton> */}
 
 
 
