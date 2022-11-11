@@ -5,6 +5,7 @@ const PrivateRoute = ({ children, ...rest }) => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const location = useLocation()
   if(isLoggedIn){
+    console.log("From home page the location is  : " + location.pathname);
     sessionStorage.setItem("BKRMprev",location.pathname)
   }
 

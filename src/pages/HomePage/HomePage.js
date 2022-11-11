@@ -15,7 +15,7 @@ import PersonIcon from "@material-ui/icons/Person";
 
 import { logOutHandler } from "../../store/actionCreator"
 
-import Inventory from "../../views/InventoryView/Inventory";
+import InventoryView from "../../views/InventoryView/InventoryView";
 
 
 import BasicMenu from "../../components/Menu/BasicMenu";
@@ -78,7 +78,9 @@ const HomePage = (props) => {
 
     return (
         <div className={classes.root}>
-            <AppBar className={classes.appBar}>
+
+
+            <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar>
                     {matchDownSm ? (
                         <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" style={{ width: "100%" }} >
@@ -164,15 +166,15 @@ const HomePage = (props) => {
                     [classes.contentShift]: false,
                 })}
             >
-                <Box>
+                <Box className={classes.background}>
                     <Suspense fallback={<div style={{ backgroundColor: 'rgba(0, 0, 0, 0.05)', height: '100vh', width: '100%' }}>
                         <Spin style={{ margin: 'auto' }} />
                     </div>} >
                         <Switch>
 
-                            <Route path={`${path}/inventory`} component={Inventory} />
+                            <Route path={`${path}/inventory`} component={InventoryView} />
                             <Route path={`${path}/`} >
-                                <Redirect to = {`${path}/inventory`} component = {Inventory} />
+                                <Redirect to={`${path}/inventory`} component={InventoryView} />
 
                             </Route>
 

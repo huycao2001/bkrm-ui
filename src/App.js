@@ -24,6 +24,7 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log("wqwqwqwqqqqqqqqqqqqqqqqqqqqqqqq=========== ");
     dispatch(verifyToken());
     setPath(sessionStorage.getItem("BKRMprev"));
     // dispatch(loadBranches(store_uuid));
