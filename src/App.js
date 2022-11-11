@@ -39,10 +39,6 @@ function App() {
             <Redirect to="/home" />
           </Route>
 
-          {/* <Route path="/signup" exact>
-            <SignUp />
-          </Route> */}
-
           <PrivateRoute path="/home">
             <HomePage />
           </PrivateRoute>
