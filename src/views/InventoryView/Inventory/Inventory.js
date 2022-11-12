@@ -6,7 +6,7 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import { useState, React } from "react";
+import { useState } from "react";
 import {
     Typography,
     Card,
@@ -21,13 +21,21 @@ import {
 } from "@material-ui/core";
 
 import AddIcon from '@mui/icons-material/Add';
+import AddInventory from "./AddInventory/AddInventory";
 
 
 export default function Inventory() {
     const theme = useTheme();
     const classes = useStyles(theme);
     const xsScreen = useMediaQuery(theme.breakpoints.down("xs"));
-
+    const [openAddDialog, setOpenAddDialog] = useState(false);
+    const handleClose = () => {
+        setOpenAddDialog(false);
+    };
+    const [reload, setReload] = useState(true);
+    const handleClickOpen = () => {
+        setOpenAddDialog(true);
+    };
     console.log("Inventory is called")
     return (
         <Card className={classes.root} >
@@ -53,7 +61,7 @@ export default function Inventory() {
                             color="primary"
                             className={classes.button}
                             startIcon={<AddIcon/>}
-
+                            onClick={handleClickOpen}
                         >
                             Thêm
                         </Button>
@@ -77,7 +85,13 @@ export default function Inventory() {
             </Avatar>
           </ButtonBase> */}
                 </Grid>
+                
             </Grid>
+            <AddInventory
+          open={openAddDialog}
+          handleClose={handleClose}
+          setReload={() => setReload(!reload)}
+        />
         </Card>
     );
 };
