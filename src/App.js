@@ -5,13 +5,15 @@ import { Route, Switch, Redirect, HashRouter } from "react-router-dom";
 
 import { ThemeProvider } from "@material-ui/core/styles";
 import theme from "./theme";
+import { Box } from "@material-ui/core";
 
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import HomePage from "./pages/HomePage/HomePage";
 import LoginPage from "./pages/LoginPage/LoginPage";
 import SignUp from "./pages/SignUpPage/SignUpPage.js";
+import GlobalSnackbar from "./components/GlobalSnackBar/GlobalSnackBar";
 import { useState, useEffect } from "react";
-import {verifyToken} from "./store/actionCreator"
+import { verifyToken } from "./store/actionCreator"
 
 // const SignupPage = React.lazy(() => import("./pages/SignupPage/SignupPage.js"));
 
@@ -33,29 +35,30 @@ function App() {
 
   return (
     <ThemeProvider theme={theme(customization)}>
-      <HashRouter>
-        <Switch>
-          <Route path="/" exact>
-            <Redirect to="/home" />
-          </Route>
 
-          {/* <Route path="/signup" exact>
-            <SignUp />
-          </Route> */}
 
-          <PrivateRoute path="/home">
-            <HomePage />
-          </PrivateRoute>
+      <Box>
+        <GlobalSnackbar/>
+        <HashRouter>
+          <Switch>
+            <Route path="/" exact>
+              <Redirect to="/home" />
+            </Route>
 
-          <Route path="/login" exact>
-            {isLoggedIn ? <Redirect to={path} /> : <LoginPage />}
-          </Route>
+            <PrivateRoute path="/home">
+              <HomePage />
+            </PrivateRoute>
 
-          <Route path="/signup" exact>
-            {isLoggedIn ? <Redirect to={path} /> : <SignUp/>}
-          </Route>
-        </Switch>
-      </HashRouter>
+            <Route path="/login" exact>
+              {isLoggedIn ? <Redirect to={path} /> : <LoginPage />}
+            </Route>
+
+            <Route path="/signup" exact>
+              {isLoggedIn ? <Redirect to={path} /> : <SignUp />}
+            </Route>
+          </Switch>
+        </HashRouter>
+      </Box>
     </ThemeProvider>
   );
 }

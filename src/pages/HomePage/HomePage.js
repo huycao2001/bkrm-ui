@@ -1,5 +1,7 @@
-import React from "react";
-import { useLocation, useParams, useRouteMatch } from "react-router-dom";
+import { React, Suspense } from "react";
+import { Route, Redirect, useLocation, useParams, useRouteMatch, Switch } from "react-router-dom";
+import clsx from "clsx";
+import { Spin } from 'antd'
 
 import { useTheme, styled } from "@material-ui/core/styles";
 
@@ -11,7 +13,9 @@ import { AppBar, Toolbar, Typography, AdbIcon, Grid, Button, Box, IconButton, us
 
 import PersonIcon from "@material-ui/icons/Person";
 
-import {logOutHandler} from "../../store/actionCreator"
+import { logOutHandler } from "../../store/actionCreator"
+
+import InventoryView from "../../views/InventoryView/InventoryView";
 
 
 import BasicMenu from "../../components/Menu/BasicMenu";
@@ -31,15 +35,16 @@ import useStyles from "./styles";
 
 
 const HomePage = (props) => {
-    const path = useRouteMatch();
+    const { path } = useRouteMatch();
 
     const customization = useSelector((state) => state.customize);
     const theme = useTheme();
     const classes = useStyles(theme);
     const infoDetail = useSelector((state) => state.info);
     const dispatch = useDispatch();
-    const roleUser = infoDetail.role === "owner" ? "Chủ cửa hàng" : "Nhân viên"
-    // console.log("home page called with path " + `/${path}`);
+    const roleUser = infoDetail.role === "owner" ? "Chủ cửa hàng" : "Nhân viên";
+    const permissions = useSelector((state) => state.info.user.permissions);
+    console.log("home page called with path " + `${path}`);
     // console.log(useLocation());
     // console.log("DD : " + classes.appBar)
 
@@ -66,12 +71,16 @@ const HomePage = (props) => {
         localStorage.removeItem("products");
         sessionStorage.removeItem("BKRMprev");
         sessionStorage.removeItem("BKRMopening");
-    
-      };
+
+    };
+
+    //console.log( "Permissions : " +  JSON.stringify(permissions))
 
     return (
         <div className={classes.root}>
-            <AppBar className={classes.appBar}>
+
+
+            <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar>
                     {matchDownSm ? (
                         <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" style={{ width: "100%" }} >
@@ -90,7 +99,7 @@ const HomePage = (props) => {
                     ) :
 
                         (
-                            <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" style={{ width: "100%", padding:"0 50px 0 0" }}>
+                            <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" style={{ width: "100%", padding: "0 50px 0 0" }}>
                                 <Typography variant="h3" className={classes.searchEngine}>
                                     BKRM
                                 </Typography>
@@ -107,15 +116,15 @@ const HomePage = (props) => {
 
 
 
-                                <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between" style={{ width: "10%", marginRight:"50px"}} >
+                                <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between" style={{ width: "10%", marginRight: "50px" }} >
                                     {/* <Box display="flex" flexDirection="column" alignItems="center"> */}
 
                                     <Box
                                         display="flex"
                                         flexDirection="column"
                                         justifyContent="center"
-                                        style={{ width : "100%", padding : "0 20px 0 20px", textAlign:"right"}}
-                                        
+                                        style={{ width: "100%", padding: "0 20px 0 20px", textAlign: "right" }}
+
                                     >
                                         <Typography variant="h5" style={{ fontWeight: 700, fontSize: 13 }}>
                                             {roleUser}
@@ -133,7 +142,7 @@ const HomePage = (props) => {
                                         <NotificationsIcon fontSize="large" />
                                     </IconButton>
 
-                                    <Button style={{color:"black"}} onClick={() => logOutHandler()}>
+                                    <Button style={{ color: "black" }} onClick={() => logOutHandler()}>
                                         Đăng xuất
                                     </Button>
 
@@ -152,6 +161,29 @@ const HomePage = (props) => {
 
                 </Toolbar>
             </AppBar>
+            <main
+                className={clsx([classes.content], {
+                    [classes.contentShift]: false,
+                })}
+            >
+                <Box className={classes.background}>
+                    <Suspense fallback={<div style={{ backgroundColor: 'rgba(0, 0, 0, 0.05)', height: '100vh', width: '100%' }}>
+                        <Spin style={{ margin: 'auto' }} />
+                    </div>} >
+                        <Switch>
+
+                            <Route path={`${path}/inventory`} component={InventoryView} />
+                            <Route path={`${path}/`} >
+                                <Redirect to={`${path}/inventory`} component={InventoryView} />
+
+                            </Route>
+
+
+                        </Switch>
+                    </Suspense>
+                </Box>
+
+            </main>
         </div>
     )
 }

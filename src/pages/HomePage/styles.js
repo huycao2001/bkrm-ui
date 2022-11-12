@@ -65,7 +65,7 @@ export default makeStyles((theme) => ({
     marginRight: 20,
     padding: 20,
     // marginTop:40,
-    marginTop:25,
+    marginTop:100,
  
   },
   backgroundMini: {

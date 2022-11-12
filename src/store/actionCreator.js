@@ -2,16 +2,18 @@ import { authActions } from "./slice/authSlice";
 import { loadingActions } from "./slice/loadingSlice";
 import { infoActions } from "./slice/infoSlice";
 
+import { statusAction } from "./slice/statusSlice";
+
 import { customizeAction } from "./slice/customizeSlice";
 import userApi from "../api/userApi";
-//import branchApi from "../api/branchApi";
+// import branchApi from "../api/branchApi";
 
 import { pink, blue, grey } from "@material-ui/core/colors";
-import { statusAction } from "./slice/statusSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 
 export const verifyToken = () => {
+  console.log("Verify token started")
   return async (dispatch) => {
     dispatch(loadingActions.startLoad());
     const verifyToken = async () => {
@@ -26,7 +28,6 @@ export const verifyToken = () => {
         dispatch(authActions.logIn());
         dispatch(setCustomization(rs.user.customization));
         if (rs.role === "owner") {
-          console.log("action creator : you are the owner.")
           dispatch(
             infoActions.setUser({
               ...rs.user,
@@ -77,6 +78,7 @@ export const logInHandler = (userName, password) => {
         localStorage.setItem("token", rs.access_token);
         dispatch(authActions.logIn());
         dispatch(loadingActions.finishLoad());
+        dispatch(statusAction.successfulStatus("Đăng nhập thành công"));
         dispatch(setCustomization(rs.user.customization));
         dispatch(
           infoActions.setUser({
@@ -92,12 +94,12 @@ export const logInHandler = (userName, password) => {
         );
         dispatch(infoActions.setStore(rs.store));
         dispatch(infoActions.setRole(rs.role));
-        dispatch(statusAction.successfulStatus("Login successfully"));
+        // dispatch(statusAction.successfulStatus("Login successfully"));
       }
     } catch (error) {
       dispatch(authActions.logOut());
       dispatch(loadingActions.finishLoad());
-      dispatch(statusAction.failedStatus("Login failed"));
+      // dispatch(statusAction.failedStatus("Login failed"));
       dispatch(statusAction.failedStatus("Tên đăng nhập hoặc mật khẩu không đúng"));
     }
   };
