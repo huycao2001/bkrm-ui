@@ -500,11 +500,11 @@ return (
      
       
       <Box className={classes.root}>
-        {/* <AddCategory
+        <AddCategory
           open={openAddCategory}
           handleClose={handleCloseCategory}
           onReset={onReset}
-        /> */}
+        />
         <SnackBarGeneral
           handleClose={() => setOpenSnack(false)}
           open={openSnack}
