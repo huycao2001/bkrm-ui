@@ -6,7 +6,8 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import { useState } from "react";
+import Category from "./Category/Category";
+import { useState, useEffect, React } from "react";
 import {
     Typography,
     Card,
@@ -28,15 +29,25 @@ export default function Inventory() {
     const theme = useTheme();
     const classes = useStyles(theme);
     const xsScreen = useMediaQuery(theme.breakpoints.down("xs"));
-    const [openAddDialog, setOpenAddDialog] = useState(false);
+    const [openAddInventoryDialog, setOpenAddInventoryDialog] = useState(false);
     const handleClose = () => {
-        setOpenAddDialog(false);
+        setOpenAddInventoryDialog(false);
     };
     const [reload, setReload] = useState(true);
     const handleClickOpen = () => {
-        setOpenAddDialog(true);
+        setOpenAddInventoryDialog(true);
     };
-    console.log("Inventory is called")
+
+
+    // Category
+    const [openCategory, setOpenCategory] = useState(false);
+    const handleClickOpenCategory = () => {
+        setOpenCategory(true);
+    };
+    const handleCloseCategory = () => {
+        setOpenCategory(false);
+    };
+
     return (
         <Card className={classes.root} >
             <Grid container direction="row" justifyContent="space-between">
@@ -49,7 +60,8 @@ export default function Inventory() {
                             variant="outlined"
                             color="primary"
                             className={classes.button}
-                            startIcon = {<FileCopyIcon/>}
+                            startIcon={<FileCopyIcon />}
+                            onClick = {handleClickOpenCategory}
                         >
                             Danh mục
                         </Button>
@@ -60,14 +72,17 @@ export default function Inventory() {
                             variant="outlined"
                             color="primary"
                             className={classes.button}
-                            startIcon={<AddIcon/>}
+                            startIcon={<AddIcon />}
                             onClick={handleClickOpen}
                         >
                             Thêm
                         </Button>
                     </Tooltip>
 
-                   
+
+                    <Category open={openCategory} handleClose={handleCloseCategory} />
+
+
                     {/* <Button
               variant="outlined"
               color="primary"
@@ -85,13 +100,13 @@ export default function Inventory() {
             </Avatar>
           </ButtonBase> */}
                 </Grid>
-                
+
             </Grid>
             <AddInventory
-          open={openAddDialog}
-          handleClose={handleClose}
-          setReload={() => setReload(!reload)}
-        />
+                open={openAddInventoryDialog}
+                handleClose={handleClose}
+                setReload={() => setReload(!reload)}
+            />
         </Card>
     );
 };

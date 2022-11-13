@@ -34,15 +34,20 @@ import {
         } catch (error) { }
       };
       fetchAllCategory();
-    }, [props.reset]);
+    }, [props.reset, categoryList]);
   
   
   
     const dispatch = useDispatch();
     const handleAddCategory = async () => {
-      handleCloseAndReset()
+      //handleCloseAndReset()
       try {
         const response = await productApi.addCategory(store_uuid, categoryInfo);
+        if(response.errors){
+          // Duplicated category
+          dispatch(statusAction.failedStatus("Danh mục đã tồn tại ! Vui lòng chọn tên khác"));
+          return; 
+        }
         props.onReset()
         dispatch(statusAction.successfulStatus("Tạo danh mục thành công"));
   
@@ -53,7 +58,7 @@ import {
       }
     };
     const handleCloseAndReset = () => {
-      props.handleClose()
+      props.handleClose();
       setCategoryInfo({
         name: "",
         parent_category_uuid: "",
@@ -99,7 +104,7 @@ import {
               </Select>
             </FormControl> */}
               <TreeSelect
-              placeholder="Danh mục cha"
+              placeholder="Danh mục gốc"
                     id="category"
                     name="category"  
                     style={{ width: '100%'}}   
@@ -126,7 +131,7 @@ import {
           >
             {" "}
             <Button
-              color="secondary"
+              color="primary"
               variant="contained"
               style={{ marginRight: 20 }}
               onClick={props.handleClose}
@@ -139,6 +144,7 @@ import {
               variant="contained"
               size="small"
               onClick={handleAddCategory}
+              disabled={categoryInfo.name ? false : true}
             >
               Thêm
             </Button>

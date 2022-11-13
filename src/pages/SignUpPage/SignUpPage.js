@@ -15,7 +15,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 // import { statusAction } from "../../store/slice/statusSlice";
 // import getGeoCode from "../../components/BranchMap/Geocode";
-import Image from "../../asset/images/background.jpg";
+import Image from "../../asset/img/background.jpg";
 // import { authActions } from "../../store/slice/authSlice";
 import { authActions } from "../../store/slice/authSlice";
 

@@ -31,9 +31,10 @@ import VNDInput, {
 // // import img
 // import avaUpload from "../../../../assets/img/product/default-product.png";
 // import barcodeIcon from "../../../../assets/img/icon/barcode1.png";
+import barcodeIcon from "../../../../asset/img/icon/barcode1.png"; // C:\Users\Dell\Desktop\bkrm-ui\src\asset\img\icon\barcode1.png
 import AddCategory from "./AddCategory";
 import useStyles from "./styles";
-// import productApi from "../../../../api/productApi";
+import productApi from "../../../../api/productApi";
 
 import { useDispatch, useSelector } from "react-redux";
 // import SearchWithAutoComplete from "../../../../components/SearchBar/SearchWithAutoComplete";
@@ -237,22 +238,24 @@ const AddInventory = (props) => {
     }
   };
 
-  const [reset, setReset] = useState(true);
+  const [reset, setReset] = useState(true); // Reset for closing the tabs
   const onReset = () => {
     setReset((reset) => !reset);
   };
   useEffect(() => {
-    // const fetchCategoryList = async () => {
-    //   try {
-    //     const response = await productApi.getNestedCategory(store_uuid);
-    //     setCategoryList(response.data);
-    //     productFormik.setFieldValue("category", response.data[0].uuid);
-    //   } catch (error) {
-    //     console.log(error);
-    //     return [];
-    //   }
-    // };
-    // fetchCategoryList();
+
+    console.log( "category is : " + productFormik.values.category)
+    const fetchCategoryList = async () => {
+      try {
+        const response = await productApi.getNestedCategory(store_uuid);
+        setCategoryList(response.data);
+        productFormik.setFieldValue("category", response.data[0].uuid);
+      } catch (error) {
+        console.log(error);
+        return [];
+      }
+    };
+    fetchCategoryList();
   }, [store_uuid, reset]);
 
   const selectSampleProductHandler = (product) => {
@@ -313,7 +316,7 @@ const AddInventory = (props) => {
               <Box
                 component="img"
                 sx={{ height: 23, width: 23, marginRight: -30 }}
-                //src={barcodeIcon}
+                src={barcodeIcon}
               />
             </InputAdornment>
           ),
@@ -497,11 +500,11 @@ return (
      
       
       <Box className={classes.root}>
-        {/* <AddCategory
+        <AddCategory
           open={openAddCategory}
           handleClose={handleCloseCategory}
           onReset={onReset}
-        /> */}
+        />
         <SnackBarGeneral
           handleClose={() => setOpenSnack(false)}
           open={openSnack}
@@ -581,7 +584,7 @@ return (
                     <Box
                       component="img"
                       sx={{ height: 25, width: 25 }}
-                    //   src={barcodeIcon}
+                      src={barcodeIcon}
                     />
                   </InputAdornment>
                 ),
@@ -866,6 +869,7 @@ return (
               control={
                 <Checkbox
                   //checked={outOfDate}
+                  color = "primary"
                   name="has_batches"
                   checked={productFormik.values.has_batches}
                   onChange={productFormik.handleChange}

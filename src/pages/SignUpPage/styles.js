@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core/styles";
-import Image from "../../asset/images/background.jpg";
+//import Image from "../../asset/img/background.jpg";
 
 export default makeStyles((theme) => ({
   background: {
@@ -15,9 +15,9 @@ export default makeStyles((theme) => ({
         : theme.customization.primaryColor[theme.customization.colorLevel],
   },
 
-  paperContainer: {
-    backgroundImage: `url(${Image})`,
-  },
+  // paperContainer: {
+  //   backgroundImage: `url(${Image})`,
+  // },
   container: {
     background: theme.palette.background.default,
     minHeight: "90vh",
