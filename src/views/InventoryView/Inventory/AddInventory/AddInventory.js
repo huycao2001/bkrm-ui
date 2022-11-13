@@ -243,6 +243,8 @@ const AddInventory = (props) => {
     setReset((reset) => !reset);
   };
   useEffect(() => {
+
+    console.log( "category is : " + productFormik.values.category)
     const fetchCategoryList = async () => {
       try {
         const response = await productApi.getNestedCategory(store_uuid);
