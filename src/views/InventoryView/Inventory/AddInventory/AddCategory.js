@@ -24,6 +24,7 @@ import {
     });
     const info = useSelector((state) => state.info);
     const store_uuid = info.store.uuid;
+    const [addedCategoryStatus, setAddedCategoryStatus] = useState(false);
     
     useEffect(() => {
       const fetchAllCategory = async () => {
@@ -34,7 +35,7 @@ import {
         } catch (error) { }
       };
       fetchAllCategory();
-    }, [props.reset, categoryList]);
+    }, [props.reset, addedCategoryStatus]);
   
   
   
@@ -48,7 +49,8 @@ import {
           dispatch(statusAction.failedStatus("Danh mục đã tồn tại ! Vui lòng chọn tên khác"));
           return; 
         }
-        props.onReset()
+        props.onReset();
+        setAddedCategoryStatus(!addedCategoryStatus);
         dispatch(statusAction.successfulStatus("Tạo danh mục thành công"));
   
   
