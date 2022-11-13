@@ -104,7 +104,7 @@ const UpdateCategory = (props) => {
                 >
                     {" "}
                     <Button
-                        color="secondary"
+                        color="primary"
                         variant="contained"
                         size="small"
                         style={{ marginRight: 20 }}
