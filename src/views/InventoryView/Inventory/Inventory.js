@@ -6,7 +6,8 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import { useState } from "react";
+import Category from "./Category/Category";
+import { useState, useEffect, React } from "react";
 import {
     Typography,
     Card,
@@ -36,7 +37,17 @@ export default function Inventory() {
     const handleClickOpen = () => {
         setOpenAddInventoryDialog(true);
     };
-    console.log("Inventory is called")
+
+
+    // Category
+    const [openCategory, setOpenCategory] = useState(false);
+    const handleClickOpenCategory = () => {
+        setOpenCategory(true);
+    };
+    const handleCloseCategory = () => {
+        setOpenCategory(false);
+    };
+
     return (
         <Card className={classes.root} >
             <Grid container direction="row" justifyContent="space-between">
@@ -50,6 +61,7 @@ export default function Inventory() {
                             color="primary"
                             className={classes.button}
                             startIcon={<FileCopyIcon />}
+                            onClick = {handleClickOpenCategory}
                         >
                             Danh mục
                         </Button>
@@ -66,6 +78,9 @@ export default function Inventory() {
                             Thêm
                         </Button>
                     </Tooltip>
+
+
+                    <Category open={openCategory} handleClose={handleCloseCategory} />
 
 
                     {/* <Button
