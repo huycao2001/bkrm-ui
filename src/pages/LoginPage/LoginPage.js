@@ -18,7 +18,7 @@ import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
 import { useFormik  } from "formik";
 import * as Yup from "yup";
-import Image from "../../asset/images/background.jpg";
+import Image from "../../asset/img/background.jpg";
 import {logInHandler} from "../../store/actionCreator"
 import userAPi from "../../api/userApi";
 
