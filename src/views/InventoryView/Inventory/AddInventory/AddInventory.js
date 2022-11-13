@@ -869,6 +869,7 @@ return (
               control={
                 <Checkbox
                   //checked={outOfDate}
+                  color = "primary"
                   name="has_batches"
                   checked={productFormik.values.has_batches}
                   onChange={productFormik.handleChange}
