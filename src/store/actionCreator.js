@@ -93,6 +93,7 @@ export const logInHandler = (userName, password) => {
           })
         );
         dispatch(infoActions.setStore(rs.store));
+        console.log("Logging at logInHandler: " + JSON.stringify(rs.store));
         dispatch(infoActions.setRole(rs.role));
         // dispatch(statusAction.successfulStatus("Login successfully"));
       }
