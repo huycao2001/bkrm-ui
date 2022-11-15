@@ -8,6 +8,7 @@ import { useTheme, styled } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
 
 import { authActions } from "../../store/slice/authSlice";
+import BranchSelectAppBar from "../../components/CheckoutComponent/BranchSelect/BranchSelectAppBar";
 
 import { AppBar, Toolbar, Typography, AdbIcon, Grid, Button, Box, IconButton, useMediaQuery } from "@material-ui/core";
 
@@ -116,9 +117,9 @@ const HomePage = (props) => {
 
 
 
-                                <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between" style={{ width: "10%", marginRight: "50px" }} >
+                                <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between" style={{ width: "10%", marginRight: "200px" }} >
                                     {/* <Box display="flex" flexDirection="column" alignItems="center"> */}
-
+                                    <BranchSelectAppBar store_uuid={infoDetail.store.uuid} />
                                     <Box
                                         display="flex"
                                         flexDirection="column"
@@ -126,6 +127,7 @@ const HomePage = (props) => {
                                         style={{ width: "100%", padding: "0 20px 0 20px", textAlign: "right" }}
 
                                     >
+                                        
                                         <Typography variant="h5" style={{ fontWeight: 700, fontSize: 13 }}>
                                             {roleUser}
                                         </Typography>
@@ -134,6 +136,7 @@ const HomePage = (props) => {
                                             {infoDetail.user.name}
                                         </Typography>
                                     </Box>
+                                    
                                     <IconButton size="small">
                                         <PersonIcon fontSize="large" />
                                     </IconButton>

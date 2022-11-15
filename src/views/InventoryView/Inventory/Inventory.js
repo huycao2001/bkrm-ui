@@ -1,6 +1,7 @@
 
 // import React from react; 
 
+import { useDispatch, useSelector } from "react-redux";
 import useStyles from "../../../components/TableCommon/style/mainViewStyle";
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -26,6 +27,7 @@ import AddInventory from "./AddInventory/AddInventory";
 
 
 export default function Inventory() {
+    const infoDetail = useSelector((state) => state.info);
     const theme = useTheme();
     const classes = useStyles(theme);
     const xsScreen = useMediaQuery(theme.breakpoints.down("xs"));
@@ -52,7 +54,7 @@ export default function Inventory() {
         <Card className={classes.root} >
             <Grid container direction="row" justifyContent="space-between">
                 <Typography className={classes.headerTitle} variant="h5" >
-                    Sản phẩm
+                    Sản phẩm 
                 </Typography>
                 <Grid>
                     <Tooltip title="Thiết lập danh mục">
