@@ -31,7 +31,7 @@ import VNDInput, {
 // // import img
 // import avaUpload from "../../../../assets/img/product/default-product.png";
 // import barcodeIcon from "../../../../assets/img/icon/barcode1.png";
-import barcodeIcon from "../../../../asset/img/icon/barcode1.png"; // C:\Users\Dell\Desktop\bkrm-ui\src\asset\img\icon\barcode1.png
+import barcodeIcon from "../../../../assets/img/icon/barcode1.png"; 
 import AddCategory from "./AddCategory";
 import useStyles from "./styles";
 import productApi from "../../../../api/productApi";
