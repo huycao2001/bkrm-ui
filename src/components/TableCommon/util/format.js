@@ -43,10 +43,11 @@ export const FormatedProductStatus = (props) => {
         color="#ff007d"
         variant="outlined"
         style={{
-          backgroundColor: "#ff007d",
+          backgroundColor: "red",
           fontWeight: 500,
           marginLeft: -10,
           height: 28,
+          color : "black"
         }}
       >
         {"Trả đủ"}{" "}

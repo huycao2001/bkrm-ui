@@ -1,5 +1,5 @@
 // import colors from "../../assets/scss/_themes-vars.module.scss";
-import colors from "../../asset/scss/_themes-vars.module.scss";
+import colors from "../../assets/scss/_themes-vars.module.scss";
 import { pink, blue, grey, yellow, red } from "@material-ui/core/colors";
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {

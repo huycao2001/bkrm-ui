@@ -57,11 +57,12 @@ const TableWrapper = (props) => {
             {isCart || isReport? null :
                
                 <Grid container justifyContent='flex-end' >     
-                        <FormControlLabel
+                        {/* <FormControlLabel
                             control={<Switch checked={dense} onChange={handleChangeDense} />}
                             label="Thu nhỏ"
                             style={{ display: "flex", justifyContent: "flex-end", }}
-                        />
+                            color ="primary"
+                        /> */}
                         <Pagination
                         style={{marginRight:40}}
                             showSizeChanger
