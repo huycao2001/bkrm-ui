@@ -17,6 +17,7 @@ import PersonIcon from "@material-ui/icons/Person";
 import { logOutHandler } from "../../store/actionCreator"
 
 import InventoryView from "../../views/InventoryView/InventoryView";
+import AdminView from "../../views/AdminView/AdminView";
 
 
 import BasicMenu from "../../components/Menu/BasicMenu";
@@ -43,7 +44,7 @@ const HomePage = (props) => {
   const classes = useStyles(theme);
   const infoDetail = useSelector((state) => state.info);
   const dispatch = useDispatch();
-  const roleUser = infoDetail.role === "owner" ? "Chủ cửa hàng" : "Nhân viên";
+  const roleUser = infoDetail.role === "owner" ? "Chủ cửa hàng" : infoDetail.role === "employee" ? "Nhân viên" : "Admin";
   const permissions = useSelector((state) => state.info.user.permissions);
   console.log("home page called with path " + `${path}`);
   // console.log(useLocation());
@@ -113,22 +114,10 @@ const HomePage = (props) => {
                     <BasicMenu section="Quản lý" />
                     <BasicMenu section="Cài đặt" />
                     <BasicMenu section="Thống kê" />
-
                   </Box>}
-
-
-
                 <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between" style={{ width: "10%", marginRight: "200px" }} >
-                  {/* <Box display="flex" flexDirection="column" alignItems="center"> */}
                   {(infoDetail.role == "admin") ?
-                    <Box display="flex"
-                      flexDirection="column"
-                      justifyContent="center"
-                      style={{ width: "100%", padding: "0 20px 0 20px", textAlign: "right" }}>
-                      <Typography variant="h5" style={{ fontWeight: 700, fontSize: 13 }}>
-                        Branch selection unavailable
-                      </Typography>
-                    </Box> :
+                    <BranchSelectAppBar store_uuid={undefined} /> :
                     <BranchSelectAppBar store_uuid={infoDetail.store.uuid} />}
                   <Box
                     display="flex"
@@ -142,8 +131,7 @@ const HomePage = (props) => {
                       {roleUser}
                     </Typography>
                     <Typography variant="h5" noWrap>
-                      {/* {infoDetail.user.username ? infoDetail.user.username : "Not handle" } */}
-                      {infoDetail.user.name}
+                      {infoDetail.role == "admin" ? infoDetail.admin.name : infoDetail.user.name}
                     </Typography>
                   </Box>
 
@@ -185,9 +173,8 @@ const HomePage = (props) => {
           </div>} >
             {(infoDetail.role == "admin") ?
               <Switch>
-                <Route path={`${path}/admin`} component={InventoryView} />
                 <Route path={`${path}/`}>
-                  <Redirect to={`${path}/admin`} component={InventoryView}/>
+                  <Redirect to={`${path}/admin`} component={AdminView} />
                 </Route>
               </Switch> :
               <Switch>
