@@ -107,11 +107,16 @@ export const logInHandler = (userName, password, role) => {
     } catch (error) {
       dispatch(authActions.logOut());
       dispatch(loadingActions.finishLoad());
-      if (error.status === 403) {
+      if (error.status === 401) {
         dispatch(statusAction.failedStatus("Tên đăng nhập hoặc mật khẩu không đúng"));
       }
-      else {
-        dispatch(statusAction.failedStatus("Please get an administrator to approve your account"))
+      if (error.status === 403) {
+        dispatch(statusAction.failedStatus("Please get an administrator to approve your account"));
+      }
+      else
+      {
+        dispatch(statusAction.failedStatus("Something went wrong. Check console"));
+        console.error("Attempting to log unknown error: " + JSON.stringify(error));
       }
     }
   };
