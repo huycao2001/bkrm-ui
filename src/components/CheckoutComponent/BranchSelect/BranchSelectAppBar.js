@@ -34,7 +34,7 @@ export default function BranchSelectAppBar({ store_uuid }) {
           id: response.data[0].id,
         })
       );
-    } catch(err) {
+    } catch (err) {
       console.log(err)
     }
   };
@@ -51,12 +51,25 @@ export default function BranchSelectAppBar({ store_uuid }) {
     });
   };
 
-  return (
-    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} fullWidth>
-      <InputLabel>Chi nhánh</InputLabel>
+  const renderDropDown = () => {
+    if (branches.length <= 0) {
+      return (
+        <Select value="hello" label="Chi nhánh" onChange={handleChange} disabled={true}>
+          <MenuItem value="hello">Not available</MenuItem>
+        </Select>
+      );
+    }
+    return (
       <Select value={selectedBranch} label="Chi nhánh" onChange={handleChange}>
         {renderMenuItem()}
       </Select>
+    );
+  };
+
+  return (
+    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }} fullWidth>
+      <InputLabel>Chi nhánh</InputLabel>
+      {renderDropDown()}
     </FormControl>
   );
 }
