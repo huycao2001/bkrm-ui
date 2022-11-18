@@ -20,14 +20,73 @@ export const verifyToken = () => {
       const response = await userApi.verify();
       return response;
     };
-
     try {
       const rs = await verifyToken();
-      console.log(rs)
       if (rs) {
+        dispatch(infoActions.setRole(rs.role));
         dispatch(authActions.logIn());
-        dispatch(setCustomization(rs.user.customization));
-        if (rs.role === "owner") {
+        if (rs.role === "admin") {
+          dispatch(infoActions.setAdmin({...rs.admin}));
+        } else {
+          dispatch(setCustomization(rs.user.customization));
+          if (rs.role === "owner") {
+            dispatch(
+              infoActions.setUser({
+                ...rs.user,
+                permissions: [
+                  { id: 1, name: "inventory", description: "Kho hàng" },
+                  { id: 2, name: "employee", description: "Nhân sự" },
+                  { id: 3, name: "sales", description: "Bán hàng" },
+                  { id: 4, name: "product", description: "Sản phẩm" },
+                  { id: 5, name: "report", description: "Báo cáo" },
+                ],
+              })
+            );
+          } else {
+            dispatch(
+              infoActions.setUser({ ...rs.user, permissions: rs.permission })
+            );
+          }
+          dispatch(infoActions.setStore(rs.store));
+        }
+      } else {
+        dispatch(authActions.logOut());
+      }
+      dispatch(loadingActions.finishLoad());
+    } catch (error) {
+      dispatch(authActions.logOut());
+      dispatch(loadingActions.finishLoad());
+    }
+  };
+};
+export const logInHandler = (userName, password, role) => {
+  return async (dispatch) => {
+    dispatch(loadingActions.startLoad());
+    const logIn = async () => {
+      const response = await userApi.signIn({
+        user_name: userName,
+        password: password,
+        role: role,
+      });
+      return response;
+    };
+
+    try {
+      const rs = await logIn();
+      if (rs.access_token) {
+        localStorage.setItem("token", rs.access_token);
+        if (rs.role === "admin") {
+          dispatch(infoActions.setAdmin(rs.admin));
+          dispatch(infoActions.setRole(rs.role));
+          dispatch(authActions.logIn());
+          dispatch(loadingActions.finishLoad());
+          dispatch(statusAction.successfulStatus("Đăng nhập thành công - admin"));
+        }
+        else {
+          dispatch(authActions.logIn());
+          dispatch(loadingActions.finishLoad());
+          dispatch(statusAction.successfulStatus("Đăng nhập thành công"));
+          dispatch(setCustomization(rs.user.customization));
           dispatch(
             infoActions.setUser({
               ...rs.user,
@@ -40,67 +99,20 @@ export const verifyToken = () => {
               ],
             })
           );
-        } else {
-          dispatch(
-            infoActions.setUser({ ...rs.user, permissions: rs.permission })
-          );
+          dispatch(infoActions.setStore(rs.store));
+          dispatch(infoActions.setRole(rs.role));
         }
-        dispatch(infoActions.setStore(rs.store));
-        dispatch(infoActions.setRole(rs.role));
-
-
-
-      } else {
-        dispatch(authActions.logOut());
-      }
-      dispatch(loadingActions.finishLoad());
-    } catch (error) {
-      dispatch(authActions.logOut());
-      dispatch(loadingActions.finishLoad());
-    }
-  };
-};
-export const logInHandler = (userName, password) => {
-  return async (dispatch) => {
-    dispatch(loadingActions.startLoad());
-    const logIn = async () => {
-      const response = await userApi.signIn({
-        user_name: userName,
-        password: password,
-        role: "owner",
-      });
-      return response;
-    };
-
-    try {
-      const rs = await logIn();
-      if (rs.access_token) {
-        localStorage.setItem("token", rs.access_token);
-        dispatch(authActions.logIn());
-        dispatch(loadingActions.finishLoad());
-        dispatch(statusAction.successfulStatus("Đăng nhập thành công"));
-        dispatch(setCustomization(rs.user.customization));
-        dispatch(
-          infoActions.setUser({
-            ...rs.user,
-            permissions: [
-              { id: 1, name: "inventory", description: "Kho hàng" },
-              { id: 2, name: "employee", description: "Nhân sự" },
-              { id: 3, name: "sales", description: "Bán hàng" },
-              { id: 4, name: "product", description: "Sản phẩm" },
-              { id: 5, name: "report", description: "Báo cáo" },
-            ],
-          })
-        );
-        dispatch(infoActions.setStore(rs.store));
-        dispatch(infoActions.setRole(rs.role));
         // dispatch(statusAction.successfulStatus("Login successfully"));
       }
     } catch (error) {
       dispatch(authActions.logOut());
       dispatch(loadingActions.finishLoad());
-      // dispatch(statusAction.failedStatus("Login failed"));
-      dispatch(statusAction.failedStatus("Tên đăng nhập hoặc mật khẩu không đúng"));
+      if (error.status === 403) {
+        dispatch(statusAction.failedStatus("Tên đăng nhập hoặc mật khẩu không đúng"));
+      }
+      else {
+        dispatch(statusAction.failedStatus("Please get an administrator to approve your account"))
+      }
     }
   };
 };
