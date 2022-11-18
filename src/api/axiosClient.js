@@ -33,7 +33,6 @@ axiosClient.interceptors.response.use(
     return response;
   },
   (error) => {
-    console.log("In client: " + error.message);
     if (error.response?.status === "401"  ) {
       if (!(document.URL.includes("/login") || document.URL.includes("/signup") )) {
         console.log(!document.URL.includes("/login"));

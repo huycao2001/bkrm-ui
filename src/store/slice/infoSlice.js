@@ -69,7 +69,6 @@ const infoSlice = createSlice({
     },
     setAdmin(state, action) {
       state.admin = action.payload;
-      console.log("admin" + JSON.stringify(state.admin));
     }
     // setBranchsOfStore(state, action) {
     //   state.branchsOfStore = action.payload;

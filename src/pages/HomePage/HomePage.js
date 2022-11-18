@@ -173,6 +173,7 @@ const HomePage = (props) => {
           </div>} >
             {(infoDetail.role == "admin") ?
               <Switch>
+                <Route path={`${path}/admin`} component={AdminView} />
                 <Route path={`${path}/`}>
                   <Redirect to={`${path}/admin`} component={AdminView} />
                 </Route>

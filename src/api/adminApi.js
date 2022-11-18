@@ -7,7 +7,7 @@ const adminApi = {
   },
   toggleAprroveUser: (userUuid) => {
     const url = "/admin/users";
-    return axiosClient.get(`${url}/${userUuid}/toggle-approve`);
+    return axiosClient.post(`${url}/${userUuid}/toggle-approve`);
   }
 }
 export default adminApi;
