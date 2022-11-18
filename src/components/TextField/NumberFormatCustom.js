@@ -10,7 +10,7 @@ export const VNDFormat = (props) => {
       isNumericString
       displayType="text"
       type="text"
-      suffix=" đ"
+      suffix=" đồng"
     />
   )
 }

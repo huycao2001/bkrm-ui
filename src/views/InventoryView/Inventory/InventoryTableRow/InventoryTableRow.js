@@ -12,7 +12,10 @@ import {
   ListItem,
   Typography,
   Chip,
+  Tooltip
 } from "@material-ui/core";
+
+// import Tooltip from '@mui/material/Tooltip';
 
 import InventoryDetail from "./InventoryDetail/InventoryDetail";
 import { FormatedProductStatus } from "../../../../components/TableCommon/util/format";
@@ -33,6 +36,8 @@ const InventoryTableRow = (props) => {
   imageList =imageList?  Array.isArray(imageList)? imageList :[imageList] :null
   return (
     <>
+     
+
       <TableRow
         onClick={() => handleOpenRow(row.uuid)}
         className={clsx(
@@ -80,6 +85,7 @@ const InventoryTableRow = (props) => {
           </>
           : null}
       </TableRow>
+      
 
       {/* DETAIL */}
       <TableRow>
