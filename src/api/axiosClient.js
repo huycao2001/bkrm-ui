@@ -33,11 +33,18 @@ axiosClient.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error.response?.status == "401"  ) {
+    if (error.response?.status === "401"  ) {
       if (!(document.URL.includes("/login") || document.URL.includes("/signup") )) {
-        console.log(!document.URL.includes("/login"))
-        store.dispatch(authActions.logOut())
-        store.dispatch(statusAction.failedStatus("Hết phiên đăng nhập"))
+        console.log(!document.URL.includes("/login"));
+        store.dispatch(authActions.logOut());
+        store.dispatch(statusAction.failedStatus("Hết phiên đăng nhập"));
+      }
+    }
+    if (error.response?.status === "403"  ) {
+      if (!(document.URL.includes("/login") || document.URL.includes("/signup") )) {
+        console.log(!document.URL.includes("/login"));
+        store.dispatch(authActions.logOut());
+        store.dispatch(statusAction.failedStatus("Please get an administrator to approve your account"));
       }
     }
     throw error

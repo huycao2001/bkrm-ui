@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialUserInfoSlice = {
   user: {
-    user_name:"",
+    user_name: "",
     name: "",
     email: "",
     email_verified_at: null,
@@ -36,7 +36,13 @@ const initialUserInfoSlice = {
   },
   role: "",
   products: [],
-  searchBarState: 'search',
+  searchBarState: "search",
+  admin: {
+    uuid: "",
+    name: "",
+    email: "",
+    phone: "",
+  }
   // branchsOfStore:[]
 };
 const infoSlice = createSlice({
@@ -60,6 +66,9 @@ const infoSlice = createSlice({
     },
     setSearchBarState(state, action) {
       state.searchBarState = action.payload;
+    },
+    setAdmin(state, action) {
+      state.admin = action.payload;
     }
     // setBranchsOfStore(state, action) {
     //   state.branchsOfStore = action.payload;

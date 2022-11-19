@@ -16,10 +16,10 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
-import { useFormik  } from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 import Image from "../../assets/img/background.jpg";
-import {logInHandler} from "../../store/actionCreator"
+import { logInHandler } from "../../store/actionCreator"
 import userAPi from "../../api/userApi";
 
 
@@ -33,7 +33,7 @@ const styles = {
 
 
 const LoginPage = (props) => {
-  const [isOwner, setIsOwner] = useState(true);
+  const [role, setRole] = useState("owner");
   const [storeType, setStoreType] = useState("");
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -41,20 +41,17 @@ const LoginPage = (props) => {
   const loginFormik = useFormik({
     initialValues: {
       user_name: "",
-      password: "", 
-      storeType : ""
+      password: "",
+      storeType: "",
+      role: "",
     },
-    validationSchema : Yup.object({
+    validationSchema: Yup.object({
       user_name: Yup.string()
         .required("Nhập tên đăng nhập"),
       password: Yup.string().required("Nhập mật khẩu"),
     })
   }
   )
-  useEffect(() => {
-    // action on update of movies
-    console.log("StoreType is " + storeType);
-}, [storeType]);
 
   return (
     <Paper style={styles.paperContainer}>
@@ -120,22 +117,42 @@ const LoginPage = (props) => {
                   onBlur={loginFormik.handleBlur}
                 />
                 <Grid justifyContent="flex-end">
-                <Box style={{ display: "flex", justifyContent: "flex-end" }}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        value={isOwner}
-                        color="primary"
-                        onChange={() => {
-                          setIsOwner(!isOwner);
-                        
+                  <FormControl>
+                    <FormLabel id="demo-row-radio-buttons-group-label">
+                      Select role
+                    </FormLabel>
+                    <RadioGroup
+                      row
+                      aria-labelledby="demo-row-radio-buttons-group-label"
+                      name="row-radio-buttons-group"
+                      defaultValue={role}
+                    >
+                      <FormControlLabel
+                        value="owner"
+                        control={<Radio />}
+                        label="Owner"
+                        onClick={() => {
+                          setRole("owner");
                         }}
                       />
-                    }
-                    label="Nhân viên"
-                    labelPlacement="start"
-                  />
-                </Box>
+                      <FormControlLabel
+                        value="employee"
+                        control={<Radio />}
+                        label="Employee"
+                        onClick={() => {
+                          setRole("employee");
+                        }}
+                      />
+                      <FormControlLabel
+                        value="admin"
+                        control={<Radio />}
+                        label="Admin"
+                        onClick={() => {
+                          setRole("admin");
+                        }}
+                      />
+                    </RadioGroup>
+                  </FormControl>
                 </Grid>
                 <FormControl>
                   <FormLabel id="demo-row-radio-buttons-group-label">
@@ -175,13 +192,14 @@ const LoginPage = (props) => {
                   // && Object.keys(loginFormik.touched).length > 0
                   disabled={!loginFormik.isValid}
                   onClick={() => {
-                    //if (isOwner) {
-                      dispatch(
-                        logInHandler(
-                          loginFormik.values.user_name,
-                          loginFormik.values.password
-                        )
-                      );
+                    //if (role) {
+                    dispatch(
+                      logInHandler(
+                        loginFormik.values.user_name,
+                        loginFormik.values.password,
+                        role
+                      )
+                    );
                     // } else {
                     //   dispatch(
                     //     empLogInHandler(
