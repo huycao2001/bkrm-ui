@@ -35,7 +35,10 @@ import { useDispatch, useSelector } from "react-redux";
 import UpdateInventory from "./UpdateInventory/UpdateInventory";
 import ConfirmPopUp from "../../../../../components/ConfirmPopUp/ConfirmPopUp";
 import { statusAction } from "../../../../../store/slice/statusSlice";
-import { ThousandFormat, VNDFormat } from "../../../../../components/TextField/NumberFormatCustom";
+import {
+  ThousandFormat,
+  VNDFormat,
+} from "../../../../../components/TextField/NumberFormatCustom";
 import { TableCell, TableRow, Avatar, ListItem, Chip } from "@material-ui/core";
 import clsx from "clsx";
 
@@ -44,7 +47,7 @@ import VarianceModal from "./VarianceModal";
 import { VarianceProductMiniTableRow } from "../../../../../components/MiniTableRow/MiniTableRow";
 import branchApi from "../../../../../api/branchApi";
 
-import defaultProduct from "../../../../../assets/img/product/default-product.png"
+import defaultProduct from "../../../../../assets/img/product/default-product.png";
 import BranchInventoryPopUp from "./BranchInventoryPopUp";
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -77,7 +80,7 @@ const UploadImage = () => {
   );
 };
 const InventoryDetail = (props) => {
-  const { row, openRow, setReload ,isManageInventory} = props.parentProps;
+  const { row, openRow, setReload, isManageInventory } = props.parentProps;
   const { isMini } = props;
   const theme = useTheme();
   const classes = useStyles(theme);
@@ -86,7 +89,6 @@ const InventoryDetail = (props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [thisReload, setThisReload] = useState(false);
   const dispatch = useDispatch();
-
 
   const [productDetail, setProductDetail] = useState({
     name: "",
@@ -122,8 +124,8 @@ const InventoryDetail = (props) => {
   const info = useSelector((state) => state.info);
   const store_uuid = info.store.uuid;
   const branch_uuid = info.branch.uuid;
-  const branchs = info.store.branches
- 
+  const branchs = info.store.branches;
+
   // const [branchs, setBranchs] = useState(info.branchsOfStore);
 
   const [isOpenVarianceDetailModal, setIsOpenVariaceDetailModal] =
@@ -148,15 +150,12 @@ const InventoryDetail = (props) => {
     setIsOpenUpdate(false);
   };
 
+  const [openDetailInventory, setOpenDetailInventory] = useState(false);
+  console.log("productDetail.img_urls", productDetail);
 
-
-
-  const [openDetailInventory ,setOpenDetailInventory] =  useState(false)
-console.log("productDetail.img_urls",productDetail)
-
-let  imageList =row.img_urls ? JSON.parse(row.img_urls):null
-imageList = Array.isArray(imageList)? imageList :[imageList]
-// || defaultProduct
+  let imageList = row.img_urls ? JSON.parse(row.img_urls) : null;
+  imageList = Array.isArray(imageList) ? imageList : [imageList];
+  // || defaultProduct
   return row.has_variance ? (
     <>
       {openRow === row.uuid &&
@@ -182,14 +181,16 @@ imageList = Array.isArray(imageList)? imageList :[imageList]
                         borderRadius: 10,
                         marginRight: 15,
                       }}
-                      src={JSON.parse(row.img_urls ? row.img_urls : "[]").at(0) || defaultProduct}
+                      src={
+                        JSON.parse(row.img_urls ? row.img_urls : "[]").at(0) ||
+                        defaultProduct
+                      }
                     />
                     <Typography className={classes.fontName}>
                       {variance.name}
                     </Typography>
                   </ListItem>
                 </TableCell>
-
 
                 <TableCell align="left">{variance.category?.name}</TableCell>
                 <TableCell align="right">
@@ -213,7 +214,7 @@ imageList = Array.isArray(imageList)? imageList :[imageList]
                     setSelectedVariance(variance);
                   }}
                 >
-                  <Button size="small" color="primary" variant="outlined" >
+                  <Button size="small" color="primary" variant="outlined">
                     Chi tiết
                   </Button>
                 </TableCell>
@@ -242,9 +243,9 @@ imageList = Array.isArray(imageList)? imageList :[imageList]
             setReload();
             setThisReload(!thisReload);
           }}
-         batches={row.batches}
-         has_batches={row.has_batches}
-         isManageInventory={isManageInventory}
+          batches={row.batches}
+          has_batches={row.has_batches}
+          isManageInventory={isManageInventory}
         />
       )}
     </>
@@ -288,105 +289,113 @@ imageList = Array.isArray(imageList)? imageList :[imageList]
 
         <Grid container direction="row" justifyContent="flex-start">
           <Grid item xs={12} sm={4}>
-      
-           {imageList.at(0) ?
-            <Box
-              sx={{
-                // height: 170,
-                // width: 170,
-                height: xsScreen ? 100 : 170,
-                width: xsScreen ? 100 : 170,
-                borderRadius: 2,
-                marginLeft: 15,
-                marginBottom: xsScreen ? 10 : 0,
-              }}
-            >
-              <Carousel showThumbs={false}>
-                { 
-                imageList?.map((url) => (
-                  <img
-                    key={url}
-                    src={url}
-                    height={xsScreen ? "100" : "170"}
-                    width={xsScreen ? "100" : "170"}
-                    // height= "170"
-                    // width= "170"
-                  />
-                ))}
-              </Carousel>
-            </Box>:
+            {imageList.at(0) ? (
               <Box
-                    component="img"
-                    sx={{
-                    height: xsScreen ? 100 : 170,
-                    width: xsScreen ? 100 : 170,
-                    marginLeft: 7,
-                    marginRight: 7,
-                    borderRadius: 20,
-                    }}
-                    src={defaultProduct}
-                    style={{marginBottom:20}}
-                />}
+                sx={{
+                  // height: 170,
+                  // width: 170,
+                  height: xsScreen ? 100 : 170,
+                  width: xsScreen ? 100 : 170,
+                  borderRadius: 2,
+                  marginLeft: 15,
+                  marginBottom: xsScreen ? 10 : 0,
+                }}
+              >
+                <Carousel showThumbs={false}>
+                  {imageList?.map((url) => (
+                    <img
+                      key={url}
+                      src={url}
+                      height={xsScreen ? "100" : "170"}
+                      width={xsScreen ? "100" : "170"}
+                      // height= "170"
+                      // width= "170"
+                    />
+                  ))}
+                </Carousel>
+              </Box>
+            ) : (
+              <Box
+                component="img"
+                sx={{
+                  height: xsScreen ? 100 : 170,
+                  width: xsScreen ? 100 : 170,
+                  marginLeft: 7,
+                  marginRight: 7,
+                  borderRadius: 20,
+                }}
+                src={defaultProduct}
+                style={{ marginBottom: 20 }}
+              />
+            )}
           </Grid>
 
           <Grid container direction="column" item xs={12} sm={8}>
             <Grid container direction="row">
               <Grid item xs={12} sm={6}>
+                <Grid item xs={6}>
+                  <Typography variant="h2" gutterBottom component="div">
+                    Thông tin sản phẩm
+                  </Typography>
+                </Grid>
                 <Grid container direction="row" justifyContent="flex-start">
-                  <Grid item xs={4} sm={6}>
-                    <Typography variant="h5" gutterBottom component="div">
+                  <Grid item xs={4}>
+                    <Typography variant="h4" gutterBottom component="div">
                       Tên sản phẩm
                     </Typography>
                   </Grid>
-                  <Grid item sm={6}>
+                  <Grid item>
                     <Typography variant="body1" gutterBottom component="div">
                       {productDetail.name}{" "}
                     </Typography>
                   </Grid>
                 </Grid>
                 <Grid container direction="row" justifyContent="flex-start">
-                  <Grid item xs={4} sm={6}>
-                    <Typography variant="h5" gutterBottom component="div">
+                  <Grid item xs={4}>
+                    <Typography variant="h4" gutterBottom component="div">
                       Mã sản phẩm
                     </Typography>
                   </Grid>
-                  <Grid item sm={6}>
+                  <Grid item>
                     <Typography variant="body1" gutterBottom component="div">
                       {productDetail.product_code}{" "}
                     </Typography>
                   </Grid>
                 </Grid>
                 <Grid container direction="row" justifyContent="flex-start">
-                  <Grid item xs={4} sm={6}>
-                    <Typography variant="h5" gutterBottom component="div">
+                  <Grid item xs={4}>
+                    <Typography variant="h4" gutterBottom component="div">
                       Mã vạch
                     </Typography>
                   </Grid>
                   <Grid item sm={6}>
                     <Typography variant="body1" gutterBottom component="div">
-                      {productDetail.bar_code}{" "}
+                      {/* {productDetail.bar_code}{" "} */}
+                      {productDetail.bar_code
+                        ? productDetail.bar_code
+                        : "Không"}
                     </Typography>
                   </Grid>
                 </Grid>
                 <Grid container direction="row" justifyContent="flex-start">
-                  <Grid item xs={4} sm={6}>
-                    <Typography variant="h5" gutterBottom component="div">
+                  <Grid item xs={4}>
+                    <Typography variant="h4" gutterBottom component="div">
                       Danh mục
                     </Typography>
                   </Grid>
-                  <Grid item sm={6}>
+                  <Grid item>
                     <Typography variant="body1" gutterBottom component="div">
                       {productDetail.category.name}{" "}
                     </Typography>
                   </Grid>
                 </Grid>
                 <Grid container direction="row" justifyContent="flex-start">
-                  <Grid item xs={4} sm={6}>
-                    <Typography variant="h5" gutterBottom component="div">
+                  <Grid item xs={4}>
+                    <Typography variant="h4" gutterBottom component="div">
                       Đơn vị
                     </Typography>
                   </Grid>
-                  <Grid ListItemText sm={6}>
+                  <Grid ListItemText>
                     <Typography variant="body1" gutterBottom component="div">
                       {productDetail.quantity_per_unit}
                     </Typography>
@@ -394,25 +403,30 @@ imageList = Array.isArray(imageList)? imageList :[imageList]
                 </Grid>
               </Grid>
               <Grid item xs={12} sm={6}>
+                <Grid item xs={6}>
+                  <Typography variant="h2" gutterBottom component="div">
+                    Giá
+                  </Typography>
+                </Grid>
                 <Grid container direction="row" justifyContent="flex-start">
-                  <Grid item xs={4} sm={4}>
-                    <Typography variant="h5" gutterBottom component="div">
+                  <Grid item xs={2}>
+                    <Typography variant="h4" gutterBottom component="div">
                       Giá bán
                     </Typography>
                   </Grid>
-                  <Grid item sm={6}>
+                  <Grid item>
                     <Typography variant="body1" gutterBottom component="div">
                       <VNDFormat value={productDetail.list_price}></VNDFormat>
                     </Typography>
                   </Grid>
                 </Grid>
                 <Grid container direction="row" justifyContent="flex-start">
-                  <Grid item xs={4} sm={4}>
-                    <Typography variant="h5" gutterBottom component="div">
+                  <Grid item xs={2}>
+                    <Typography variant="h4" gutterBottom component="div">
                       Giá vốn
                     </Typography>
                   </Grid>
-                  <Grid item sm={6}>
+                  <Grid item>
                     <Typography variant="body1" gutterBottom component="div">
                       <VNDFormat
                         value={productDetail.standard_price}
@@ -420,75 +434,113 @@ imageList = Array.isArray(imageList)? imageList :[imageList]
                     </Typography>
                   </Grid>
                 </Grid>
-                {isManageInventory?
-                <>
-                <Grid container direction="row" justifyContent="flex-start" alignItems='center'>
-                  <Grid item xs={4} sm={4}>
-                    <Typography variant="h5" gutterBottom component="div">
-                      Tồn kho
-                    </Typography>
-                  </Grid>
-                  <Grid item sm={2}>
-                    {/* <Typography variant="body1" gutterBottom component="div">
+                {isManageInventory ? (
+                  <>
+                    <Grid item xs={6}>
+                      <Typography variant="h2" gutterBottom component="div">
+                        Số lượng
+                      </Typography>
+                    </Grid>
+                    <Grid
+                      container
+                      direction="row"
+                      justifyContent="flex-start"
+                      alignItems="center"
+                    >
+                      <Grid item xs={5}>
+                        <Typography variant="h4" gutterBottom component="div">
+                          Tồn kho
+                        </Typography>
+                      </Grid>
+                      <Grid item sm={2}>
+                        {/* <Typography variant="body1" gutterBottom component="div">
                       {row.branch_quantity}{" "}
                     </Typography> */}
-                    <ThousandFormat value={row.branch_quantity} />
-                  </Grid>
-                  {branchs.length >1 || row.has_batches?
-                   <Grid item sm={4} style={{marginTop:-5, marginBottom:5}}>
-                      <Button size='small' variant='contained'color='primary' style={{textTransform:'none'}} onClick={()=>setOpenDetailInventory(true)}> Chi tiết</Button>
-                  </Grid>:null}
-                  {openDetailInventory?
-                  <BranchInventoryPopUp 
-                    branch_inventories={row.branch_inventories}branchs={branchs}open={openDetailInventory}
-                    onClose={()=>setOpenDetailInventory(false)}
-                    setReload={() => {
-                      setReload();
-                      setThisReload(!thisReload);
-                     }}
-                     batches={row.batches}
-                     has_batches={row.has_batches}
-                     row={row}
-                   />
-                   
-                   :null}
-                </Grid>
-                {row.has_batches ? <Typography variant='h6' style={{color:theme.customization.primaryColor[500]}}>* Sản phẩm quản lý theo lô *</Typography>:null}
-                {row.has_batches ? <Typography variant='h6' style={{color:theme.customization.primaryColor[500], marginBottom:10}}>Thông báo hết HSD trước {row.notification_period} ngày</Typography>:null}
+                        <ThousandFormat value={row.branch_quantity} />
+                      </Grid>
+                      {branchs.length > 1 || row.has_batches ? (
+                        <Grid
+                          item
+                          sm={4}
+                          style={{ marginTop: -5, marginBottom: 5 }}
+                        >
+                          <Button
+                            size="small"
+                            variant="contained"
+                            color="primary"
+                            style={{ textTransform: "none" }}
+                            onClick={() => setOpenDetailInventory(true)}
+                          >
+                            {" "}
+                            Chi tiết
+                          </Button>
+                        </Grid>
+                      ) : null}
+                      {openDetailInventory ? (
+                        <BranchInventoryPopUp
+                          branch_inventories={row.branch_inventories}
+                          branchs={branchs}
+                          open={openDetailInventory}
+                          onClose={() => setOpenDetailInventory(false)}
+                          setReload={() => {
+                            setReload();
+                            setThisReload(!thisReload);
+                          }}
+                          batches={row.batches}
+                          has_batches={row.has_batches}
+                          row={row}
+                        />
+                      ) : null}
+                    </Grid>
+                    {row.has_batches ? (
+                      <Typography
+                        variant="h6"
+                        style={{ color: theme.customization.primaryColor[500] }}
+                      >
+                        * Sản phẩm quản lý theo lô *
+                      </Typography>
+                    ) : null}
+                    {row.has_batches ? (
+                      <Typography
+                        variant="h6"
+                        style={{
+                          color: theme.customization.primaryColor[500],
+                          marginBottom: 10,
+                        }}
+                      >
+                        Thông báo hết HSD trước {row.notification_period} ngày
+                      </Typography>
+                    ) : null}
 
-                <Grid container direction="row" justifyContent="flex-start">
-                  <Grid item xs={4} sm={6}>
-                    <Typography variant="h5" gutterBottom component="div">
-                      SL đặt hàng lại
-                    </Typography>
-                  </Grid>
-                  <Grid item sm={6}>
-
-                    {/* <Typography variant="body1" gutterBottom component="div">
+                    <Grid container direction="row" justifyContent="flex-start">
+                      <Grid item xs={5}>
+                        <Typography variant="h4" gutterBottom component="div">
+                          SL đặt hàng lại
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        {/* <Typography variant="body1" gutterBottom component="div">
                       {row.min_reorder_quantity}{" "}
                     </Typography> */}
-                    <ThousandFormat value={row.min_reorder_quantity} />
+                        <ThousandFormat value={row.min_reorder_quantity} />
+                      </Grid>
+                    </Grid>
 
-                  </Grid>
-                </Grid>
-
-                <Grid container direction="row" justifyContent="flex-start">
-                  <Grid item xs={4} sm={7}>
-                    <Typography variant="h5" gutterBottom component="div">
-                      SL nhập hàng tối đa
-                    </Typography>
-                  </Grid>
-                  <Grid item sm={5}>
-
-                    {/* <Typography variant="body1" gutterBottom component="div">
+                    <Grid container direction="row" justifyContent="flex-start">
+                      <Grid item xs={5}>
+                        <Typography variant="h4" gutterBottom component="div">
+                          SL nhập hàng tối đa
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        {/* <Typography variant="body1" gutterBottom component="div">
                       {row.max_order}{" "}
                     </Typography> */}
-                    <ThousandFormat value={row.max_order} />
-
-                  </Grid>
-                </Grid>
-                </>:null
-                }
+                        <ThousandFormat value={row.max_order} />
+                      </Grid>
+                    </Grid>
+                  </>
+                ) : null}
               </Grid>
             </Grid>
 
