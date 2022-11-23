@@ -21,7 +21,7 @@ import { grey } from "@material-ui/core/colors";
 import icon from "../../assets/img/product/img.jpeg";
 import barcodeIcon from "../../assets/img/icon/barcode_grey.png";
 
-// import InventoryData from "../../assets/JsonData/inventory.json";
+import InventoryData from "../../assets/JsonData/inventory.json";
 import productApi from "../../api/productApi";
 import { useSelector } from "react-redux";
 import { render } from "sass";

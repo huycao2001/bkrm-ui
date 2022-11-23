@@ -25,7 +25,7 @@ import {
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import SearchIcon from "@material-ui/icons/Search";
 import AddIcon from "@material-ui/icons/Add";
-import AddSupplier from "../../../../views/InventoryView/Supplier/AddSupplier/AddSupplier";
+//import AddSupplier from "../../../../views/InventoryView/Supplier/AddSupplier/AddSupplier"; implemented later
 import VNDInput from "../../../TextField/NumberFormatCustom";
 import {
   VNDFormat,
@@ -177,7 +177,7 @@ const ImportSummary = (props) => {
           />
         </div>
 
-       {open&& <AddSupplier
+       {/* {open&& <AddSupplier
           open={open}
           // handleClose={handleClose}
           handleClose={()=>{setOpen(false)}}
@@ -185,7 +185,9 @@ const ImportSummary = (props) => {
           setAddSupplier={setAddSupplier}
           isImport={true}
      
-        />}
+        />} */} 
+
+
 
         {/* when change mode to menu product */}
         {props.children}
@@ -488,7 +490,7 @@ const CheckoutPopUp = (props) => {
       <DialogActions>
         <Button
           variant="contained"
-          onClick={onClose}
+          //onClick={onClose}
           fullWidth
           color="primary"
           style={{ marginTop: 40 }}
