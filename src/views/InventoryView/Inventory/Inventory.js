@@ -9,6 +9,8 @@ import FileCopyIcon from '@mui/icons-material/FileCopy';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import productApi from '../../../api/productApi'
 import Category from "./Category/Category";
+import SnackBar from "../../../components/SnackBar/SnackBar";
+
 import React, { useState, useEffect } from "react";
 import {
   Typography,
@@ -50,6 +52,11 @@ export default function Inventory() {
 
 
   const [openAddInventoryDialog, setOpenAddInventoryDialog] = useState(false);
+  const [openBar, setOpenBar] = React.useState(false);
+  const [addStatus, setAddStatus] = React.useState(null);
+  const handleCloseBar = () => {
+    setOpenBar(false);
+  };
   const initialQuery = {
     orderBy: "products.created_at",
     sort: "desc",
@@ -184,7 +191,20 @@ export default function Inventory() {
         </Grid>
 
       </Grid>
-
+      <Category open={openCategory} handleClose={handleCloseCategory} />
+      {openAddInventoryDialog && (
+        <AddInventory
+          open={openAddInventoryDialog}
+          handleClose={handleClose}
+          setReload={() => setReload(!reload)}
+        />
+      )}
+      {/* Noti */}
+      <SnackBar
+        openBar={openBar}
+        handleCloseBar={handleCloseBar}
+        addStatus={addStatus}
+      />
       <TableWrapper
             pagingState={{ ...pagingState, total_rows: totalRows }}
             setPagingState={setPagingState}
@@ -209,12 +229,6 @@ export default function Inventory() {
 
             </TableBody>
           </TableWrapper>
-
-      <AddInventory
-        open={openAddInventoryDialog}
-        handleClose={handleClose}
-        setReload={() => setReload(!reload)}
-      />
     </Card>
   );
 };
