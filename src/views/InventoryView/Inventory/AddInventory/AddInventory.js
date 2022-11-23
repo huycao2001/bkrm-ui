@@ -28,31 +28,30 @@ import AddIcon from "@material-ui/icons/Add";
 import VNDInput, {
   ThousandSeperatedInput,
 } from "../../../../components/TextField/NumberFormatCustom";
-// // import img
-// import avaUpload from "../../../../assets/img/product/default-product.png";
-// import barcodeIcon from "../../../../assets/img/icon/barcode1.png";
-import barcodeIcon from "../../../../assets/img/icon/barcode1.png"; 
+// import img
+import avaUpload from "../../../../assets/img/product/default-product.png";
+import barcodeIcon from "../../../../assets/img/icon/barcode1.png";
 import AddCategory from "./AddCategory";
 import useStyles from "./styles";
 import productApi from "../../../../api/productApi";
 
 import { useDispatch, useSelector } from "react-redux";
-// import SearchWithAutoComplete from "../../../../components/SearchBar/SearchWithAutoComplete";
+import SearchWithAutoComplete from "../../../../components/SearchBar/SearchWithAutoComplete";
 // import { urltoFile } from "../../../../api/helper";
-// import { statusAction } from "../../../../store/slice/statusSlice";
-// import { infoActions } from "../../../../store/slice/infoSlice";
+import { statusAction } from "../../../../store/slice/statusSlice";
+import { infoActions } from "../../../../store/slice/infoSlice";
 import SearchIcon from "@material-ui/icons/Search";
-// import { FormatedImage } from "../../../../components/SearchBar/SearchProduct";
+import { FormatedImage } from "../../../../components/SearchBar/SearchProduct";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import clsx from "clsx";
-// import TagsInput from "../../../../components/TextField/TagsInput";
-// import AddAttribute from "./AddAttribute";
-// import RelaltedItemList from "./RelaltedItemList";
+import TagsInput from "../../../../components/TextField/TagsInput";
+import AddAttribute from "./AddAttribute";
+import RelaltedItemList from "./RelaltedItemList";
 import SnackBarGeneral from "../../../../components/SnackBar/SnackBarGeneral";
-// import CategorySelect from "../../../../components/Category/CategorySelect";
-// import setting from "../../../../assets/constant/setting"
+import CategorySelect from "../../../../components/Category/CategorySelect";
+import setting from "../../../../assets/constant/setting"
 import ReactQuill, {Quill} from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import ImageResize from 'quill-image-resize-module-react';
@@ -80,7 +79,7 @@ const UploadImages = (img) => {
         marginRight: 7,
         borderRadius: 2,
       }}
-      //src={avaUpload}
+      src={avaUpload}
     />
   );
 };
@@ -229,22 +228,20 @@ const AddInventory = (props) => {
 
       images.forEach((image) => bodyFormData.append("images[]", image));
 
-      //await productApi.createProduct(store_uuid, bodyFormData);
-      //dispatch(statusAction.successfulStatus("Tạo sản phẩm thành công"));
+      await productApi.createProduct(store_uuid, bodyFormData);
+      dispatch(statusAction.successfulStatus("Tạo sản phẩm thành công"));
       props.setReload();
     } catch (error) {
       console.log(error);
-      //dispatch(statusAction.failedStatus("Tạo sản phẩm thất bại"));
+      dispatch(statusAction.failedStatus("Tạo sản phẩm thất bại"));
     }
   };
 
-  const [reset, setReset] = useState(true); // Reset for closing the tabs
+  const [reset, setReset] = useState(true);
   const onReset = () => {
     setReset((reset) => !reset);
   };
   useEffect(() => {
-
-    console.log( "category is : " + productFormik.values.category)
     const fetchCategoryList = async () => {
       try {
         const response = await productApi.getNestedCategory(store_uuid);
@@ -273,9 +270,9 @@ const AddInventory = (props) => {
     }
   };
 
-//   const searchSampleProductHandler = async (searchKey) => {
-//     return productApi.searchDefaultProducts(searchKey, 1);
-//   };
+  const searchSampleProductHandler = async (searchKey) => {
+    return productApi.searchDefaultProducts(searchKey, 1);
+  };
   const handleCloseAndReset = () => {
     handleClose();
     productFormik.resetForm();
@@ -333,7 +330,7 @@ const AddInventory = (props) => {
     return (
       <Grid fullWidth container direction="row">
         <Grid item xs={3}>
-          {/* <FormatedImage url={option.img_url} /> */}
+          <FormatedImage url={option.img_url} />
         </Grid>
         <Grid item xs={9} container direction="column">
           <Typography variant="h5">{option.name}</Typography>
@@ -476,19 +473,19 @@ const AddInventory = (props) => {
 
       images.forEach((image) => bodyFormData.append("images[]", image));
 
-    //   await productApi.addProductWithVaration(store_uuid, bodyFormData);
-    //   dispatch(statusAction.successfulStatus("Tạo sản phẩm thành công"));
+      await productApi.addProductWithVaration(store_uuid, bodyFormData);
+      dispatch(statusAction.successfulStatus("Tạo sản phẩm thành công"));
       // handleClose();
       props.setReload(true);
     } catch (error) {
       console.log(error);
-    //   dispatch(statusAction.failedStatus("Tạo sản phẩm thất bại"));
+      dispatch(statusAction.failedStatus("Tạo sản phẩm thất bại"));
     }
   };
 
   const [value, setValue] = useState(null)
 
-//   const store_setting = info.store.general_configuration? JSON.parse(info.store.general_configuration): setting
+  const store_setting = info.store.general_configuration? JSON.parse(info.store.general_configuration): setting
 
 return (
     <Dialog
@@ -521,7 +518,7 @@ return (
             Thêm sản phẩm
           </Typography>
           <Box style={{ width: "70%" }}>
-            {/* {store_setting?.recommendedProduct
+            {store_setting?.recommendedProduct
               .status ? (
               <SearchWithAutoComplete
                 handleDefaultSelect={selectSampleProductHandler}
@@ -532,7 +529,7 @@ return (
                 renderOption={renderOptionTest}
                 filterOptions={(options, state) => options}
               />
-            ) : null} */}
+            ) : null}
           </Box>
         </Box>
         <Grid
@@ -715,7 +712,7 @@ return (
                 Giá vốn đang lớn hơn giá bán !!
               </Typography>
             ) : null} */}
-            {true ?
+            {store_setting?.inventory.status ?
             <>
             <ThousandSeperatedInput
               label="Tồn kho ban đầu"
@@ -832,13 +829,13 @@ return (
         </Grid>
         {/* {store_setting?.expiryDate.status  ? ( */}
 
-        {true ? (
+        {store_setting?.expiryDate.status  &&store_setting?.inventory.status ? (
           // <div style={{ flexGrow: 1, textAlign: "right" , alignItems:'center'}}>
              <Grid container alignItems="center" justifyContent='flex-end'>
             {productFormik.values.has_batches?
             < >
              <Typography>Thông báo trước khi hết HSD </Typography>
-             {/* <ThousandSeperatedInput
+             <ThousandSeperatedInput
             //  label="Thông báo trước khi hết HSD"
               // variant="outlined"
               // fullWidth
@@ -857,7 +854,7 @@ return (
                   : null
               }
               onBlur={productFormik.handleBlur}
-             /> */}
+             />
             <Typography style={{marginRight:10}}>ngày </Typography>
           </>
         
@@ -869,7 +866,6 @@ return (
               control={
                 <Checkbox
                   //checked={outOfDate}
-                  color = "primary"
                   name="has_batches"
                   checked={productFormik.values.has_batches}
                   onChange={productFormik.handleChange}
@@ -882,7 +878,57 @@ return (
           /* </div> */
         ) : null}
 
-        
+        {store_setting?.variation.status ? (
+          <>
+            <Card className={classes.attrCard} >
+              <CardHeader
+                onClick={handleExpandClick}
+                action={
+                  <IconButton
+                    size="small"
+                    className={clsx(classes.expand, {
+                      [classes.expandOpen]: expanded,
+                    })}
+                    onClick={handleExpandClick}
+                    aria-expanded={expanded}
+                  >
+                    <ExpandMoreIcon />
+                  </IconButton>
+                }
+                title="Thuộc tính"
+                className={classes.attrHead}
+              />
+              <Collapse in={expanded} timeout="auto" unmountOnExit>
+                <AddAttribute
+                  attributeList={attributeList}
+                  datas={datas}
+                  setDatas={setDatas}
+                  setRelatedList={setRelatedList}
+                  list_price={productFormik.values.salesPrice}
+                  standard_price={productFormik.values.importedPrice}
+                  // attrOfProduct={attrOfProduct}
+                  // setAttrOfProduct={setAttrOfProduct}
+                />
+              </Collapse>
+            </Card>
+            {/* GENERATE LIST */}
+            {relatedList.length > 0 ? (
+              <Card className={classes.attrCard}>
+                <CardHeader
+                  title="Danh sách hàng cùng loại"
+                  className={classes.attrHead}
+                />
+                {/*  !!!! Handle value phần này */}
+                <RelaltedItemList
+                  relatedList={relatedList}
+                  setRelatedList={setRelatedList}
+                  isManageInventory = {store_setting?.inventory.status}
+                />
+              </Card>
+            ) : null}
+          </>
+
+        ) : null}
 
 
       {/* MÔ TẢ */}
@@ -917,7 +963,7 @@ return (
             onClick={handleCloseAndReset}
             variant="contained"
             size="small"
-            color="primary"
+            color="secondary"
             style={{ marginRight: 20 }}
           >
             Huỷ
