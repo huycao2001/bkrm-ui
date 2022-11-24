@@ -1,14 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
-// import { Button } from "@material-ui/core";
-// import Menu from '@mui/material/Menu';
-// import MenuItem from '@mui/material/MenuItem';
-import ListItem from '@material-ui/core/ListItem';
-import Button from "@material-ui/core/Button";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
+import { Button , ListItem, Menu, MenuItem} from "@material-ui/core";
 
-// import { ListItem } from '@mui/material';
 
 import { Link, Redirect } from 'react-router-dom';
 
