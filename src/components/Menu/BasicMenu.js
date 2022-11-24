@@ -1,9 +1,14 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { Button } from "@material-ui/core";
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import { ListItem } from '@mui/material';
+// import { Button } from "@material-ui/core";
+// import Menu from '@mui/material/Menu';
+// import MenuItem from '@mui/material/MenuItem';
+import ListItem from '@material-ui/core/ListItem';
+import Button from "@material-ui/core/Button";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+
+// import { ListItem } from '@mui/material';
 
 import { Link, Redirect } from 'react-router-dom';
 
@@ -263,22 +268,21 @@ const statModule = {
 
 export default function BasicMenu(props) {
   const section = props.section; 
-  var target; 
   const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
+  const openMenu = Boolean(anchorEl);
 
+  const handleOpenMenu = (event) => {
+    if(anchorEl !== event.currentTarget){
+      setAnchorEl(event.currentTarget); // current target -> when we hover the button, the button will be the target we want to drop our menu from
+    }
+    
+  };
+
+  const handleCloseMenu = () => {
     setAnchorEl(null);
   };
 
-  if(section === "Bán hàng"){
-    console.log("here we are")
-    target = salesModule;
-    console.log(target);
-  }
+
 
   const theme = useTheme();
 
@@ -288,10 +292,11 @@ export default function BasicMenu(props) {
 
       <Button
         id="basic-button"
-        aria-controls={open ? 'basic-menu' : undefined}
+        aria-controls={openMenu ? 'basic-menu' : undefined}
         aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
-        onMouseOver={handleClick}
+        aria-expanded={openMenu ? 'true' : undefined}
+        onClick={handleOpenMenu }
+        onMouseOver={handleOpenMenu}
         style={{ color: "black", fontWeight : "200" }}
         //color = "secondary"
       >
@@ -300,21 +305,22 @@ export default function BasicMenu(props) {
       <Menu
         id="basic-menu"
         anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        MenuListProps={{
-          'aria-labelledby': 'basic-button',
-        }}
+        getContentAnchorEl={null}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        transformOrigin={{ vertical: "top", horizontal: "center" }}
+        open={Boolean(anchorEl)}
+        onClose={handleCloseMenu}
+        MenuListProps={{ onMouseLeave: handleCloseMenu }}
       >
 
       {section === "Bán hàng" ? (
-              salesModule.children.map((item) => <ListItem  onClick={handleClose} to = {item.url} component = {Link} >{item.title}</ListItem>)
+              salesModule.children.map((item) => <ListItem  onClick={handleCloseMenu} to = {item.url} component = {Link} >{item.title}</ListItem>)
             ) :  section === "Kho hàng" ? (
-              inventoryModule.children.map((item) => <ListItem  onClick={handleClose} to = {item.url} component = {Link} >{item.title}</ListItem>)
+              inventoryModule.children.map((item) => <ListItem  onClick={handleCloseMenu} to = {item.url} component = {Link} >{item.title}</ListItem>)
             ) : section === "Quản lý" ? (
-              hrModule.children.map((item) => <ListItem  onClick={handleClose} to = {item.url} component = {Link} >{item.title}</ListItem>) 
-            ) : section === "Cài đặt" ? (settingModule.children.map((item) => <ListItem  onClick={handleClose} to = {item.url} component = {Link} >{item.title}</ListItem>) )
-          : ((statModule.children.map((item) => <ListItem  onClick={handleClose} to = {item.url} component = {Link} >{item.title}</ListItem>) ))}
+              hrModule.children.map((item) => <ListItem  onClick={handleCloseMenu} to = {item.url} component = {Link} >{item.title}</ListItem>) 
+            ) : section === "Cài đặt" ? (settingModule.children.map((item) => <ListItem  onClick={handleCloseMenu} to = {item.url} component = {Link} >{item.title}</ListItem>) )
+          : ((statModule.children.map((item) => <ListItem  onClick={handleCloseMenu} to = {item.url} component = {Link} >{item.title}</ListItem>) ))}
         {/* <ListItem onClick={handleClose} to = "/signup" component = {Link} >Tổng quan</ListItem> */}
         {/* <ListItem onClick={handleClose}>Sổ quỹ</ListItem> */}
         {/* <Link to={"/home"}> */}
