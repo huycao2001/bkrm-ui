@@ -85,14 +85,14 @@ const Import = () => {
 
   const branch = info.branch;
   const user_uuid = useSelector((state) => state.info.user.uuid);
-  const store_setting = info.store.general_configuration? JSON.parse(info.store.general_configuration): setting
+  const store_setting = info.store.general_configuration ? JSON.parse(info.store.general_configuration) : setting
   const canEnterDiscountWhenSell = store_setting?.canEnterDiscountWhenSell?.status
-  const defaultPaymentAmount = store_setting?.defaultPaymentAmount.status && store_setting?.defaultPaymentAmount.import 
+  const defaultPaymentAmount = store_setting?.defaultPaymentAmount.status && store_setting?.defaultPaymentAmount.import
 
   const loadLocalImportListStorage = () => {
     if (window.localStorage.getItem("importListData")) {
       const data = JSON.parse(window.localStorage.getItem("importListData"));
-      console.log("data",data)
+      console.log("data", data)
       if (data.user_uuid === user_uuid) {
         return data.cartList;
       }
@@ -105,7 +105,7 @@ const Import = () => {
         paid_amount: 0,
         discount: 0,
         payment_method: "cash",
-        discountDetail:{value:'0', type:'VND' }
+        discountDetail: { value: '0', type: 'VND' }
       },
     ];
   };
@@ -119,23 +119,23 @@ const Import = () => {
   useEffect(() => {
     if (window.localStorage.getItem("products")) {
       const products = JSON.parse(window.localStorage.getItem("products"));
-      if (products.store_uuid === store_uuid && products.branch_uuid === branch_uuid ) {
+      if (products.store_uuid === store_uuid && products.branch_uuid === branch_uuid) {
         setProducts(products.data);
       }
     }
     if (window.localStorage.getItem("mode")) {
       const cartMode = JSON.parse(window.localStorage.getItem("mode"));
-      if (cartMode.store_uuid === store_uuid ) {
+      if (cartMode.store_uuid === store_uuid) {
         setTypeShow(cartMode.typeShow)
         setMode(cartMode.mode);
         setShowImage(cartMode.showImage);
-       
+
       }
     }
 
     if (window.localStorage.getItem("suppliers")) {
       const suppliers = JSON.parse(window.localStorage.getItem("suppliers"));
-      if (suppliers.store_uuid === store_uuid ) {
+      if (suppliers.store_uuid === store_uuid) {
         setSuppliers(suppliers.data);
       }
     }
@@ -146,9 +146,10 @@ const Import = () => {
     if (suppliers.length) {
       window.localStorage.setItem(
         "suppliers",
-        JSON.stringify({ 
-          store_uuid: store_uuid, 
-          data: suppliers })
+        JSON.stringify({
+          store_uuid: store_uuid,
+          data: suppliers
+        })
       );
     }
   }, [suppliers]);
@@ -156,18 +157,23 @@ const Import = () => {
     if (products.length) {
       window.localStorage.setItem(
         "products",
-        JSON.stringify({ 
-          store_uuid: store_uuid, 
-          branch_uuid: branch_uuid, 
-          data: products })
+        JSON.stringify({
+          store_uuid: store_uuid,
+          branch_uuid: branch_uuid,
+          data: products
+        })
       );
     }
   }, [products]);
+
+
   useEffect(() => {
     window.localStorage.setItem(
       "importListData",
       JSON.stringify({ user_uuid: user_uuid, cartList: cartList })
     );
+
+    console.log("cartList : " + JSON.stringify(cartList))
   }, [cartList]);
 
   const loadProducts = async () => {
@@ -211,7 +217,7 @@ const Import = () => {
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [addProduct, setAddProduct] = useState(false);
   const [isUpdateTotalAmount, setIsUpdateTotalAmount] = React.useState(false);
- 
+
   const [openSnack, setOpenSnack] = React.useState(false);
   const [snackStatus, setSnackStatus] = React.useState({
     style: "error",
@@ -224,7 +230,7 @@ const Import = () => {
 
 
 
-  
+
 
   const [reloadSupplier, setReloadSupplier] = useState(false);
   const [reloadProduct, setReloadProduct] = useState(false);
@@ -270,14 +276,14 @@ const Import = () => {
         paid_amount: 0,
         discount: 0,
         payment_method: "cash",
-        discountDetail:{value:'0', type:'VND' }
+        discountDetail: { value: '0', type: 'VND' }
       },
     ]);
     setSelectedIndex(cartList.length);
     handleClose();
   };
 
-  
+
 
   const handleDelete = (index) => {
     // DELETE CART
@@ -291,7 +297,7 @@ const Import = () => {
           paid_amount: "0",
           discount: "0",
           payment_method: "cash",
-          discountDetail:{value:'0', type:'VND' }
+          discountDetail: { value: '0', type: 'VND' }
         },
       ]);
       setSelectedIndex(0);
@@ -330,9 +336,9 @@ const Import = () => {
   useEffect(() => {
     window.localStorage.setItem(
       "mode",
-      JSON.stringify({store_uuid: store_uuid,  mode: mode, typeShow: typeShow, showImage:showImage })
+      JSON.stringify({ store_uuid: store_uuid, mode: mode, typeShow: typeShow, showImage: showImage })
     );
-  }, [mode,typeShow,showImage]);
+  }, [mode, typeShow, showImage]);
 
   // handle search select item add to cart
   const handleSearchBarSelect = (selectedOption) => {
@@ -355,7 +361,7 @@ const Import = () => {
         name: selectedOption.name,
         has_batches: selectedOption.has_batches,
         batches: selectedOption.batches,
-        branch_inventories:selectedOption.branch_inventories
+        branch_inventories: selectedOption.branch_inventories
 
       };
 
@@ -384,6 +390,8 @@ const Import = () => {
     });
     setCartList(newCartList);
     setIsUpdateTotalAmount(!isUpdateTotalAmount);
+
+
   };
 
   const handleChangeItemQuantity = (itemUuid, newQuantity) => {
@@ -393,12 +401,17 @@ const Import = () => {
     let item = cartList[selectedIndex].cartItem.find(
       (item) => item.uuid === itemUuid
     );
-    if(isNaN(newQuantity)){newQuantity = ''}
+    if (isNaN(newQuantity)) {
+      console.log("this is called right ?"); 
+      newQuantity = ''
+     }
+    console.log("new quantity : " + newQuantity);
     if (newQuantity === 0 && !item.has_batches) {
+      console.log("somehow this is called ?");
       handleDeleteItemCart(itemUuid);
       return;
     }
-    if (newQuantity < 0){return } 
+    if (newQuantity < 0) { return }
 
 
     let newCartList = [...cartList];
@@ -408,7 +421,7 @@ const Import = () => {
   };
 
   const handleChangeItemPrice = (itemUuid, newPrice) => {
-    if (newPrice < 0){return } 
+    if (newPrice < 0) { return }
     let itemIndex = cartList[selectedIndex].cartItem.findIndex(
       (item) => item.uuid === itemUuid
     );
@@ -429,7 +442,7 @@ const Import = () => {
   };
 
   const handleUpdatePaidAmount = (amount) => {
-    if (amount < 0){return } 
+    if (amount < 0) { return }
     let newCartList = update(cartList, {
       [selectedIndex]: { paid_amount: { $set: amount } },
     });
@@ -450,22 +463,22 @@ const Import = () => {
     setCartList(newCartList);
   };
 
-  const handleUpdatePaymentMethod = ( method) => {
+  const handleUpdatePaymentMethod = (method) => {
     let newCartList = update(cartList, {
       [selectedIndex]: { payment_method: { $set: method } },
     });
     setCartList(newCartList);
   };
   const handleUpdateDiscountDetail = (obj) => {
-    let discountUpdate =  obj.type === '%'?( (Number(obj.value) * Number(cartList[selectedIndex].total_amount)/100/100).toFixed() * 100).toString() : obj.value 
+    let discountUpdate = obj.type === '%' ? ((Number(obj.value) * Number(cartList[selectedIndex].total_amount) / 100 / 100).toFixed() * 100).toString() : obj.value
     let newCartList = update(cartList, {
       // [selectedIndex]: { discountDetail: { $set: obj } , discount:{ $set: discountUpdate }, paid_amount:{ $set: (Number(cartList[selectedIndex].total_amount) -Number(discountUpdate)).toString() }},
-      [selectedIndex]: defaultPaymentAmount? { discountDetail: { $set: obj } , discount:{ $set: discountUpdate }, paid_amount:{ $set: (Number(cartList[selectedIndex].total_amount) -Number(discountUpdate)).toString() }}:
-      { discountDetail: { $set: obj } , discount:{ $set: discountUpdate }} ,
+      [selectedIndex]: defaultPaymentAmount ? { discountDetail: { $set: obj }, discount: { $set: discountUpdate }, paid_amount: { $set: (Number(cartList[selectedIndex].total_amount) - Number(discountUpdate)).toString() } } :
+        { discountDetail: { $set: obj }, discount: { $set: discountUpdate } },
 
 
     });
-  
+
     setCartList(newCartList);
   };
 
@@ -474,8 +487,8 @@ const Import = () => {
     let newCartList = update(cartList, {
       // [selectedIndex]: { discount: { $set: amount } },
       // [selectedIndex]: { discount: { $set: amount },paid_amount: { $set: (Number(cartList[selectedIndex].total_amount) -Number(amount)).toString() }  },
-      [selectedIndex]:defaultPaymentAmount? { discount: { $set: amount },paid_amount: { $set: (Number(cartList[selectedIndex].total_amount) -Number(amount)).toString() }  }:
-      { discount: { $set: amount } },
+      [selectedIndex]: defaultPaymentAmount ? { discount: { $set: amount }, paid_amount: { $set: (Number(cartList[selectedIndex].total_amount) - Number(amount)).toString() } } :
+        { discount: { $set: amount } },
 
 
     });
@@ -496,12 +509,13 @@ const Import = () => {
     //     paid_amount: { $set: total - cartList[selectedIndex].discount },
     //   },
     // });
-    if( defaultPaymentAmount){
+    if (defaultPaymentAmount) {
       newCartList = update(newCartList, {
         [selectedIndex]: {
           paid_amount: { $set: total - cartList[selectedIndex].discount },
         },
-      }) };
+      })
+    };
 
     setCartList(newCartList);
   };
@@ -518,25 +532,25 @@ const Import = () => {
     // ??? CÓ CHO NHẬP TỪNG PHẦN KO ??
     // + NẾU KO thì sẽ có nút nhập ở cuối -> bâms vào show tổng tiền nhập đã đc tính lại, tiền thanh toán, giảm gía, tiền đã thanh toán trc,...
     // -----> thành công sẽ update lại trạng thái + nhập vô kho
-     // + NẾU CÓ thì sẽ mỗi row sp có thêm nút nhập -> bấm vô thì sẽ cộng tồn kho , vậy còn tiền thì sao ??(trừ theo mỗi lần bấm nhập -> nếu v thì sẽ ko âply đc giảm giá hay trừ đc khoản thanh toán trc ?? )
+    // + NẾU CÓ thì sẽ mỗi row sp có thêm nút nhập -> bấm vô thì sẽ cộng tồn kho , vậy còn tiền thì sao ??(trừ theo mỗi lần bấm nhập -> nếu v thì sẽ ko âply đc giảm giá hay trừ đc khoản thanh toán trc ?? )
     //  tiền -> phía dưới sẽ có nút thanh toán??
-    
+
     // NẾU SỬA LẠI ĐƠN ĐẶT HOẶC HUỶ ĐƠN THÌ SAO ???
 
     // NẾU LÀ SẢN PHẨM CÓ LÔ THÌ SAO ?? 
 
     let cart = cartList[selectedIndex];
-    console.log("cart.supplier",cart.supplier)
-    const printReceiptWhenSell= store_setting?.printReceiptWhenSell
+    console.log("cart.supplier", cart.supplier)
+    const printReceiptWhenSell = store_setting?.printReceiptWhenSell
     var emptyCart = cart.cartItem.filter((item) => item.quantity).length === 0;
     // CHECK NẾU TYPE BẰNG 0(đặt) thì NCC ko đc null 
     // CHECK NẾU TYPE BẰNG 0(đặt) thì setting có  gửi mail NCC ko , nếu có thì warning email NCC rỗng  ?
-    var notExistNullQuantity =  cart.cartItem.every(function (element, index) {
-      if (element.quantity === ''|| Number(element.quantity)===0) return false;
+    var notExistNullQuantity = cart.cartItem.every(function (element, index) {
+      if (element.quantity === '' || Number(element.quantity) === 0) return false;
       else return true;
     })
 
-    if (emptyCart  ) {
+    if (emptyCart) {
       setOpenSnack(true);
       setSnackStatus({
         style: "error",
@@ -545,31 +559,31 @@ const Import = () => {
 
       // setOpenSnack(true);
       // console.log(err);
-    } else if(!notExistNullQuantity){
+    } else if (!notExistNullQuantity) {
       setOpenSnack(true);
       setSnackStatus({
         style: "error",
         message: "Có sản phẩm chưa nhập số lượng",
       });
     }
-    else if(  cart.paid_amount < cart.total_amount - cart.discount && !cart.supplier){
+    else if (cart.paid_amount < cart.total_amount - cart.discount && !cart.supplier) {
       setOpenPopUpWarning(true)
-      return 
-  }
+      return
+    }
     else {
       handleConfirmCallApi(type)
     }
   };
 
-  const handleConfirmCallApi = async(type) =>{
+  const handleConfirmCallApi = async (type) => {
     let cart = cartList[selectedIndex];
-    const printReceiptWhenSell= store_setting?.printReceiptWhenSell
+    const printReceiptWhenSell = store_setting?.printReceiptWhenSell
 
     let d = moment.now() / 1000;
     let importTime = moment
       .unix(d)
       .format("YYYY-MM-DD HH:mm:ss", { trim: false });
-     
+
 
 
     let body = {
@@ -581,7 +595,7 @@ const Import = () => {
       // CHECK NẾU TYPE BẰNG 0  thì status là chờ hàng
       status:
         Number(cart.total_amount) - Number(cart.discount) >=
-        Number(cart.paid_amount)
+          Number(cart.paid_amount)
           ? "debt"
           : "closed",
       details: cart.cartItem.map((item) => ({
@@ -595,7 +609,7 @@ const Import = () => {
     };
     try {
       console.log(body)
-       // CHECK NẾU TYPE BẰNG 0(đặt)  thì gọi api đặt hàng (hoặc sửa luôn api này nhưng ko cộng tòn kho)
+      // CHECK NẾU TYPE BẰNG 0(đặt)  thì gọi api đặt hàng (hoặc sửa luôn api này nhưng ko cộng tòn kho)
       // CHECK NẾU TYPE BẰNG 0(đặt) thì setting có  gửi mail NCC ko , nếu có api gửi mail ?
       let res = await purchaseOrderApi.addInventory(
         store_uuid,
@@ -604,18 +618,18 @@ const Import = () => {
       );
       setSnackStatus({
         style: "success",
-        message: type === 1? "Nhập hàng thành công: " + res.data.purchase_order_code : "Đặt hàng thành công: " + res.data?.purchase_order_code ,
+        message: type === 1 ? "Nhập hàng thành công: " + res.data.purchase_order_code : "Đặt hàng thành công: " + res.data?.purchase_order_code,
       });
       setOpenSnack(true);
-      if(printReceiptWhenSell.status && printReceiptWhenSell.import && type === 1){
-        handlePrint()    
+      if (printReceiptWhenSell.status && printReceiptWhenSell.import && type === 1) {
+        handlePrint()
       }
       // handlePrint();
       handleDelete(selectedIndex);
     } catch (err) {
       setSnackStatus({
         style: "error",
-        message: type === 1? "Nhập hàng thất bại! " :"Dặt hàng thất bại! " ,
+        message: type === 1 ? "Nhập hàng thất bại! " : "Dặt hàng thất bại! ",
       });
       setOpenSnack(true);
       console.log(err);
@@ -636,7 +650,7 @@ const Import = () => {
 
   const [barcodeChecked, setBarcodeChecked] = useState(true);
   const [openPopUpWarning, setOpenPopUpWarning] = useState(false);
-  const handleCloseWarning = () =>{
+  const handleCloseWarning = () => {
     setOpenPopUpWarning(false)
   }
 
@@ -663,17 +677,17 @@ const Import = () => {
   const [openRecommendOrderPopUp, setOpenRecommendOrderPopUp] = useState(false)
   const [dataRecommend, setDataRecommend] = useState(null)
 
-  const [loadingOrderButton, setLoadingOrderButton]  = useState(false)
-  const handleAddOrderReccomend = (newCartList,cartIndex) => {
-    if(cartIndex !== null){
-       // ADD EXIST CART
-       let newCart  =[...cartList]
-       newCart[cartIndex].cartItem = [...newCart[cartIndex].cartItem ,...newCartList.cartItem ]
+  const [loadingOrderButton, setLoadingOrderButton] = useState(false)
+  const handleAddOrderReccomend = (newCartList, cartIndex) => {
+    if (cartIndex !== null) {
+      // ADD EXIST CART
+      let newCart = [...cartList]
+      newCart[cartIndex].cartItem = [...newCart[cartIndex].cartItem, ...newCartList.cartItem]
 
-       setCartList(newCart)
-       setSelectedIndex(cartIndex);
-    }else{
-       // ADD NEW CART
+      setCartList(newCart)
+      setSelectedIndex(cartIndex);
+    } else {
+      // ADD NEW CART
       setCartList([
         ...cartList,
         newCartList,
@@ -683,8 +697,8 @@ const Import = () => {
   };
 
   return (
-    <Grid  container   direction="row" justifyContent="space-between"  alignItems="center"  spacing={2}>
-      {addProduct && 
+    <Grid container direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
+
       <AddInventory
         open={addProduct}
         handleClose={() => {
@@ -693,23 +707,23 @@ const Import = () => {
         setReload={() => {
           setReloadProduct(!reloadProduct);
         }}
-      />}{" "}
-     
-     <SnackBarGeneral handleClose={handleCloseSnackBar} open={openSnack} status={snackStatus}  />
+      />
+
+      <SnackBarGeneral handleClose={handleCloseSnackBar} open={openSnack} status={snackStatus} />
 
       {/* 1. TABLE CARD (left) */}
-      <Grid item xs={12} sm={typeShow==='list' && mode?7:8}>
+      <Grid item xs={12} sm={typeShow === 'list' && mode ? 7 : 8}>
         <Card className={classes.root}>
-          <Box style={{ padding: xsScreen ? 0 : 30,  minHeight: "79vh", paddingBottom: 0,}}  >
+          <Box style={{ padding: xsScreen ? 0 : 30, minHeight: "79vh", paddingBottom: 0, }}  >
             <Box style={{ height: xsScreen ? null : "70vh" }}>
               {/* 1.1 TITLE + BTN CHANGE CART +  SEARCH */}
-              <Grid container direction="row"  justifyContent="space-between" alignItems="center" style={{ marginTop: -10, marginBottom: 30 }}   >
+              <Grid container direction="row" justifyContent="space-between" alignItems="center" style={{ marginTop: -10, marginBottom: 30 }}   >
 
                 <Grid>
                   <ListItem>
                     {/* 1.1.1 Title */}
                     <Typography variant="h3"> Nhập hàng </Typography>
-                    <Typography variant="h3"  style={{  marginLeft: 10,  color: theme.customization.primaryColor[500], }} >
+                    <Typography variant="h3" style={{ marginLeft: 10, color: theme.customization.primaryColor[500], }} >
                       {" "}# {selectedIndex + 1}
                     </Typography>
                     {/* 1.1.2. Btn Channge Cart */}
@@ -728,29 +742,29 @@ const Import = () => {
                 </Grid>
                 <Grid>
                   <Grid container alignItems="center">
-                  {!mode? 
-                  <>
+                    {!mode ?
+                      <>
+                        <Grid item>
+                          <FormControlLabel control={<Switch size="small" checked={searchBarState === 'barcode'} onChange={(e, checked) => { dispatch(infoActions.setSearchBarState(checked ? 'barcode' : 'search')) }} color="primary" />} label={"Dùng mã vạch"} />
+                        </Grid>
+                        <Grid item>
+                          {searchBarState === 'barcode' ? (
+                            <SearchBarCode
+                              products={products}
+                              handleSearchBarSelect={handleSearchBarSelect}
+                            />
+                          ) : (
+                            <SearchProduct
+                              products={products}
+                              handleSearchBarSelect={handleSearchBarSelect}
+                            />
+                          )}
+                        </Grid>
+                      </> :
+                      <SearchProduct products={products} setProducts={setProducts} isFilter={true} />
+                    }
                     <Grid item>
-                      <FormControlLabel   control={<Switch size="small"  checked={searchBarState === 'barcode'}  onChange={(e, checked) => { dispatch(infoActions.setSearchBarState(checked ? 'barcode' : 'search'))  }} color="primary"  />  } label={"Dùng mã vạch"}  />
-                    </Grid>
-                    <Grid item>
-                      {searchBarState === 'barcode' ? (
-                        <SearchBarCode
-                          products={products} 
-                          handleSearchBarSelect={handleSearchBarSelect}
-                        />
-                      ) : (
-                        <SearchProduct
-                          products={products}
-                          handleSearchBarSelect={handleSearchBarSelect}
-                        />
-                      )}
-                    </Grid>
-                    </>:
-                     <SearchProduct products={products} setProducts={setProducts} isFilter={true} />
-                     }
-                    <Grid item>
-                      <ButtonBase
+                      {/* <ButtonBase
                         sx={{ borderRadius: "1px" }}
                         onClick={() => {
                           setAddProduct(true);
@@ -765,69 +779,86 @@ const Import = () => {
                             <AddIcon stroke={1.5} size="1.3rem" />
                           </Tooltip>
                         </Avatar>
-                      </ButtonBase>
+                      </ButtonBase> */}
+
+                      <Tooltip title="Thêm hàng hóa mới">
+                        <Button
+                          variant="outlined"
+                          color="primary"
+
+                          startIcon={<AddIcon />}
+                          onClick={() => {
+                            setAddProduct(true);
+                          }}
+                          style = {{marginLeft : 10}}
+                        >
+                          Thêm
+                        </Button>
+                      </Tooltip>
                     </Grid>
                   </Grid>
                 </Grid>
               </Grid>
               {store_setting?.orderLowStock.status ?
-              <ButtonComponent 
-                variant="outlined"
-                color="primary"
-                size="small"
-                className={classes.button}
-                // onClick={handleClickRecommend}
-                style={{marginTop:-30}}
-                onClick={()=>{setLoadingOrderButton(true);handleClickRecommend()}} loading={loadingOrderButton}
-                title={" Gợi ý đặt hàng"}
-              >
-                   Gợi ý đặt hàng
-            </ButtonComponent> :null}
-              
+                <ButtonComponent
+                  variant="outlined"
+                  color="primary"
+                  size="small"
+                  className={classes.button}
+                  // onClick={handleClickRecommend}
+                  style={{ marginTop: -30 }}
+                  onClick={() => { setLoadingOrderButton(true); handleClickRecommend() }} loading={loadingOrderButton}
+                  title={" Gợi ý đặt hàng"}
+                >
+                  Gợi ý đặt hàng
+                </ButtonComponent> : null}
 
-              {openRecommendOrderPopUp?
-              <DialogWrapper 
-                title={"Gợi ý đặt hàng"}
-                open={openRecommendOrderPopUp}   
-                handleClose={()=>setOpenRecommendOrderPopUp(false)}
-              > 
-                  <ReccomendOrderPopUp setLoadingOrderButton={setLoadingOrderButton} handleAddOrderReccomend={handleAddOrderReccomend}dataRecommend={dataRecommend}  handleClose={()=>setOpenRecommendOrderPopUp(false)}  store_setting={store_setting} cartList={cartList} />
-              </DialogWrapper>:null}
+
+              {openRecommendOrderPopUp ?
+                <DialogWrapper
+                  title={"Gợi ý đặt hàng"}
+                  open={openRecommendOrderPopUp}
+                  handleClose={() => setOpenRecommendOrderPopUp(false)}
+                >
+                  <ReccomendOrderPopUp setLoadingOrderButton={setLoadingOrderButton} handleAddOrderReccomend={handleAddOrderReccomend} dataRecommend={dataRecommend} handleClose={() => setOpenRecommendOrderPopUp(false)} store_setting={store_setting} cartList={cartList} />
+                </DialogWrapper> : null}
 
               {/* 1.2 TABLE */}
-              {!mode ? ( 
-                  <TableWrapper isCart={true}>
-                    <TableHeader
-                      classes={classes}
-                      order={order}
-                      orderBy={orderBy}
-                      onRequestSort={handleRequestSort}
-                      headerData={HeadCells.ImportHeadCells}
-                      isCart={true}
-                    />
-                    <TableBody>
-                      {stableSort( cartList[selectedIndex].cartItem,
-                        getComparator(order, orderBy)
-                      ).map((row, index) => {
-                        return (
-                          <ImportRow
-                            key={`${row.uuid}_index`}
-                            row={row}
-                            handleDeleteItemCart={handleDeleteItemCart}
-                            handleChangeItemPrice={handleChangeItemPrice}
-                            handleChangeItemQuantity={handleChangeItemQuantity}
-                            handleUpdateBatches={handleUpdateBatches}
-                            // branchs={branchs}
-                            index={cartList[selectedIndex].cartItem.length - index}
-                            showImage={showImage}
-                          />
-                        );
-                      })}
-                    </TableBody>
-                  </TableWrapper>
-              ) : (   
+              {!mode ? (
+                <TableWrapper isCart={true}>
+                  <TableHeader
+                    classes={classes}
+                    order={order}
+                    orderBy={orderBy}
+                    onRequestSort={handleRequestSort}
+                    headerData={HeadCells.ImportHeadCells}
+                    isCart={true}
+                  />
+                  <TableBody>
+                    {stableSort(cartList[selectedIndex].cartItem,
+                      getComparator(order, orderBy)
+                    ).map((row, index) => {
+                      return (
+                        <ImportRow
+                          key={`${row.uuid}_index`}
+                          row={row}
+                          handleDeleteItemCart={handleDeleteItemCart}
+                          handleChangeItemPrice={handleChangeItemPrice}
+                          handleChangeItemQuantity={handleChangeItemQuantity}
+                          handleUpdateBatches={handleUpdateBatches}
+                          // branchs={branchs}
+                          index={cartList[selectedIndex].cartItem.length - index}
+                          showImage={showImage}
+                        />
+                      );
+                    })}
+                  </TableBody>
+
+
+                </TableWrapper>
+              ) : (
                 <MenuProduct
-                  products={products} 
+                  products={products}
                   handleSearchBarSelect={handleSearchBarSelect}
                   selectedItem={cartList[selectedIndex].cartItem}
                   typeShow={typeShow}
@@ -842,39 +873,39 @@ const Import = () => {
             {/* 1.3 CHANGE MODE  */}
             {/* <FormControlLabel control={<Switch size="small" checked={mode} onChange={handleChangeMode} />}style={{ display: "flex",  justifyContent: "flex-end",   margin: -20,  marginTop: 40, }} /> */}
           </Box>
-          <FormControlLabel control={<Switch  size="small"  checked={mode} onChange={handleChangeMode} />}style={{ display: "flex",  justifyContent: "flex-end",  }} />
+          {/* <FormControlLabel control={<Switch  size="small"  checked={mode} onChange={handleChangeMode} />}style={{ display: "flex",  justifyContent: "flex-end",  }} /> */}
 
         </Card>
       </Grid>
       {/* 2.SUMMARY CARD (right) */}
-      <Grid item xs={12} sm={typeShow==='list' && mode?5:4} className={classes.root}>
+      <Grid item xs={12} sm={typeShow === 'list' && mode ? 5 : 4} className={classes.root}>
         <Card className={classes.root}>
           <Box style={{ padding: 0, minHeight: "82vh" }}>
             <ImportSummary
-                setSelectedBranch={setSelectedBranch}
-                selectedBranch={selectedBranch}
-                cartData={cartList[selectedIndex]}
-                handleSelectSupplier={handleSelectSupplier}
-                handleUpdateDiscount={handleUpdateDiscount}
-                handleUpdatePaidAmount={handleUpdatePaidAmount}
-                handleUpdatePaymentMethod={handleUpdatePaymentMethod}
-                handleConfirm={handleConfirm}
-                currentSupplier={cartList[selectedIndex].supplier}
-                mode={mode}
-                currentBranch={branch}
-                suppliers={suppliers}
-                reloadSuppliers={() => setReloadSupplier(!reloadSupplier)}
-                handleUpdateDiscountDetail={handleUpdateDiscountDetail}
-              > 
-               {!mode ? null:
-               <>
-                <TableContainer  style={{ maxHeight:Number(cartList[selectedIndex].discount)!==0? "37vh":'44vh', height: Number(cartList[selectedIndex].discount)!==0? "37vh":'44vh'}}>
-                  <Table  size="small">
+              setSelectedBranch={setSelectedBranch}
+              selectedBranch={selectedBranch}
+              cartData={cartList[selectedIndex]}
+              handleSelectSupplier={handleSelectSupplier}
+              handleUpdateDiscount={handleUpdateDiscount}
+              handleUpdatePaidAmount={handleUpdatePaidAmount}
+              handleUpdatePaymentMethod={handleUpdatePaymentMethod}
+              handleConfirm={handleConfirm}
+              currentSupplier={cartList[selectedIndex].supplier}
+              mode={mode}
+              currentBranch={branch}
+              suppliers={suppliers}
+              reloadSuppliers={() => setReloadSupplier(!reloadSupplier)}
+              handleUpdateDiscountDetail={handleUpdateDiscountDetail}
+            >
+              {!mode ? null :
+                <>
+                  <TableContainer style={{ maxHeight: Number(cartList[selectedIndex].discount) !== 0 ? "37vh" : '44vh', height: Number(cartList[selectedIndex].discount) !== 0 ? "37vh" : '44vh' }}>
+                    <Table size="small">
                       <TableBody>
-                      
-                        {stableSort( cartList[selectedIndex].cartItem,
-                        getComparator(order, orderBy)
-                      ).map((row, index) => {
+
+                        {stableSort(cartList[selectedIndex].cartItem,
+                          getComparator(order, orderBy)
+                        ).map((row, index) => {
                           return (
                             <ImportRow
                               row={row}
@@ -883,26 +914,26 @@ const Import = () => {
                               handleChangeItemPrice={handleChangeItemPrice}
                               handleChangeItemQuantity={handleChangeItemQuantity}
                               mini={true}
-                              imageType={typeShow==='image' && mode}
+                              imageType={typeShow === 'image' && mode}
                               index={cartList[selectedIndex].cartItem.length - index}
                               typeShow={typeShow}
                               showImage={showImage}
-                              />
+                            />
                           );
                         })}
                       </TableBody>
-                  </Table>  
+                    </Table>
                   </TableContainer>
-           
 
-                  </>
 
-               }
-              </ImportSummary>
+                </>
+
+              }
+            </ImportSummary>
           </Box>
         </Card>
       </Grid>
-      <PopUpWarningZeroPrice  open={openPopUpWarning} handleClose={handleCloseWarning} handleConfirmCallApi={handleConfirmCallApi} />
+      <PopUpWarningZeroPrice open={openPopUpWarning} handleClose={handleCloseWarning} handleConfirmCallApi={handleConfirmCallApi} />
 
       {/* 3. Receipt */}
       <div style={{ display: "none" }}>
@@ -917,15 +948,15 @@ const Import = () => {
 export default Import;
 
 
-const PopUpWarningZeroPrice = ({open,handleClose,handleConfirmCallApi, isDebtWarning}) =>{
+const PopUpWarningZeroPrice = ({ open, handleClose, handleConfirmCallApi, isDebtWarning }) => {
   const theme = useTheme();
 
   return (
     <ModalWrapperWithClose title={"Đơn nhập nợ chưa có thông tin nhà cung cấp"} open={open} handleClose={handleClose}>
       <Typography style={{ marginTop: 10, marginBottom: 10 }}>
-            Bạn chưa nhập thông tin nhà cung cấp. Hệ thống không theo dõi công nợ với nhà cung cấp lẻ.
+        Bạn chưa nhập thông tin nhà cung cấp. Hệ thống không theo dõi công nợ với nhà cung cấp lẻ.
       </Typography>
-    {/* {existZeroPrice && isDebtWarning?
+      {/* {existZeroPrice && isDebtWarning?
     <>
       <Typography variant="h3" style={{ marginTop: 10, marginBottom: 10 }}>
         Có sản phẩm đang có giá bán bằng 0
@@ -936,15 +967,15 @@ const PopUpWarningZeroPrice = ({open,handleClose,handleConfirmCallApi, isDebtWar
       </>:null} */}
 
 
-      <Typography style={{ fontWeight: 600, color:theme.customization.primaryColor[500] }}>
+      <Typography style={{ fontWeight: 600, color: theme.customization.primaryColor[500] }}>
         Bạn có chắc chắn muốn tiếp tục thanh toán?
       </Typography>
 
-      <Grid item xs={12}style={{  display: "flex",  flexDirection: "row", justifyContent: "flex-end", paddingTop: 20, }} >
-        <Button onClick={handleClose} variant="contained" size="small" style={{ marginRight: 20 }}color="secondary" >
+      <Grid item xs={12} style={{ display: "flex", flexDirection: "row", justifyContent: "flex-end", paddingTop: 20, }} >
+        <Button onClick={handleClose} variant="contained" size="small" style={{ marginRight: 20 }} color="secondary" >
           {" "} Huỷ{" "}
         </Button>
-        <Button onClick={() => {handleConfirmCallApi(); handleClose()}} variant="contained" size="small" color="primary" >
+        <Button onClick={() => { handleConfirmCallApi(); handleClose() }} variant="contained" size="small" color="primary" >
           Xác nhận{" "}
         </Button>
       </Grid>
@@ -960,11 +991,11 @@ function ButtonComponent(props) {
 
   return (
     <Button {...props} onClick={onClick} disabled={loading} >
-      {loading && 
-      <>
-      { props.title}
-      <CircularProgress style={{marginLeft:10}}size={14} />
-      </>
+      {loading &&
+        <>
+          {props.title}
+          <CircularProgress style={{ marginLeft: 10 }} size={14} />
+        </>
       }
       {!loading && props.title}
     </Button>

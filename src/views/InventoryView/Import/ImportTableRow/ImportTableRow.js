@@ -102,7 +102,14 @@ export const ImportRow = (props) => {
       total += Number(batch.additional_quantity);
     });
     console.log(total);
-    updateQuantity(total);
+    if(total > 0){
+      updateQuantity(total);
+    }
+    
+    if(total === 0){
+      console.log("heyy " + total);
+    }
+    
     handleUpdateBatches(row.uuid, selectedBatches);
   }, [selectedBatches]);
 
