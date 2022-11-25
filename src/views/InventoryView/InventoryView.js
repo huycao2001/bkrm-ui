@@ -1,7 +1,7 @@
 import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import Import from "./Import/Import";
 import Inventory from "./Inventory/Inventory";
-// import InventoryOrder from "./InventoryOrder/InventoryOrder";
+import InventoryOrder from "./InventoryOrder/InventoryOrder";
 // import InventoryReturnOrder from "./InventoryReturnOrder/InventoryReturnOrder";
 // // import OrderProduct from "./OrderProduct/OrderProduct";
 // import OrderProductList from "./OrderProductList/OrderProductList";
@@ -32,8 +32,8 @@ const InventoryView = (props) => {
       </Route>
       <Route exact path={`${path}/import`} component={Import} />
       <Route path={`${path}/inventory`} component={Inventory} />
-      {/* <Route path={`${path}/receipt`} component={InventoryOrder} />
-      <Route path={`${path}/returns`} component={InventoryReturnOrder} />
+       <Route path={`${path}/receipt`} component={InventoryOrder} />
+      {/*<Route path={`${path}/returns`} component={InventoryReturnOrder} />
 
       <Route path={`${path}/transfer-inventory`} component={TransferInventory} /> */}
       {/* <Route path={`${path}/order-list/order`}  component={OrderProduct}/>   
