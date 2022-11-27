@@ -4,7 +4,7 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 //import library
 import {
-  Box,
+  //Box,
   Grid,
   Collapse,
   Typography,
@@ -13,7 +13,12 @@ import {
   ListItemText,
   IconButton,
 } from "@material-ui/core";
-
+import Box from "@mui/material/Box";
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
+import { borders } from "@material-ui/system";
 //import icon
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
@@ -278,14 +283,16 @@ const InventoryDetail = (props) => {
         }
       />
       <Box margin={1}>
-        <Typography
-          variant="h3"
-          gutterBottom
-          component="div"
-          className={classes.typo}
+        <Box
+          sx={{
+            fontSize: 18,
+            fontWeight: 400,
+            color: "#212121",
+            mb: 2,
+          }}
         >
-          {row.name}
-        </Typography>
+          {productDetail.name}
+        </Box>
 
         <Grid container direction="row" justifyContent="flex-start">
           <Grid item xs={12} sm={4}>
@@ -332,215 +339,369 @@ const InventoryDetail = (props) => {
 
           <Grid container direction="column" item xs={12} sm={8}>
             <Grid container direction="row">
-              <Grid item xs={12} sm={6}>
-                <Grid item xs={6}>
-                  <Typography variant="h2" gutterBottom component="div">
-                    Thông tin sản phẩm
-                  </Typography>
-                </Grid>
-                <Grid container direction="row" justifyContent="flex-start">
-                  <Grid item xs={4}>
-                    <Typography variant="h4" gutterBottom component="div">
-                      Tên sản phẩm
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography variant="body1" gutterBottom component="div">
-                      {productDetail.name}{" "}
-                    </Typography>
-                  </Grid>
-                </Grid>
-                <Grid container direction="row" justifyContent="flex-start">
-                  <Grid item xs={4}>
-                    <Typography variant="h4" gutterBottom component="div">
-                      Mã sản phẩm
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography variant="body1" gutterBottom component="div">
-                      {productDetail.product_code}{" "}
-                    </Typography>
-                  </Grid>
-                </Grid>
-                <Grid container direction="row" justifyContent="flex-start">
-                  <Grid item xs={4}>
-                    <Typography variant="h4" gutterBottom component="div">
-                      Mã vạch
-                    </Typography>
-                  </Grid>
-                  <Grid item sm={6}>
-                    <Typography variant="body1" gutterBottom component="div">
-                      {/* {productDetail.bar_code}{" "} */}
-                      {productDetail.bar_code
-                        ? productDetail.bar_code
-                        : "Không"}
-                    </Typography>
-                  </Grid>
-                </Grid>
-                <Grid container direction="row" justifyContent="flex-start">
-                  <Grid item xs={4}>
-                    <Typography variant="h4" gutterBottom component="div">
-                      Danh mục
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography variant="body1" gutterBottom component="div">
-                      {productDetail.category.name}{" "}
-                    </Typography>
-                  </Grid>
-                </Grid>
-                <Grid container direction="row" justifyContent="flex-start">
-                  <Grid item xs={4}>
-                    <Typography variant="h4" gutterBottom component="div">
-                      Đơn vị
-                    </Typography>
-                  </Grid>
-                  <Grid ListItemText>
-                    <Typography variant="body1" gutterBottom component="div">
-                      {productDetail.quantity_per_unit}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Grid item xs={6}>
-                  <Typography variant="h2" gutterBottom component="div">
-                    Giá
-                  </Typography>
-                </Grid>
-                <Grid container direction="row" justifyContent="flex-start">
-                  <Grid item xs={2}>
-                    <Typography variant="h4" gutterBottom component="div">
-                      Giá bán
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography variant="body1" gutterBottom component="div">
-                      <VNDFormat value={productDetail.list_price}></VNDFormat>
-                    </Typography>
-                  </Grid>
-                </Grid>
-                <Grid container direction="row" justifyContent="flex-start">
-                  <Grid item xs={2}>
-                    <Typography variant="h4" gutterBottom component="div">
-                      Giá vốn
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography variant="body1" gutterBottom component="div">
-                      <VNDFormat
-                        value={productDetail.standard_price}
-                      ></VNDFormat>{" "}
-                    </Typography>
-                  </Grid>
-                </Grid>
-                {isManageInventory ? (
-                  <>
-                    <Grid item xs={6}>
-                      <Typography variant="h2" gutterBottom component="div">
-                        Số lượng
-                      </Typography>
-                    </Grid>
-                    <Grid
-                      container
-                      direction="row"
-                      justifyContent="flex-start"
-                      alignItems="center"
+              <Box sx={{ border: 1, borderColor: "#f0f0f0", p: 3, width: 1 }}>
+                <Grid item xs={12} sm={6}>
+                  <Grid item xs={6}>
+                    <Box
+                      sx={{
+                        fontSize: 18,
+                        fontWeight: 400,
+                        color: "#212121",
+                        mb: 2,
+                      }}
                     >
-                      <Grid item xs={5}>
-                        <Typography variant="h4" gutterBottom component="div">
-                          Tồn kho
-                        </Typography>
-                      </Grid>
-                      <Grid item sm={2}>
-                        {/* <Typography variant="body1" gutterBottom component="div">
-                      {row.branch_quantity}{" "}
-                    </Typography> */}
-                        <ThousandFormat value={row.branch_quantity} />
-                      </Grid>
-                      {branchs.length > 1 || row.has_batches ? (
-                        <Grid
-                          item
-                          sm={4}
-                          style={{ marginTop: -5, marginBottom: 5 }}
-                        >
-                          <Button
-                            size="small"
-                            variant="contained"
-                            color="primary"
-                            style={{ textTransform: "none" }}
-                            onClick={() => setOpenDetailInventory(true)}
-                          >
-                            {" "}
-                            Chi tiết
-                          </Button>
-                        </Grid>
-                      ) : null}
-                      {openDetailInventory ? (
-                        <BranchInventoryPopUp
-                          branch_inventories={row.branch_inventories}
-                          branchs={branchs}
-                          open={openDetailInventory}
-                          onClose={() => setOpenDetailInventory(false)}
-                          setReload={() => {
-                            setReload();
-                            setThisReload(!thisReload);
-                          }}
-                          batches={row.batches}
-                          has_batches={row.has_batches}
-                          row={row}
-                        />
-                      ) : null}
-                    </Grid>
-                    {row.has_batches ? (
-                      <Typography
-                        variant="h6"
-                        style={{ color: theme.customization.primaryColor[500] }}
-                      >
-                        * Sản phẩm quản lý theo lô *
-                      </Typography>
-                    ) : null}
-                    {row.has_batches ? (
-                      <Typography
-                        variant="h6"
-                        style={{
-                          color: theme.customization.primaryColor[500],
-                          marginBottom: 10,
+                      Thông tin sản phẩm
+                    </Box>
+                  </Grid>
+                  <Grid container direction="row" justifyContent="flex-start">
+                    <Grid item xs={4}>
+                      <Box
+                        sx={{
+                          fontSize: 14,
+                          fontWeight: 400,
+                          color: "#878787",
+                          mb: 2,
                         }}
                       >
-                        Thông báo hết HSD trước {row.notification_period} ngày
-                      </Typography>
-                    ) : null}
+                        Tên sản phẩm
+                      </Box>
+                    </Grid>
+                    <Grid item>
+                      <Box
+                        sx={{
+                          fontSize: 14,
+                          fontWeight: 400,
+                          color: "#212121",
+                        }}
+                      >
+                        {productDetail.name}
+                      </Box>
+                    </Grid>
+                  </Grid>
+                  <Grid container direction="row" justifyContent="flex-start">
+                    <Grid item xs={4}>
+                      <Box
+                        sx={{
+                          fontSize: 14,
+                          fontWeight: 400,
+                          color: "#878787",
+                          mb: 2,
+                        }}
+                      >
+                        Mã sản phẩm
+                      </Box>
+                    </Grid>
+                    <Grid item>
+                      <Box
+                        sx={{
+                          fontSize: 14,
+                          fontWeight: 400,
+                          color: "#212121",
+                        }}
+                      >
+                        {productDetail.product_code}
+                      </Box>
+                    </Grid>
+                  </Grid>
+                  <Grid container direction="row" justifyContent="flex-start">
+                    <Grid item xs={4}>
+                      <Box
+                        sx={{
+                          fontSize: 14,
+                          fontWeight: 400,
+                          color: "#878787",
+                          mb: 2,
+                        }}
+                      >
+                        Mã vạch
+                      </Box>
+                    </Grid>
+                    <Grid item sm={6}>
+                      <Box
+                        sx={{
+                          fontSize: 14,
+                          fontWeight: 400,
+                          color: "#212121",
+                        }}
+                      >
+                        {productDetail.bar_code}
+                      </Box>
+                    </Grid>
+                  </Grid>
+                  <Grid container direction="row" justifyContent="flex-start">
+                    <Grid item xs={4}>
+                      <Box
+                        sx={{
+                          fontSize: 14,
+                          fontWeight: 400,
+                          color: "#878787",
+                          mb: 2,
+                        }}
+                      >
+                        Danh mục
+                      </Box>
+                    </Grid>
+                    <Grid item>
+                      <Box
+                        sx={{
+                          fontSize: 14,
+                          fontWeight: 400,
+                          color: "#212121",
+                        }}
+                      >
+                        {productDetail.category.name}
+                      </Box>
+                    </Grid>
+                  </Grid>
+                  <Grid container direction="row" justifyContent="flex-start">
+                    <Grid item xs={4}>
+                      <Box
+                        sx={{
+                          fontSize: 14,
+                          fontWeight: 400,
+                          color: "#878787",
+                        }}
+                      >
+                        Đơn vị
+                      </Box>
+                    </Grid>
+                    <Grid ListItemText>
+                      <Box
+                        sx={{
+                          fontSize: 14,
+                          fontWeight: 400,
+                          color: "#212121",
+                        }}
+                      >
+                        {productDetail.quantity_per_unit}
+                      </Box>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Box>
 
-                    <Grid container direction="row" justifyContent="flex-start">
-                      <Grid item xs={5}>
-                        <Typography variant="h4" gutterBottom component="div">
-                          SL đặt hàng lại
-                        </Typography>
+              <Grid item xs={12} sm={12}>
+                <Box
+                  sx={{
+                    borderTop: 0,
+                    borderBottom: 1,
+                    borderLeft: 1,
+                    borderRight: 1,
+                    borderColor: "#f0f0f0",
+                    p: 3,
+                    width: 1,
+                  }}
+                >
+                  <Grid item xs={6}>
+                    <Box
+                      sx={{
+                        fontSize: 18,
+                        fontWeight: 400,
+                        color: "#212121",
+                        mb: 2,
+                      }}
+                    >
+                      Giá
+                    </Box>
+                  </Grid>
+                  <Grid container direction="row" justifyContent="flex-start">
+                    <Grid item xs={2}>
+                      <Box
+                        sx={{
+                          fontSize: 14,
+                          fontWeight: 400,
+                          color: "#878787",
+                          mb: 2,
+                        }}
+                      >
+                        Giá bán
+                      </Box>
+                    </Grid>
+                    <Grid item>
+                      <Typography variant="body1" gutterBottom component="div">
+                        <VNDFormat value={productDetail.list_price}></VNDFormat>
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                  <Grid container direction="row" justifyContent="flex-start">
+                    <Grid item xs={2}>
+                      <Box
+                        sx={{
+                          fontSize: 14,
+                          fontWeight: 400,
+                          color: "#878787",
+                          mb: 2,
+                        }}
+                      >
+                        Giá vốn
+                      </Box>
+                    </Grid>
+                    <Grid item>
+                      <Typography variant="body1" gutterBottom component="div">
+                        <VNDFormat
+                          value={productDetail.standard_price}
+                        ></VNDFormat>{" "}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </Box>
+                <Box
+                  sx={{
+                    borderTop: 0,
+                    borderBottom: 1,
+                    borderLeft: 1,
+                    borderRight: 1,
+                    borderColor: "#f0f0f0",
+                    p: 3,
+                    width: 1,
+                  }}
+                >
+                  {isManageInventory ? (
+                    <>
+                      <Grid item xs={6}>
+                        <Box
+                          sx={{
+                            fontSize: 18,
+                            fontWeight: 400,
+                            color: "#212121",
+                            mb: 2,
+                          }}
+                        >
+                          Số lượng
+                        </Box>
                       </Grid>
-                      <Grid item>
-                        {/* <Typography variant="body1" gutterBottom component="div">
+                      <Grid
+                        container
+                        direction="row"
+                        justifyContent="flex-start"
+                        alignItems="center"
+                      >
+                        <Grid item xs={2}>
+                          <Box
+                            sx={{
+                              fontSize: 14,
+                              fontWeight: 400,
+                              color: "#878787",
+                              mb: 2,
+                            }}
+                          >
+                            Tồn kho
+                          </Box>
+                        </Grid>
+                        <Grid item sm={2}>
+                          {/* <Typography variant="body1" gutterBottom component="div">
+                      {row.branch_quantity}{" "}
+                    </Typography> */}
+                          <ThousandFormat value={row.branch_quantity} />
+                        </Grid>
+                        {branchs.length > 1 || row.has_batches ? (
+                          <Grid
+                            item
+                            sm={4}
+                            style={{ marginTop: -5, marginBottom: 5 }}
+                          >
+                            <Button
+                              size="small"
+                              variant="contained"
+                              color="primary"
+                              style={{ textTransform: "none" }}
+                              onClick={() => setOpenDetailInventory(true)}
+                            >
+                              {" "}
+                              Chi tiết
+                            </Button>
+                          </Grid>
+                        ) : null}
+                        {openDetailInventory ? (
+                          <BranchInventoryPopUp
+                            branch_inventories={row.branch_inventories}
+                            branchs={branchs}
+                            open={openDetailInventory}
+                            onClose={() => setOpenDetailInventory(false)}
+                            setReload={() => {
+                              setReload();
+                              setThisReload(!thisReload);
+                            }}
+                            batches={row.batches}
+                            has_batches={row.has_batches}
+                            row={row}
+                          />
+                        ) : null}
+                      </Grid>
+                      {row.has_batches ? (
+                        <Typography
+                          variant="h6"
+                          style={{
+                            color: theme.customization.primaryColor[500],
+                          }}
+                        >
+                          * Sản phẩm quản lý theo lô *
+                        </Typography>
+                      ) : null}
+                      {row.has_batches ? (
+                        <Typography
+                          variant="h6"
+                          style={{
+                            color: theme.customization.primaryColor[500],
+                            marginBottom: 10,
+                          }}
+                        >
+                          Thông báo hết HSD trước {row.notification_period} ngày
+                        </Typography>
+                      ) : null}
+
+                      <Grid
+                        container
+                        direction="row"
+                        justifyContent="flex-start"
+                      >
+                        <Grid item xs={2}>
+                          <Box
+                            sx={{
+                              fontSize: 14,
+                              fontWeight: 400,
+                              color: "#878787",
+                              mb: 2,
+                            }}
+                          >
+                            SL đặt hàng lại
+                          </Box>
+                        </Grid>
+                        <Grid item>
+                          {/* <Typography variant="body1" gutterBottom component="div">
                       {row.min_reorder_quantity}{" "}
                     </Typography> */}
-                        <ThousandFormat value={row.min_reorder_quantity} />
+                          <ThousandFormat value={row.min_reorder_quantity} />
+                        </Grid>
                       </Grid>
-                    </Grid>
 
-                    <Grid container direction="row" justifyContent="flex-start">
-                      <Grid item xs={5}>
-                        <Typography variant="h4" gutterBottom component="div">
-                          SL nhập hàng tối đa
-                        </Typography>
-                      </Grid>
-                      <Grid item>
-                        {/* <Typography variant="body1" gutterBottom component="div">
+                      <Grid
+                        container
+                        direction="row"
+                        justifyContent="flex-start"
+                      >
+                        <Grid item xs={2}>
+                          <Box
+                            sx={{
+                              fontSize: 14,
+                              fontWeight: 400,
+                              color: "#878787",
+                              mb: 2,
+                            }}
+                          >
+                            SL nhập hàng tối đa
+                          </Box>
+                        </Grid>
+                        <Grid item>
+                          {/* <Typography variant="body1" gutterBottom component="div">
                       {row.max_order}{" "}
                     </Typography> */}
-                        <ThousandFormat value={row.max_order} />
+                          <ThousandFormat value={row.max_order} />
+                        </Grid>
                       </Grid>
-                    </Grid>
-                  </>
-                ) : null}
+                    </>
+                  ) : null}
+                </Box>
               </Grid>
             </Grid>
 
