@@ -14,6 +14,10 @@ export default function themePalette(theme) {
       light: theme.customization.secondaryColor[50],
       main: theme.customization.secondaryColor[500],
     },
+    warning :{
+      light :  theme.colors.errorDark,
+      main :  theme.colors.errorDark
+    },
     text: {
       primary: theme.darkTextPrimary,
       secondary: theme.darkTextSecondary,

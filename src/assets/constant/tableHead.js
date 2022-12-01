@@ -94,7 +94,7 @@ export const InventoryReturnOrderHeadCells = [
 ];
 
 export const SupplierHeadCells = [
-  { id: "id", align: "left", disablePadding: true, label: "#" },
+  { id: "id", align: "left", disablePadding: true, label: "Mã NCC" },
   { id: "name", align: "left", disablePadding: false, label: "Tên NCC" },
   { id: "phone", align: "left", disablePadding: false, label: "Số điện thoại" },
   // { id: "email", align: "left", disablePadding: false, label: "Email" },
