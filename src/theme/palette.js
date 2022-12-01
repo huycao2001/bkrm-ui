@@ -3,6 +3,8 @@
  * @param {JsonObject} theme Theme customization object
  */
 
+ import { purple } from '@mui/material/colors';
+
 export default function themePalette(theme) {
   const level = theme.customization.colorLevel;
   return {
@@ -14,6 +16,11 @@ export default function themePalette(theme) {
       light: theme.customization.secondaryColor[50],
       main: theme.customization.secondaryColor[500],
     },
+    warning :{
+      light :  theme.customization.secondaryColor[50],
+      main :  theme.customization.secondaryColor[50]
+    },
+    
     text: {
       primary: theme.darkTextPrimary,
       secondary: theme.darkTextSecondary,
