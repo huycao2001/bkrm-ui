@@ -111,7 +111,7 @@ export const SupplierHeadCells = [
     disablePadding: false,
     label: "Nợ NCC",
   },
-  { id: "debtStatus", align: "center", disablePadding: false, label: "" },
+  { id: "debtStatus", align: "center", disablePadding: false, label: "Trạng thái" },
 ];
 
 export const InvoiceHeadCells = [

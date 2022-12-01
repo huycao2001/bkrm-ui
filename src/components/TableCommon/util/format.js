@@ -1,5 +1,10 @@
 import { Chip, Box, Avatar } from "@material-ui/core";
+import { pink } from '@mui/material/colors';
+// import Chip from '@mui/material/Chip';
+// import Box from '@mui/material/Box';
 
+import CheckIcon from '@mui/icons-material/Check';
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 export const FormatedStatus = (props) => {
   if (props.debt === 0) {
     return (
@@ -7,6 +12,7 @@ export const FormatedStatus = (props) => {
         label="Trả đủ"
         color="#76ff03"
         variant="outlined"
+        icon = {<CheckIcon/>}
         style={{
           backgroundColor: "#76ff03",
           fontWeight: 500,
@@ -23,6 +29,7 @@ export const FormatedStatus = (props) => {
         label="Còn nợ"
         color="#ff3d00"
         variant="outlined"
+        icon = {<PriorityHighIcon/>}
         style={{
           backgroundColor: "#ff3d00",
           fontWeight: 500,
@@ -40,6 +47,7 @@ export const FormatedProductStatus = (props) => {
     return (
       <Chip
         label="Hết hàng"
+        icon = {<PriorityHighIcon  sx={{ color: '#eceff1'}}/>}
         color="#ff007d"
         variant="outlined"
         style={{
@@ -47,7 +55,7 @@ export const FormatedProductStatus = (props) => {
           fontWeight: 500,
           marginLeft: -10,
           height: 28,
-          color : "black"
+          color : "white"
         }}
       >
         {"Trả đủ"}{" "}
@@ -76,6 +84,7 @@ export const FormatedProductStatus = (props) => {
         label="Còn hàng"
         color="#00ded7"
         variant="outlined"
+        icon = {<CheckIcon/>}
         style={{
           backgroundColor: "#00ded7",
           fontWeight: 500,

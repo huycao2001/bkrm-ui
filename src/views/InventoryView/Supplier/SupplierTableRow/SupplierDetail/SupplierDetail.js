@@ -16,7 +16,7 @@ import {
   IconButton
 } from "@material-ui/core";
 
-import Button from '@mui/material/Button';
+import Button from '@material-ui/core/Button'
 
 //import icon
 import MoreVertIcon from "@material-ui/icons/MoreVert";
@@ -320,12 +320,13 @@ const SupplierDetail = (props) => {
           justifyContent={"flex-end"}
           style={{ marginTop: 20 }}
         >
-          <Button variant="contained" size="small" style={{ marginLeft: 15 }} onClick={() => setEditSupplier(true)} startIcon = {<CreateIcon/>}
-            color = 'primary'>
+          <Button color = "primary" variant="contained" size="small" style={{ marginLeft: 15 }} onClick={() => setEditSupplier(true)} startIcon = {<CreateIcon/>}
+            >
             Sửa
           </Button>
           <Button
             variant="contained"
+            color = 'secondary'
             size="small"
             style={{ marginLeft: 15}}
             onClick={() => {
@@ -333,7 +334,7 @@ const SupplierDetail = (props) => {
             }}
             startIcon={<DeleteIcon />}
             //sx={{ color: 'warning.main' }}
-            color = 'warning'
+            
           >
             Xóa
           </Button>
