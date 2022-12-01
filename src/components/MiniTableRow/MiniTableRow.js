@@ -16,7 +16,7 @@ import InventoryOrderDetail from "../../views/InventoryView/InventoryOrder/Inven
 // import OrderProductListDetail from "../../views/InventoryView/OrderProductList/OrderProductListTableRow/OrderProductListDetail/OrderProductListDetail";
 // import CheckHistoryDetail from "../../views/InventoryView/CheckHistory/CheckHistoryTableRow/CheckHistoryDetail/CheckHistoryDetail"
 // import CustomerDetail from "../../views/ManagerView/Customer/CustomerTableRow/CustomerDetail/CustomerDetail"
-// import SupplierDetail from "../../views/InventoryView/Supplier/SupplierTableRow/SupplierDetail/SupplierDetail"
+import SupplierDetail from "../../views/InventoryView/Supplier/SupplierTableRow/SupplierDetail/SupplierDetail"
 // import EmployeeDetail from "../../views/HRView/Employee/EmployeeTableRow/EmployeeDetail/EmployeeDetail"
 // import DiscountDetail from '../../views/ManagerView/Setting/DiscountSetting/DiscountTableRow/DiscountDetail/DiscountDetail';
 // import VoucherDetail from '../../views/ManagerView/Setting/VoucherSetting/VoucherTableRow/VoucherDetail/VoucherDetail';
@@ -164,63 +164,63 @@ export const BillMiniTableRow = (props) =>{
     )
 }
 
-// export const PartnerMiniTableRow = (props) =>{
-//     const { row, handleOpenRow, openRow, onReload } = props;
+export const PartnerMiniTableRow = (props) =>{
+    const { row, handleOpenRow, openRow, onReload } = props;
 
-//     const {img, id,name ,phone, score,typePartner } = props
-//     const classes = useStyles(); 
-//     const [open, setOpen] = React.useState(false);
-//     const handleClickOpen = () => {
-//         setOpen(true);
-//     };
-//     const handleClose = () => {
-//         setOpen(false);
-//     };
-//     return (
+    const {img, id,name ,phone, score,typePartner } = props
+    const classes = useStyles(); 
+    const [open, setOpen] = React.useState(false);
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+    const handleClose = () => {
+        setOpen(false);
+    };
+    return (
 
-//         <div style={{margin:15,}}>
-//         <Grid  container direction="row" justifyContent="space-between" 
-//           onClick={()=>{handleClickOpen();handleOpenRow(row.uuid)}} 
-//           >
-//             <Grid item>
-//                 <ListItem  style={{marginLeft:2, padding:0}}>
-//                     {typePartner !== "Nhà cung cấp"?<Avatar alt="Remy Sharp" src={img} style={{marginRight:20,}} className={classes.ava} />:null}
-//                     <div>
-//                         <Typography style={{marginBottom:2, marginTop:-5,marginBottom:3}}>{name}</Typography>
-//                         <ListItem  style={{margin:0, padding:0}}>
-//                             <PhoneIcon style={{width:10, height:10, marginRight:2, color:"#8f8f8f"}}/>
-//                             <Typography style={{color:'#36afff', fontSize:12}}>{phone}</Typography>
-//                         </ListItem>  
-//                     </div>
-//                 </ListItem>  
-//             </Grid>
-//             <Grid item justifyContent="flex-end" >
-//             <Typography style={{marginTop:-5,fontSize:12,color:"#474747"}}>{id}</Typography>
-//             {typePartner === "Khách hàng"?<Typography style={{fontWeight:500, fontSize:14,marginTop:8, color:"green",textAlign: 'right'}}>{score}</Typography> :null}
+        <div style={{margin:15,}}>
+        <Grid  container direction="row" justifyContent="space-between" 
+          onClick={()=>{handleClickOpen();handleOpenRow(row.uuid)}} 
+          >
+            <Grid item>
+                <ListItem  style={{marginLeft:2, padding:0}}>
+                    {typePartner !== "Nhà cung cấp"?<Avatar alt="Remy Sharp" src={img} style={{marginRight:20,}} className={classes.ava} />:null}
+                    <div>
+                        <Typography style={{marginBottom:2, marginTop:-5,marginBottom:3}}>{name}</Typography>
+                        <ListItem  style={{margin:0, padding:0}}>
+                            <PhoneIcon style={{width:10, height:10, marginRight:2, color:"#8f8f8f"}}/>
+                            <Typography style={{color:'#36afff', fontSize:12}}>{phone}</Typography>
+                        </ListItem>  
+                    </div>
+                </ListItem>  
+            </Grid>
+            <Grid item justifyContent="flex-end" >
+            <Typography style={{marginTop:-5,fontSize:12,color:"#474747"}}>{id}</Typography>
+            {typePartner === "Khách hàng"?<Typography style={{fontWeight:500, fontSize:14,marginTop:8, color:"green",textAlign: 'right'}}>{score}</Typography> :null}
 
-//             </Grid>
-//         </Grid> 
+            </Grid>
+        </Grid> 
 
-//         <Divider style={{marginTop:2}} />
-//         <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
-//             <AppBar className={classes.appBar}>
-//             <Toolbar>
-//                 <Typography variant="h3" className={classes.title} style={{color:"white"}} >
-//                     {typePartner} {"#"} {id}
-//                 </Typography>
-//                 <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
-//                 <CloseIcon />
-//                 </IconButton>
-//             </Toolbar>
-//             </AppBar>
+        <Divider style={{marginTop:2}} />
+        <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
+            <AppBar className={classes.appBar}>
+            <Toolbar>
+                <Typography variant="h3" className={classes.title} style={{color:"white"}} >
+                    {typePartner} {"#"} {id}
+                </Typography>
+                <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
+                <CloseIcon />
+                </IconButton>
+            </Toolbar>
+            </AppBar>
 
-//             {typePartner === "Khách hàng"? <CustomerDetail parentProps={props}  isMini={true} />:null}
-//             {typePartner === "Nhân viên"? <EmployeeDetail parentProps={props}  isMini={true}/>:null}
-//             {typePartner === "Nhà cung cấp"? <SupplierDetail parentProps={props}  isMini={true}/>:null}
-//         </Dialog>
-//         </div>
-//     )
-// }
+            {/* {typePartner === "Khách hàng"? <CustomerDetail parentProps={props}  isMini={true} />:null}
+            {typePartner === "Nhân viên"? <EmployeeDetail parentProps={props}  isMini={true}/>:null} */}
+            {typePartner === "Nhà cung cấp"? <SupplierDetail parentProps={props}  isMini={true}/>:null}
+        </Dialog>
+        </div>
+    )
+}
 
 
 export const ReturnCartMiniTableRow = ({ detail, handleProductPriceChange,isCart, handleItemQuantityChange }) =>{
