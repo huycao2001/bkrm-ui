@@ -117,9 +117,9 @@ const HomePage = (props) => {
                     <BasicMenu section="Cài đặt" />
                     <BasicMenu section="Thống kê" />
                   </Box>}
-                <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between" style={{ width: "10%", marginRight: "200px" }} >
+                <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between" className = {clsx({ [classes.userBar] : infoDetail.role !== "admin", [classes.adminBar] : infoDetail.role == "admin"  })} >
                   {(infoDetail.role == "admin") ?
-                    <BranchSelectAppBar store_uuid={undefined} /> :
+                     null :
                     <BranchSelectAppBar store_uuid={infoDetail.store.uuid} />}
                   <Box
                     display="flex"

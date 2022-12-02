@@ -95,5 +95,14 @@ export default makeStyles((theme) => ({
   scroll: {
     // maxHeight: 10,
   },
+
+  userBar : {
+    width: "10%", 
+    marginRight: "200px"
+  },
+  adminBar : {
+    width: "10%", 
+    marginRight: "60px"
+  }
  
 }));
