@@ -50,7 +50,7 @@ const InventoryTableRow = (props) => {
         <TableCell align="left" style={{color:colorText}}>
           {row.product_code}
         </TableCell>
-        <TableCell align="center" style={{ minWidth: hidenCollumn?.includes("image")? 50:200, color:colorText }}>
+        <TableCell align="right" style={{ minWidth: hidenCollumn?.includes("image")? 50:200, color:colorText }}>
           <ListItem
             style={{ marginLeft: -30, marginTop: -10, marginBottom: -10 }}
           >

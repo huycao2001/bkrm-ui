@@ -23,6 +23,8 @@ import { borders } from "@material-ui/system";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import HighlightOffTwoToneIcon from "@material-ui/icons/HighlightOffTwoTone";
+import DeleteIcon from '@mui/icons-material/Delete';
+import CreateIcon from '@mui/icons-material/Create';
 import LocalOfferTwoToneIcon from "@material-ui/icons/LocalOfferTwoTone";
 import VerifiedUserTwoToneIcon from "@material-ui/icons/VerifiedUserTwoTone";
 //import image
@@ -714,6 +716,8 @@ const InventoryDetail = (props) => {
               <Button
                 variant="contained"
                 size="small"
+                color = 'primary'
+                startIcon = {<CreateIcon/>}
                 style={{ marginLeft: 15 }}
                 onClick={() => {
                   setIsOpenUpdate(true);
@@ -724,6 +728,8 @@ const InventoryDetail = (props) => {
               <Button
                 variant="contained"
                 size="small"
+                color = 'secondary'
+                startIcon = {<DeleteIcon/>}
                 style={{ marginLeft: 15 }}
                 onClick={() => {
                   setDeleteConfirm(true);
