@@ -10,7 +10,8 @@ export default makeStyles((theme) => ({
     background: theme.palette.background.default,
   },
   appBar: {
-    background: theme.palette.background.primaryMain,
+     background: theme.palette.background.primaryMain,
+    // background: theme.palette.secondary.,
     boxShadow: "none",
 
   },

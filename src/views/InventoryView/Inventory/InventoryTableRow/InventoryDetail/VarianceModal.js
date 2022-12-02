@@ -17,6 +17,8 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import HighlightOffTwoToneIcon from "@material-ui/icons/HighlightOffTwoTone";
 import LocalOfferTwoToneIcon from "@material-ui/icons/LocalOfferTwoTone";
 import VerifiedUserTwoToneIcon from "@material-ui/icons/VerifiedUserTwoTone";
+import DeleteIcon from '@mui/icons-material/Delete';
+import CreateIcon from '@mui/icons-material/Create';
 //import image
 import avaUpload from "../../../../../assets/img/product/img.jpeg";
 //import project
@@ -399,7 +401,9 @@ const VarianceModal = (props) => {
                 <Button
                   variant="contained"
                   size="small"
+                  color = "primary"
                   style={{ marginLeft: 15 }}
+                  startIcon = {<CreateIcon/>}
                   onClick={() => {
                     setIsOpenUpdate(true);
                   }}
@@ -409,6 +413,8 @@ const VarianceModal = (props) => {
                 <Button
                   variant="contained"
                   size="small"
+                  color = "secondary"
+                  startIcon = {<DeleteIcon/>}
                   style={{ marginLeft: 15 }}
                   onClick={() => {
                     setDeleteConfirm(true);

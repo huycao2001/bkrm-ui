@@ -10,7 +10,7 @@ export default function themePalette(theme) {
   return {
     primary: {
       light: theme.customization.primaryColor[level],
-      main: theme.customization.primaryColor[500],
+      main: theme.customization.primaryColor[400],
     },
     secondary: {
       light: theme.customization.secondaryColor[50],
