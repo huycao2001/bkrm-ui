@@ -179,8 +179,8 @@ const InventoryOrder = () => {
           <ButtonBase
             sx={{ borderRadius: "16px" }}
             onClick={() => {
-              dispatch(customizeAction.setSidebarOpen(false));
-              dispatch(customizeAction.setItemMenuOpen(4));
+              // dispatch(customizeAction.setSidebarOpen(false));
+              // dispatch(customizeAction.setItemMenuOpen(4));
             }}
             component={Link}
             to="/home/inventory/import"
