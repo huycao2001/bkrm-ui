@@ -1,9 +1,9 @@
 import axiosClient from "./axiosClient";
 const adminApi = {
   // STC
-  getUsers: () => {
+  getUsers: (searchKey) => {
     const url = "/admin/users";
-    return axiosClient.get(url);
+    return axiosClient.get(`${url}?searchKey=${searchKey}`);
   },
   toggleAprroveUser: (userUuid) => {
     const url = "/admin/users";

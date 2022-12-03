@@ -23,6 +23,14 @@ export const verifyToken = () => {
     };
     try {
       const rs = await verifyToken();
+      if (rs && rs.error && rs.error == "Requires admin approval")
+      {
+        dispatch(
+          statusAction.failedStatus(
+            "This account needs to be approved by an admin."
+          )
+        );
+      }
       if (rs) {
         dispatch(infoActions.setRole(rs.role));
         dispatch(authActions.logIn());
@@ -76,6 +84,14 @@ export const logInHandler = (userName, password, role) => {
 
     try {
       const rs = await logIn();
+      if (rs && rs.error && rs.error == "Requires admin approval")
+      {
+        dispatch(
+          statusAction.failedStatus(
+            "This account needs to be approved by an admin."
+          )
+        );
+      }
       if (rs.access_token) {
         localStorage.setItem("token", rs.access_token);
         if (rs.role === "admin") {

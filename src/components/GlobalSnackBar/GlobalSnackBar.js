@@ -16,7 +16,7 @@ const SnackBar = () => {
       dispatch(statusAction.closeStatus());
     };
     if (isOpen) {
-      setTimeout(closeStatus, 3000);
+      setTimeout(closeStatus, 6000);
     }
   }, [isOpen, dispatch]);
   return (
