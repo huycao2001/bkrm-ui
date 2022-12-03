@@ -1,6 +1,5 @@
 import { makeStyles } from "@material-ui/core/styles";
-
-
+import { withTheme } from "styled-components";
 
 const drawerWidth = 240;
 
@@ -10,10 +9,10 @@ export default makeStyles((theme) => ({
     background: theme.palette.background.default,
   },
   appBar: {
-     background: theme.palette.background.primaryMain,
+    //background: theme.palette.background.primaryMain,
     // background: theme.palette.secondary.,
+    background: "white",
     boxShadow: "none",
-
   },
   hide: {
     display: "none",
@@ -21,10 +20,10 @@ export default makeStyles((theme) => ({
   drawerPaper: {
     width: drawerWidth,
     // marginTop: 48 + 16 + 16,
-    marginTop: 48 + 16 ,
+    marginTop: 48 + 16,
     borderColor: theme.palette.background.paper,
     paddingLeft: 20,
-    paddingBottom:48 + 16 + 16,
+    paddingBottom: 48 + 16 + 16,
   },
   _drawerPaper: {
     width: drawerWidth,
@@ -66,8 +65,7 @@ export default makeStyles((theme) => ({
     marginRight: 20,
     padding: 20,
     // marginTop:40,
-    marginTop:100,
- 
+    marginTop: 100,
   },
   backgroundMini: {
     background:
@@ -76,19 +74,18 @@ export default makeStyles((theme) => ({
         : theme.customization.primaryColor[theme.customization.colorLevel],
     borderRadius: theme.customization.borderRadius,
     marginRight: 5,
-    marginLeft:5,
+    marginLeft: 5,
     padding: 10,
     // marginTop:40,
-    marginTop:25,
-    
+    marginTop: 25,
   },
-  marginBackground:{
-    marginLeft: 20
+  marginBackground: {
+    marginLeft: 20,
   },
   toolBar: {
     background: theme.palette.background.paper,
     // padding:12,
-    padding:5,
+    padding: 5,
   },
   searchEngine: {
     paddingLeft: 20,
@@ -97,13 +94,12 @@ export default makeStyles((theme) => ({
     // maxHeight: 10,
   },
 
-  userBar : {
-    width: "10%", 
-    marginRight: "200px"
+  userBar: {
+    width: "10%",
+    marginRight: "200px",
   },
-  adminBar : {
-    width: "10%", 
-    marginRight: "60px"
-  }
- 
+  adminBar: {
+    width: "10%",
+    marginRight: "60px",
+  },
 }));

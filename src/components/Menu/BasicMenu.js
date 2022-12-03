@@ -1,9 +1,15 @@
 import * as React from "react";
 import { useState } from "react";
-import { Button, ListItem, Menu, MenuItem } from "@material-ui/core";
+import { ListItem, Menu, MenuItem } from "@mui/material";
 
 import { Link, Redirect } from "react-router-dom";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 import { useTheme, makeStyles, createStyles } from "@material-ui/styles";
 
 const useStyles = makeStyles({
@@ -312,6 +318,18 @@ const statModule = {
   ],
 };
 
+const ButtonSX = {
+  fontWeight: 500,
+  px: 4,
+  py: 2,
+  borderRadius: 0,
+  borderBottom: "4px solid transparent",
+  transition: "border-color 0.5s",
+  "&:hover": {
+    borderBottom: "4px solid #2196f3",
+  },
+};
+
 export default function BasicMenu(props) {
   let currentlyHovering = false;
   const styles = useStyles();
@@ -343,8 +361,9 @@ export default function BasicMenu(props) {
   const theme = useTheme();
 
   return (
-    <div>
+    <Box>
       <Button
+        disableRipple
         id="basic-button"
         aria-owns={anchorEl ? "basic-menu" : undefined}
         aria-controls={openMenu ? "basic-menu" : undefined}
@@ -353,7 +372,11 @@ export default function BasicMenu(props) {
         onClick={handleOpenMenu}
         onMouseOver={handleOpenMenu}
         onMouseLeave={handleCloseHover}
-        style={{ color: "black", fontWeight: "200" }}
+        style={{
+          color: "black",
+          backgroundColor: "transparent",
+        }}
+        sx={ButtonSX}
         //color = "secondary"
       >
         {section}
@@ -362,8 +385,8 @@ export default function BasicMenu(props) {
         id="basic-menu"
         anchorEl={anchorEl}
         getContentAnchorEl={null}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-        transformOrigin={{ vertical: "top", horizontal: "center" }}
+        // anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        // transformOrigin={{ vertical: "top", horizontal: "center" }}
         open={Boolean(anchorEl)}
         onClose={handleCloseMenu}
         MenuListProps={{
@@ -374,6 +397,11 @@ export default function BasicMenu(props) {
         PopoverClasses={{
           root: styles.popOverRoot,
         }}
+        PaperProps={{
+          style: {
+            width: 250,
+          },
+        }}
       >
         {/* <MenuItem onClick={handleCloseMenu}>Profile</MenuItem> */}
         {section === "Bán hàng"
@@ -382,6 +410,19 @@ export default function BasicMenu(props) {
                 onClick={handleCloseMenu}
                 to={item.url}
                 component={Link}
+                divider={
+                  item.id !=
+                  salesModule.children.at(salesModule.children.length - 1).id
+                    ? true
+                    : false
+                }
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "#f8f8f8",
+                    color: "black",
+                  },
+                  color: "black",
+                }}
               >
                 {item.title}
               </ListItem>
@@ -392,6 +433,19 @@ export default function BasicMenu(props) {
                 onClick={handleCloseMenu}
                 to={item.url}
                 component={Link}
+                divider={
+                  item.id !=
+                  salesModule.children.at(salesModule.children.length - 1).id
+                    ? true
+                    : false
+                }
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "#f8f8f8",
+                    color: "black",
+                  },
+                  color: "black",
+                }}
               >
                 {item.title}
               </ListItem>
@@ -402,6 +456,19 @@ export default function BasicMenu(props) {
                 onClick={handleCloseMenu}
                 to={item.url}
                 component={Link}
+                divider={
+                  item.id !=
+                  salesModule.children.at(salesModule.children.length - 1).id
+                    ? true
+                    : false
+                }
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "#f8f8f8",
+                    color: "black",
+                  },
+                  color: "black",
+                }}
               >
                 {item.title}
               </ListItem>
@@ -412,6 +479,19 @@ export default function BasicMenu(props) {
                 onClick={handleCloseMenu}
                 to={item.url}
                 component={Link}
+                divider={
+                  item.id !=
+                  salesModule.children.at(salesModule.children.length - 1).id
+                    ? true
+                    : false
+                }
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "#f8f8f8",
+                    color: "black",
+                  },
+                  color: "black",
+                }}
               >
                 {item.title}
               </ListItem>
@@ -421,6 +501,19 @@ export default function BasicMenu(props) {
                 onClick={handleCloseMenu}
                 to={item.url}
                 component={Link}
+                divider={
+                  item.id !=
+                  salesModule.children.at(salesModule.children.length - 1).id
+                    ? true
+                    : false
+                }
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "#f8f8f8",
+                    color: "black",
+                  },
+                  color: "black",
+                }}
               >
                 {item.title}
               </ListItem>
@@ -437,6 +530,6 @@ export default function BasicMenu(props) {
         {/* <MenuItem onClick={handleClose}>Sổ quỹ</MenuItem>
         <MenuItem onClick={handleClose}>Doanh thu</MenuItem> */}
       </Menu>
-    </div>
+    </Box>
   );
 }
