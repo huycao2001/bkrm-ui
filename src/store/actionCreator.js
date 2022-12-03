@@ -11,9 +11,10 @@ import userApi from "../api/userApi";
 import { pink, blue, grey } from "@material-ui/core/colors";
 import { useDispatch, useSelector } from "react-redux";
 
+import { trackPromise } from "react-promise-tracker";
 
 export const verifyToken = () => {
-  console.log("Verify token started")
+  console.log("Verify token started");
   return async (dispatch) => {
     dispatch(loadingActions.startLoad());
     const verifyToken = async () => {
@@ -26,7 +27,7 @@ export const verifyToken = () => {
         dispatch(infoActions.setRole(rs.role));
         dispatch(authActions.logIn());
         if (rs.role === "admin") {
-          dispatch(infoActions.setAdmin({...rs.admin}));
+          dispatch(infoActions.setAdmin({ ...rs.admin }));
         } else {
           dispatch(setCustomization(rs.user.customization));
           if (rs.role === "owner") {
@@ -63,11 +64,13 @@ export const logInHandler = (userName, password, role) => {
   return async (dispatch) => {
     dispatch(loadingActions.startLoad());
     const logIn = async () => {
-      const response = await userApi.signIn({
-        user_name: userName,
-        password: password,
-        role: role,
-      });
+      const response = await trackPromise(
+        userApi.signIn({
+          user_name: userName,
+          password: password,
+          role: role,
+        })
+      );
       return response;
     };
 
@@ -80,9 +83,10 @@ export const logInHandler = (userName, password, role) => {
           dispatch(infoActions.setRole(rs.role));
           dispatch(authActions.logIn());
           dispatch(loadingActions.finishLoad());
-          dispatch(statusAction.successfulStatus("Đăng nhập thành công - admin"));
-        }
-        else {
+          dispatch(
+            statusAction.successfulStatus("Đăng nhập thành công - admin")
+          );
+        } else {
           dispatch(authActions.logIn());
           dispatch(loadingActions.finishLoad());
           dispatch(statusAction.successfulStatus("Đăng nhập thành công"));
@@ -108,15 +112,24 @@ export const logInHandler = (userName, password, role) => {
       dispatch(authActions.logOut());
       dispatch(loadingActions.finishLoad());
       if (error.response.status === 401) {
-        dispatch(statusAction.failedStatus("Tên đăng nhập hoặc mật khẩu không đúng"));
-        
-      }
-      else if (error.response.status === 403) {
-        dispatch(statusAction.failedStatus("Please get an administrator to approve your account"));
-      }
-      else{
-        dispatch(statusAction.failedStatus("Something went wrong. Check console. Message : " + error.message));
-        console.error("Attempting to log unknown error: " + JSON.stringify(error));
+        dispatch(
+          statusAction.failedStatus("Tên đăng nhập hoặc mật khẩu không đúng")
+        );
+      } else if (error.response.status === 403) {
+        dispatch(
+          statusAction.failedStatus(
+            "Please get an administrator to approve your account"
+          )
+        );
+      } else {
+        dispatch(
+          statusAction.failedStatus(
+            "Something went wrong. Check console. Message : " + error.message
+          )
+        );
+        console.error(
+          "Attempting to log unknown error: " + JSON.stringify(error)
+        );
       }
     }
   };
@@ -188,7 +201,7 @@ export const setCustomization = (paramCustomization) => {
   return (dispatch) => {
     const fetchCustomization = () => {
       sessionStorage.setItem("customization", paramCustomization);
-      let customization = JSON.parse(paramCustomization)
+      let customization = JSON.parse(paramCustomization);
       dispatch(customizeAction.setBorderRadius(customization.borderRadius));
       dispatch(customizeAction.setColorLevel(customization.colorLevel));
       dispatch(customizeAction.setFontFamily(customization.fontFamily));
@@ -209,7 +222,12 @@ export const setCustomization = (paramCustomization) => {
         primaryColor: blue,
         secondaryColor: pink,
         colorLevel: 50,
-        showMenu: ['salesModule', 'inventoryModule', 'hrModule', 'reportModule']
+        showMenu: [
+          "salesModule",
+          "inventoryModule",
+          "hrModule",
+          "reportModule",
+        ],
       };
       sessionStorage.setItem("customization", JSON.stringify(customization));
       console.log(error);
@@ -225,9 +243,6 @@ export const selectBranch = (uuid, name) => {
     });
   };
 };
-
-
-
 
 // useEffect(() => {
 //   const getBranches = async()=> {

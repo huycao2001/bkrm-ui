@@ -19,18 +19,15 @@ import Radio from "@mui/material/Radio";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Image from "../../assets/img/background.jpg";
-import { logInHandler } from "../../store/actionCreator"
+import { logInHandler } from "../../store/actionCreator";
 import userAPi from "../../api/userApi";
-
+import LoadingIndicator from "../../components/LoadingIndicator/LoadingIndicator";
 
 const styles = {
   paperContainer: {
     backgroundImage: `url(${Image})`,
   },
 };
-
-
-
 
 const LoginPage = (props) => {
   const [role, setRole] = useState("owner");
@@ -46,15 +43,14 @@ const LoginPage = (props) => {
       role: "",
     },
     validationSchema: Yup.object({
-      user_name: Yup.string()
-        .required("Nhập tên đăng nhập"),
+      user_name: Yup.string().required("Nhập tên đăng nhập"),
       password: Yup.string().required("Nhập mật khẩu"),
-    })
-  }
-  )
+    }),
+  });
 
   return (
     <Paper style={styles.paperContainer}>
+      <LoadingIndicator />
       <Grid
         container
         spacing={0}
@@ -87,7 +83,8 @@ const LoginPage = (props) => {
                   value={loginFormik.values.user_name}
                   onChange={loginFormik.handleChange}
                   error={
-                    loginFormik.touched.user_name && loginFormik.errors.user_name
+                    loginFormik.touched.user_name &&
+                    loginFormik.errors.user_name
                   }
                   helperText={
                     loginFormik.touched.user_name
