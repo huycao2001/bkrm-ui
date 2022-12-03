@@ -1,21 +1,24 @@
-import * as React from 'react';
-import { useState } from 'react';
-import { Button , ListItem, Menu, MenuItem} from "@material-ui/core";
+import * as React from "react";
+import { useState } from "react";
+import { Button, ListItem, Menu, MenuItem } from "@material-ui/core";
 
+import { Link, Redirect } from "react-router-dom";
 
-import { Link, Redirect } from 'react-router-dom';
+import { useTheme, makeStyles, createStyles } from "@material-ui/styles";
 
-
-import { useTheme, makeStyles, createStyles } from "@material-ui/core/styles";
-
+const useStyles = makeStyles({
+  popOverRoot: {
+    pointerEvents: "none",
+  },
+});
 export const salesModule = {
   title: "Bán hàng",
-  key: 'salesModule',
+  key: "salesModule",
   children: [
     {
       id: 1,
       title: "Bán Hàng",
-      key: 'Bán Hàng',
+      key: "Bán Hàng",
       url: "/home/sales/cart",
       //icon:  <Box component="img" sx={{ height: 24, width: 24}} src={cartIcon} style={{marginLeft:-10}} />,
       //iconColor: cartIcon,
@@ -55,15 +58,14 @@ export const salesModule = {
   ],
 };
 
-
 export const inventoryModule = {
   title: "Kho Hàng",
-  key:"inventoryModule",
+  key: "inventoryModule",
   children: [
     {
       id: 4,
       title: "Nhập Hàng",
-      key:"Nhập Hàng",
+      key: "Nhập Hàng",
       url: "/home/inventory/import",
       // icon:  <Box component="img" sx={{ height: 24, width: 24 }} src={importIcon} style={{marginLeft:-10}} />,
       // iconColor: importIcon,
@@ -103,7 +105,7 @@ export const inventoryModule = {
     {
       id: 9,
       title: "Đơn chuyển kho",
-      key: 'Đơn chuyển kho',
+      key: "Đơn chuyển kho",
       url: "/home/inventory/transfer-inventory",
       // icon:  <Box component="img" sx={{ height: 24, width: 24 }} src={deliveryIcon} style={{marginLeft:-10}} />,
       // iconColor: deliveryIcon,
@@ -133,11 +135,9 @@ export const inventoryModule = {
   ],
 };
 
-
-
 export const hrModule = {
   title: "Nhân Sự",
-  key:'hrModule',
+  key: "hrModule",
   children: [
     {
       id: 14,
@@ -162,10 +162,9 @@ export const hrModule = {
   ],
 };
 
-
 export const manageModule = {
   title: "Quản Lý",
-  key:'reportModule',
+  key: "reportModule",
 
   children: [
     {
@@ -198,11 +197,8 @@ export const manageModule = {
       // icon1: icons.FavoriteBorderOutlinedIcon,
       // icon2: icons1.FavoriteTwoToneIcon,
     },
-
   ],
 };
-
-
 
 export const settingModule = {
   id: 19,
@@ -215,21 +211,41 @@ export const settingModule = {
   // icon1: icons.LanguageOutlinedIcon,
   // icon2: icons1.LanguageTwoToneIcon,
   children: [
-    { id: 19.1, title: "Cài đặt chung",key: "Cài đặt chung", url: "/home/manager/setting" },
+    {
+      id: 19.1,
+      title: "Cài đặt chung",
+      key: "Cài đặt chung",
+      url: "/home/manager/setting",
+    },
     {
       id: 19.2,
       title: "Khuyến mãi",
-      key:"Khuyến mãi",
+      key: "Khuyến mãi",
       url: "/home/manager/setting-discount",
-      disabled:false
- 
+      disabled: false,
     },
-    { id: 19.3, title: "Voucher", key: "Voucher",url: "/home/manager/setting-voucher" ,disabled:false },
-    { id: 19.4, title: "Mẫu email",key: "Mẫu email", url: "/home/manager/setting-email" ,disabled:false },
-    { id: 19.5, title: "Trang web",  key: "Trang web",url: "/home/manager/setting-web" },
+    {
+      id: 19.3,
+      title: "Voucher",
+      key: "Voucher",
+      url: "/home/manager/setting-voucher",
+      disabled: false,
+    },
+    {
+      id: 19.4,
+      title: "Mẫu email",
+      key: "Mẫu email",
+      url: "/home/manager/setting-email",
+      disabled: false,
+    },
+    {
+      id: 19.5,
+      title: "Trang web",
+      key: "Trang web",
+      url: "/home/manager/setting-web",
+    },
   ],
 };
-
 
 const statModule = {
   id: 20.1,
@@ -245,52 +261,99 @@ const statModule = {
     { id: 20.2, title: "Sổ quỹ", key: "Sổ quỹ", url: "/home/manager/cashbook" },
 
     // { id: 20.8, title: "Tổng quan", url: "/home/manager/general-report" },
-    { id: 20.3, title: "Báo cáo cuối ngày",key: "Báo cáo cuối ngày", url: "/home/manager/end-date-report" },
-    { id: 20.9, title: "Doanh thu",key: "Doanh thu", url: "/home/manager/income-report" },
-    { id: 20.4, title: "Hàng hoá", key: "Hàng hoá", url: "/home/manager/product-report" },
-    { id: 20.5, title: "Khách hàng", key: "Khách hàng",url: "/home/manager/customer-report" },
-    { id: 20.6, title: "Nhân viên",key: "Nhân viên", url: "/home/manager/employee-report" },
-    { id: 20.7, title: "Nhà cung cấp", key: "Nhà cung cấp", url: "/home/manager/supplier-report" },
-    { id: 20.10, title: "Chi nhánh", key: "Chi nhánh",  url: "/home/manager/branch-report" },
-    { id: 20.11, title: "Tài chính (lãi lỗ)", key: "Tài chính (lãi lỗ)",  url: "/home/manager/financial-report" },
-
-    
-
+    {
+      id: 20.3,
+      title: "Báo cáo cuối ngày",
+      key: "Báo cáo cuối ngày",
+      url: "/home/manager/end-date-report",
+    },
+    {
+      id: 20.9,
+      title: "Doanh thu",
+      key: "Doanh thu",
+      url: "/home/manager/income-report",
+    },
+    {
+      id: 20.4,
+      title: "Hàng hoá",
+      key: "Hàng hoá",
+      url: "/home/manager/product-report",
+    },
+    {
+      id: 20.5,
+      title: "Khách hàng",
+      key: "Khách hàng",
+      url: "/home/manager/customer-report",
+    },
+    {
+      id: 20.6,
+      title: "Nhân viên",
+      key: "Nhân viên",
+      url: "/home/manager/employee-report",
+    },
+    {
+      id: 20.7,
+      title: "Nhà cung cấp",
+      key: "Nhà cung cấp",
+      url: "/home/manager/supplier-report",
+    },
+    {
+      id: 20.1,
+      title: "Chi nhánh",
+      key: "Chi nhánh",
+      url: "/home/manager/branch-report",
+    },
+    {
+      id: 20.11,
+      title: "Tài chính (lãi lỗ)",
+      key: "Tài chính (lãi lỗ)",
+      url: "/home/manager/financial-report",
+    },
   ],
-}
+};
 
 export default function BasicMenu(props) {
-  const section = props.section; 
+  let currentlyHovering = false;
+  const styles = useStyles();
+  const section = props.section;
   const [anchorEl, setAnchorEl] = useState(null);
   const openMenu = Boolean(anchorEl);
 
   const handleOpenMenu = (event) => {
-    if(anchorEl !== event.currentTarget){
+    if (anchorEl !== event.currentTarget) {
       setAnchorEl(event.currentTarget); // current target -> when we hover the button, the button will be the target we want to drop our menu from
     }
-    
   };
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
 
-
-
+  function handleHover() {
+    currentlyHovering = true;
+  }
+  function handleCloseHover() {
+    currentlyHovering = false;
+    setTimeout(() => {
+      if (!currentlyHovering) {
+        handleCloseMenu();
+      }
+    }, 50);
+  }
   const theme = useTheme();
 
   return (
     <div>
-  
-
       <Button
         id="basic-button"
-        aria-controls={openMenu ? 'basic-menu' : undefined}
+        aria-owns={anchorEl ? "basic-menu" : undefined}
+        aria-controls={openMenu ? "basic-menu" : undefined}
         aria-haspopup="true"
-        aria-expanded={openMenu ? 'true' : undefined}
-        onClick={handleOpenMenu }
+        aria-expanded={openMenu ? "true" : undefined}
+        onClick={handleOpenMenu}
         onMouseOver={handleOpenMenu}
-        style={{ color: "black", fontWeight : "200" }}
+        onMouseLeave={handleCloseHover}
+        style={{ color: "black", fontWeight: "200" }}
         //color = "secondary"
       >
         {section}
@@ -303,17 +366,65 @@ export default function BasicMenu(props) {
         transformOrigin={{ vertical: "top", horizontal: "center" }}
         open={Boolean(anchorEl)}
         onClose={handleCloseMenu}
-        MenuListProps={{ onMouseLeave: handleCloseMenu }}
+        MenuListProps={{
+          onMouseEnter: handleHover,
+          onMouseLeave: handleCloseHover,
+          style: { pointerEvents: "auto" },
+        }}
+        PopoverClasses={{
+          root: styles.popOverRoot,
+        }}
       >
-
-      {section === "Bán hàng" ? (
-              salesModule.children.map((item) => <ListItem  onClick={handleCloseMenu} to = {item.url} component = {Link} >{item.title}</ListItem>)
-            ) :  section === "Kho hàng" ? (
-              inventoryModule.children.map((item) => <ListItem  onClick={handleCloseMenu} to = {item.url} component = {Link} >{item.title}</ListItem>)
-            ) : section === "Quản lý" ? (
-              hrModule.children.map((item) => <ListItem  onClick={handleCloseMenu} to = {item.url} component = {Link} >{item.title}</ListItem>) 
-            ) : section === "Cài đặt" ? (settingModule.children.map((item) => <ListItem  onClick={handleCloseMenu} to = {item.url} component = {Link} >{item.title}</ListItem>) )
-          : ((statModule.children.map((item) => <ListItem  onClick={handleCloseMenu} to = {item.url} component = {Link} >{item.title}</ListItem>) ))}
+        {/* <MenuItem onClick={handleCloseMenu}>Profile</MenuItem> */}
+        {section === "Bán hàng"
+          ? salesModule.children.map((item) => (
+              <ListItem
+                onClick={handleCloseMenu}
+                to={item.url}
+                component={Link}
+              >
+                {item.title}
+              </ListItem>
+            ))
+          : section === "Kho hàng"
+          ? inventoryModule.children.map((item) => (
+              <ListItem
+                onClick={handleCloseMenu}
+                to={item.url}
+                component={Link}
+              >
+                {item.title}
+              </ListItem>
+            ))
+          : section === "Quản lý"
+          ? hrModule.children.map((item) => (
+              <ListItem
+                onClick={handleCloseMenu}
+                to={item.url}
+                component={Link}
+              >
+                {item.title}
+              </ListItem>
+            ))
+          : section === "Cài đặt"
+          ? settingModule.children.map((item) => (
+              <ListItem
+                onClick={handleCloseMenu}
+                to={item.url}
+                component={Link}
+              >
+                {item.title}
+              </ListItem>
+            ))
+          : statModule.children.map((item) => (
+              <ListItem
+                onClick={handleCloseMenu}
+                to={item.url}
+                component={Link}
+              >
+                {item.title}
+              </ListItem>
+            ))}
         {/* <ListItem onClick={handleClose} to = "/signup" component = {Link} >Tổng quan</ListItem> */}
         {/* <ListItem onClick={handleClose}>Sổ quỹ</ListItem> */}
         {/* <Link to={"/home"}> */}
