@@ -87,6 +87,8 @@ const UserInfoPopUp = (props) => {
           </Typography>
 
           <Grid container direction="row" justifyContent="flex-start">
+            
+            {/* Picture slider */}
             <Grid item xs={12} sm={4}>
               <Box
                 sx={{
@@ -108,28 +110,29 @@ const UserInfoPopUp = (props) => {
             </Grid>
 
             <Grid container direction="column" item xs={8}>
-              <Grid container direction="row">
+              <Grid container direction="row" spacing={4}>
                 <Grid item xs={12} sm={6}>
                   <Grid container direction="row" justifyContent="flex-start">
                     <Grid item xs={3} sm={6}>
-                      <Typography variant="h5" gutterBottom component="div">
+                      <Typography  variant="h5" gutterBottom component="div">
                         Username
                       </Typography>
                     </Grid>
                     <Grid item sm={6}>
-                      <Typography variant="body1" gutterBottom component="div">
+                      <Typography style={{overflowWrap: 'break-word'}} variant="body1" gutterBottom component="div">
                         {user ? user.user_name : "Not set"}{ }
                       </Typography>
                     </Grid>
                   </Grid>
+
                   <Grid container direction="row" justifyContent="flex-start">
                     <Grid item xs={3} sm={6}>
-                      <Typography variant="h5" gutterBottom component="div">
+                      <Typography  variant="h5" gutterBottom component="div">
                         Email
                       </Typography>
                     </Grid>
                     <Grid item sm={6}>
-                      <Typography variant="body1" gutterBottom component="div">
+                      <Typography style={{overflowWrap: 'break-word'}} variant="body1" gutterBottom component="div">
                         {user ? user.email : "Not set"}
                       </Typography>
                     </Grid>
@@ -171,15 +174,18 @@ const UserInfoPopUp = (props) => {
                     </Grid>
                   </Grid>
                 </Grid>
+
+
+
                 <Grid item xs={12} sm={6}>
-                  <Grid container direction="row" justifyContent="flex-start">
+                  <Grid container direction="row" justifyContent="flex-start" spacing ={2}>
                     <Grid item xs={3} sm={6}>
                       <Typography variant="h5" gutterBottom component="div">
                         Days since creation
                       </Typography>
                     </Grid>
                     <Grid item sm={6}>
-                      <Typography variant="body1" gutterBottom component="div">
+                      <Typography  style={{overflowWrap: 'break-word'}} variant="body1" gutterBottom component="div">
                         {user ? user.time_since_creation : "Not set"}
                       </Typography>
                     </Grid>
@@ -206,7 +212,7 @@ const UserInfoPopUp = (props) => {
                     </Grid>
                     <Grid item sm={6}>
                       <Typography variant="body1" gutterBottom component="div">
-                        <Typography variant="body1" gutterBottom component="div">
+                        <Typography style={{overflowWrap: 'break-word'}} variant="body1" gutterBottom component="div">
                           {user ? user.store_name : "Not set"}
                         </Typography>
                       </Typography>
@@ -234,7 +240,7 @@ const UserInfoPopUp = (props) => {
                     </Grid>
                     <Grid item sm={6}>
                       <Typography variant="body1" gutterBottom component="div">
-                        <Typography variant="body1" gutterBottom component="div">
+                        <Typography style={{overflowWrap: 'break-word'}} variant="body1" gutterBottom component="div">
                           {user ? (user.number_of_employees) : 0}
                         </Typography>
                       </Typography>
