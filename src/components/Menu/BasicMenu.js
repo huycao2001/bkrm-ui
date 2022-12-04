@@ -435,7 +435,9 @@ export default function BasicMenu(props) {
                 component={Link}
                 divider={
                   item.id !=
-                  salesModule.children.at(salesModule.children.length - 1).id
+                  inventoryModule.children.at(
+                    inventoryModule.children.length - 1
+                  ).id
                     ? true
                     : false
                 }
@@ -458,7 +460,7 @@ export default function BasicMenu(props) {
                 component={Link}
                 divider={
                   item.id !=
-                  salesModule.children.at(salesModule.children.length - 1).id
+                  hrModule.children.at(hrModule.children.length - 1).id
                     ? true
                     : false
                 }
@@ -481,7 +483,8 @@ export default function BasicMenu(props) {
                 component={Link}
                 divider={
                   item.id !=
-                  salesModule.children.at(salesModule.children.length - 1).id
+                  settingModule.children.at(settingModule.children.length - 1)
+                    .id
                     ? true
                     : false
                 }
@@ -503,7 +506,7 @@ export default function BasicMenu(props) {
                 component={Link}
                 divider={
                   item.id !=
-                  salesModule.children.at(salesModule.children.length - 1).id
+                  statModule.children.at(statModule.children.length - 1).id
                     ? true
                     : false
                 }
