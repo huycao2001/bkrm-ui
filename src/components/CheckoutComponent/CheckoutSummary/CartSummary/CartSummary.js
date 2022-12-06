@@ -4,7 +4,7 @@ import {Grid,Card,Box, Typography,TextField,InputAdornment,DialogActions,DialogC
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
-import AddCustomer from '../../../../views/ManagerView/Customer/AddCustomer/AddCustomer'
+//import AddCustomer from '../../../../views/ManagerView/Customer/AddCustomer/AddCustomer'
 
 //import project 
 import * as Input from '../../../TextField/NumberFormatCustom'
@@ -138,8 +138,9 @@ const CartSummary = (props) => {
                         />
 
                 </div>
-
-                <AddCustomer open={open} handleClose={handleClose} onReload = {()=>{}}/>
+                            
+                {/* Implemented later */}
+                {/* <AddCustomer open={open} handleClose={handleClose} onReload = {()=>{}}/> */}
 
 
                 {/* when change mode to menu product */}

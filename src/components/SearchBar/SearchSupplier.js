@@ -5,6 +5,7 @@ import {
   TextField,
   InputAdornment,
   IconButton,
+  Tooltip
 } from "@material-ui/core";
 import {
   useTheme,
@@ -95,6 +96,7 @@ const SearchSupplier = (props) => {
                 </InputAdornment>
               ),
               endAdornment: (
+                <Tooltip title = 'Thêm nhà cung cấp mới'>
                 <IconButton
                   aria-label="delete"
                   size="small"
@@ -103,6 +105,8 @@ const SearchSupplier = (props) => {
                 >
                   <AddIcon />
                 </IconButton>
+                </Tooltip>
+
               ),
             }
           : {

@@ -33,6 +33,9 @@ import PersonIcon from "@material-ui/icons/Person";
 
 import { logOutHandler } from "../../store/actionCreator";
 
+
+// Import views
+import SalesView from "../../views/SalesView/SalesView";
 import InventoryView from "../../views/InventoryView/InventoryView";
 import AdminView from "../../views/AdminView/AdminView";
 
@@ -232,6 +235,7 @@ const HomePage = (props) => {
             ) : (
               <Switch>
                 <Route path={`${path}/inventory`} component={InventoryView} />
+                <Route path={`${path}/sales`} component={SalesView} />
                 <Route path={`${path}/`}>
                   <Redirect
                     to={`${path}/inventory`}

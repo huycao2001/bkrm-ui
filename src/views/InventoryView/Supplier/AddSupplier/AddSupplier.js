@@ -102,7 +102,7 @@ const AddSupplier = (props) => {
       var bodyFormData = new FormData();
       bodyFormData.append("name", supplierFormik.values.name.toString());
       bodyFormData.append("email", supplierFormik.values.email.toString());
-      bodyFormData.append("phone", supplierFormik.values.phone.toString());
+      bodyFormData.append("phone", supplierFormik.values.phone.toString() === "" ? "Không có" : supplierFormik.values.phone.toString() );
       bodyFormData.append("payment_info", supplierFormik.values.paymentInfo.toString());
       bodyFormData.append("payment_info", supplierFormik.values.company.toString());
       bodyFormData.append("address", supplierFormik.values.address.toString());
@@ -319,7 +319,7 @@ const AddSupplier = (props) => {
             variant="contained"
             size="small"
             color="primary"
-            disabled = {!(supplierFormik.isValid)} // && Object.keys(supplierFormik.touched).length > 0
+            disabled = {!(supplierFormik.isValid) || supplierFormik.values.name === ""} // && Object.keys(supplierFormik.touched).length > 0
           >
             Thêm
           </Button>
