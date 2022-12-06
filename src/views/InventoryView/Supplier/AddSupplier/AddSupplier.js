@@ -309,7 +309,7 @@ const AddSupplier = (props) => {
             onClick={handleClose}
             variant="contained"
             size="small"
-            color="primary"
+            color="secondary"
           >
             Huỷ
           </Button>

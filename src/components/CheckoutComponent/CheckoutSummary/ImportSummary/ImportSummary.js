@@ -25,7 +25,7 @@ import {
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import SearchIcon from "@material-ui/icons/Search";
 import AddIcon from "@material-ui/icons/Add";
-//import AddSupplier from "../../../../views/InventoryView/Supplier/AddSupplier/AddSupplier"; implemented later
+import AddSupplier from "../../../../views/InventoryView/Supplier/AddSupplier/AddSupplier"; 
 import VNDInput from "../../../TextField/NumberFormatCustom";
 import {
   VNDFormat,
@@ -82,9 +82,9 @@ const ImportSummary = (props) => {
 
   const theme = useTheme();
   const classes = useStyles(theme);
-  const [open, setOpen] = React.useState(false);
+  const [openAddSupplier, setOpenAddSupplier] = React.useState(false);
   const handleClickOpen = () => {
-    setOpen(true);
+    setOpenAddSupplier(true);
   };
 
   const dispatch = useDispatch();
@@ -177,15 +177,15 @@ const ImportSummary = (props) => {
           />
         </div>
 
-       {/* {open&& <AddSupplier
-          open={open}
+        {openAddSupplier && <AddSupplier
+          open={openAddSupplier}
           // handleClose={handleClose}
-          handleClose={()=>{setOpen(false)}}
+          handleClose={()=>{setOpenAddSupplier(false)}}
           onReload={props.reloadSuppliers}
           setAddSupplier={setAddSupplier}
           isImport={true}
      
-        />} */} 
+        />} 
 
 
 

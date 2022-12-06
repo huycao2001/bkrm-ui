@@ -239,9 +239,9 @@ var color = theme.customization.mode === "Light"? typeShow==='list'?'#000':null:
         {!mini?<VNDFormat value={row.unit_price * row.quantity}style={{color:color}} />:<Input.ThousandFormat value={row.unit_price * row.quantity} style={{paddingLeft:imageType? 0:20, color:color}}/>}
         </TableCell>
         <TableCell align="right" padding={mini ? "none" : "normal"}>
-          <IconButton aria-label="expand row" size="small" style={{marginLeft:10}}>
+          <IconButton onClick={() => handleDeleteItemCart(row.uuid)} aria-label="expand row" size="small" style={{marginLeft:10}}>
             <DeleteForeverTwoToneIcon
-              onClick={() => handleDeleteItemCart(row.uuid)}
+              
             />
           </IconButton>
         </TableCell>
