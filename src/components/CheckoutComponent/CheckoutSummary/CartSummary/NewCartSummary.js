@@ -25,7 +25,7 @@ import Popper from '@material-ui/core/Popper';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import { useSelector } from "react-redux";
 
-import AddCustomer from "../../../../views/ManagerView/Customer/AddCustomer/AddCustomer";
+//import AddCustomer from "../../../../views/ManagerView/Customer/AddCustomer/AddCustomer";
 import giftBox from "../../../../assets/img/icon/giftbox.png";
 // import giftBox from "../../../../assets/img/icon/gift.png";
 // import giftBox from "../../../../assets/img/icon/gift2.png";
@@ -219,13 +219,14 @@ const CartSummary = (props) => {
         </div>
 
         {/* <AddCustomer open={open} handleClose={handleClose} /> */}
-        {open &&<AddCustomer 
+        {/* Implement later */}
+        {/* {open &&<AddCustomer 
         open={open} 
         handleClose={()=>{setOpen(false)}}  
         onReload={props.reloadCustomers} 
         setAddCustomer={setAddCustomer}
         isCart={true}
-        />}
+        />} */}
         {/* when change mode to menu product */}
         {props.children}
 

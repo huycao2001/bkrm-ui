@@ -10,10 +10,11 @@ export const FormatedStatus = (props) => {
     return (
       <Chip
         label="Trả đủ"
-        color="#76ff03"
+        
         variant="outlined"
         icon = {<CheckIcon/>}
         style={{
+          // color:"#76ff03",
           backgroundColor: "#76ff03",
           fontWeight: 500,
           marginLeft: -10,

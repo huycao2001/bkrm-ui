@@ -28,11 +28,11 @@ const ChangeCartBtn = (props) => {
         <>
 
         {cartList.length === 1 ?
-            <IconButton  size="small" style={{marginLeft:25,color:'#000000', backgroundColor:theme.customization.primaryColor[100]}}>
-                <AddIcon fontSize="inherit" onClick={handleAdd} />
+            <IconButton  size="small" onClick={handleAdd} style={{marginLeft:25,color:'#000000', backgroundColor:theme.customization.primaryColor[100]}}>
+                <AddIcon fontSize="inherit"  />
             </IconButton>:
-            <IconButton  size="small" style={{marginLeft:25,color:'#000000', backgroundColor:theme.customization.primaryColor[100]}}>
-                <SwapVertTwoToneIcon fontSize="inherit"  onClick={handleClick}/>
+            <IconButton  size="small" onClick={handleClick} style={{marginLeft:25,color:'#000000', backgroundColor:theme.customization.primaryColor[100]}}>
+                <SwapVertTwoToneIcon fontSize="inherit"  />
             </IconButton>
         }
             <Menu
@@ -55,8 +55,8 @@ const ChangeCartBtn = (props) => {
                         </Grid>
                 
                         <Grid container xs={2} item>
-                            <IconButton  size="small" style={{color:'#000000'}}>
-                                <HighlightOffTwoToneIcon fontSize="inherit" onClick={()=>handleDelete(index )} />
+                            <IconButton onClick={()=>handleDelete(index )}  size="small" style={{color:'#000000'}}>
+                                <HighlightOffTwoToneIcon fontSize="inherit"  />
                             </IconButton>
                         </Grid>
                     </Grid>
