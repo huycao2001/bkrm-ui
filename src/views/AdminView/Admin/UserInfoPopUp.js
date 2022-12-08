@@ -27,6 +27,7 @@ import clsx from "clsx";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import DialogWrapper from "../../../components/Modal/DialogWrapper";
 import { Cancel, CheckCircle, Close, Error } from "@material-ui/icons";
+import { VNDFormat } from "../../../components/TextField/NumberFormatCustom";
 // const useStyles = makeStyles((theme) =>
 //   createStyles({
 //     root: {
@@ -87,7 +88,7 @@ const UserInfoPopUp = (props) => {
           </Typography>
 
           <Grid container direction="row" justifyContent="flex-start">
-            
+
             {/* Picture slider */}
             <Grid item xs={12} sm={4}>
               <Box
@@ -114,12 +115,12 @@ const UserInfoPopUp = (props) => {
                 <Grid item xs={12} sm={6}>
                   <Grid container direction="row" justifyContent="flex-start">
                     <Grid item xs={3} sm={6}>
-                      <Typography  variant="h5" gutterBottom component="div">
+                      <Typography variant="h5" gutterBottom component="div">
                         Username
                       </Typography>
                     </Grid>
                     <Grid item sm={6}>
-                      <Typography style={{overflowWrap: 'break-word'}} variant="body1" gutterBottom component="div">
+                      <Typography style={{ overflowWrap: 'break-word' }} variant="body1" gutterBottom component="div">
                         {user ? user.user_name : "Not set"}{ }
                       </Typography>
                     </Grid>
@@ -127,12 +128,12 @@ const UserInfoPopUp = (props) => {
 
                   <Grid container direction="row" justifyContent="flex-start">
                     <Grid item xs={3} sm={6}>
-                      <Typography  variant="h5" gutterBottom component="div">
+                      <Typography variant="h5" gutterBottom component="div">
                         Email
                       </Typography>
                     </Grid>
                     <Grid item sm={6}>
-                      <Typography style={{overflowWrap: 'break-word'}} variant="body1" gutterBottom component="div">
+                      <Typography style={{ overflowWrap: 'break-word' }} variant="body1" gutterBottom component="div">
                         {user ? user.email : "Not set"}
                       </Typography>
                     </Grid>
@@ -173,20 +174,15 @@ const UserInfoPopUp = (props) => {
                       </Typography>
                     </Grid>
                   </Grid>
-                </Grid>
-
-
-
-                <Grid item xs={12} sm={6}>
-                  <Grid container direction="row" justifyContent="flex-start" spacing ={2}>
+                  <Grid container direction="row" justifyContent="flex-start">
                     <Grid item xs={3} sm={6}>
                       <Typography variant="h5" gutterBottom component="div">
-                        Days since creation
+                        Since creation
                       </Typography>
                     </Grid>
                     <Grid item sm={6}>
-                      <Typography  style={{overflowWrap: 'break-word'}} variant="body1" gutterBottom component="div">
-                        {user ? user.time_since_creation : "Not set"}
+                      <Typography style={{ overflowWrap: 'break-word' }} variant="body1" gutterBottom component="div">
+                        {(user ? user.time_since_creation : 0) + " " + (user ? (user.time_since_creation ? (user.time_since_creation == 1 ? "day" : "days") : "days") : "days")}
                       </Typography>
                     </Grid>
                   </Grid>
@@ -198,12 +194,15 @@ const UserInfoPopUp = (props) => {
                     </Grid>
                     <Grid item sm={6}>
                       <Typography variant="body1" gutterBottom component="div">
-                        <Typography variant="body1" gutterBottom component="div">
-                          {user ? (user.approved_by_admin ? "Approved" : "Unapproved") : "Not set"}
-                        </Typography>
+                        {user ? (user.approved_by_admin ? "Approved" : "Unapproved") : "Not set"}
                       </Typography>
                     </Grid>
                   </Grid>
+                </Grid>
+
+
+
+                <Grid item xs={12} sm={6}>
                   <Grid container direction="row" justifyContent="flex-start">
                     <Grid item xs={3} sm={6}>
                       <Typography variant="h5" gutterBottom component="div">
@@ -212,7 +211,7 @@ const UserInfoPopUp = (props) => {
                     </Grid>
                     <Grid item sm={6}>
                       <Typography variant="body1" gutterBottom component="div">
-                        <Typography style={{overflowWrap: 'break-word'}} variant="body1" gutterBottom component="div">
+                        <Typography style={{ overflowWrap: 'break-word' }} variant="body1" gutterBottom component="div">
                           {user ? user.store_name : "Not set"}
                         </Typography>
                       </Typography>
@@ -221,7 +220,7 @@ const UserInfoPopUp = (props) => {
                   <Grid container direction="row" justifyContent="flex-start">
                     <Grid item xs={3} sm={6}>
                       <Typography variant="h5" gutterBottom component="div">
-                        Number of branches
+                        Branches
                       </Typography>
                     </Grid>
                     <Grid item sm={6}>
@@ -235,13 +234,51 @@ const UserInfoPopUp = (props) => {
                   <Grid container direction="row" justifyContent="flex-start">
                     <Grid item xs={3} sm={6}>
                       <Typography variant="h5" gutterBottom component="div">
-                        Number of employees
+                        Employees
                       </Typography>
                     </Grid>
                     <Grid item sm={6}>
                       <Typography variant="body1" gutterBottom component="div">
-                        <Typography style={{overflowWrap: 'break-word'}} variant="body1" gutterBottom component="div">
+                        <Typography style={{ overflowWrap: 'break-word' }} variant="body1" gutterBottom component="div">
                           {user ? (user.number_of_employees) : 0}
+                        </Typography>
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                  <Grid container direction="row" justifyContent="flex-start">
+                    <Grid item xs={3} sm={6}>
+                      <Typography variant="h5" gutterBottom component="div">
+                        Products
+                      </Typography>
+                    </Grid>
+                    <Grid item sm={6}>
+                      <Typography variant="body1" gutterBottom component="div">
+                        {user ? user.number_of_products : 0}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                  <Grid container direction="row" justifyContent="flex-start">
+                    <Grid item xs={3} sm={6}>
+                      <Typography variant="h5" gutterBottom component="div">
+                        Orders
+                      </Typography>
+                    </Grid>
+                    <Grid item sm={6}>
+                      <Typography variant="body1" gutterBottom component="div">
+                        {user ? user.number_of_orders : 0}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                  <Grid container direction="row" justifyContent="flex-start">
+                    <Grid item xs={3} sm={6}>
+                      <Typography variant="h5" gutterBottom component="div">
+                        Revenue
+                      </Typography>
+                    </Grid>
+                    <Grid item sm={6}>
+                      <Typography variant="body1" gutterBottom component="div">
+                        <Typography style={{ overflowWrap: 'break-word' }} variant="body1" gutterBottom component="div">
+                          <VNDFormat value={user ? user.total_revenue : 0} />
                         </Typography>
                       </Typography>
                     </Grid>
