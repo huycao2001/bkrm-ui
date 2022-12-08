@@ -39,6 +39,7 @@ import SalesView from "../../views/SalesView/SalesView";
 import InventoryView from "../../views/InventoryView/InventoryView";
 import AdminView from "../../views/AdminView/AdminView";
 import HRView from "../../views/HRView/HRView";
+import HomeView from "../../views/HomeView/HomeView";
 
 import BasicMenu from "../../components/Menu/BasicMenu";
 
@@ -64,8 +65,8 @@ const HomePage = (props) => {
     infoDetail.role === "owner"
       ? "Chủ cửa hàng"
       : infoDetail.role === "employee"
-      ? "Nhân viên"
-      : "Admin";
+        ? "Nhân viên"
+        : "Admin";
   const permissions = useSelector((state) => state.info.user.permissions);
   console.log("home page called with path " + `${path}`);
   // console.log(useLocation());
@@ -114,7 +115,7 @@ const HomePage = (props) => {
               </Typography>
               <IconButton
                 aria-label="open drawer"
-                onClick={() => {}}
+                onClick={() => { }}
                 edge="start"
               >
                 <MenuIcon />
@@ -244,6 +245,13 @@ const HomePage = (props) => {
                     component={InventoryView}
                   />
                 </Route>
+                {/* <Route path={`${path}/`} component={HomeView}/>
+                <Route path={`${path}/`} >
+                  <Redirect
+                    to={`${path}/`}
+                    component={HomeView}
+                  />
+                </Route> */}
               </Switch>
             )}
           </Suspense>
