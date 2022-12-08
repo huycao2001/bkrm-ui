@@ -38,6 +38,7 @@ import { logOutHandler } from "../../store/actionCreator";
 import SalesView from "../../views/SalesView/SalesView";
 import InventoryView from "../../views/InventoryView/InventoryView";
 import AdminView from "../../views/AdminView/AdminView";
+import HRView from "../../views/HRView/HRView";
 
 import BasicMenu from "../../components/Menu/BasicMenu";
 
@@ -236,6 +237,7 @@ const HomePage = (props) => {
               <Switch>
                 <Route path={`${path}/inventory`} component={InventoryView} />
                 <Route path={`${path}/sales`} component={SalesView} />
+                <Route path={`${path}/hr`} component={HRView} />
                 <Route path={`${path}/`}>
                   <Redirect
                     to={`${path}/inventory`}
