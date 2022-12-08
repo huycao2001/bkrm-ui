@@ -452,8 +452,31 @@ export default function BasicMenu(props) {
                 {item.title}
               </ListItem>
             ))
+          : section === "Nhân sự"
+            ? hrModule.children.map((item) => (
+                <ListItem
+                  onClick={handleCloseMenu}
+                  to={item.url}
+                  component={Link}
+                  divider={
+                    item.id !=
+                    hrModule.children.at(hrModule.children.length - 1).id
+                      ? true
+                      : false
+                  }
+                  sx={{
+                    "&:hover": {
+                      backgroundColor: "#f8f8f8",
+                      color: "black",
+                    },
+                    color: "black",
+                  }}
+                >
+                  {item.title}
+                </ListItem>
+              ))
           : section === "Quản lý"
-          ? hrModule.children.map((item) => (
+          ? manageModule.children.map((item) => (
               <ListItem
                 onClick={handleCloseMenu}
                 to={item.url}
