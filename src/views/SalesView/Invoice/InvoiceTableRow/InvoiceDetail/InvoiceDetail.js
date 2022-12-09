@@ -12,19 +12,30 @@ import {
   Box,
   Tooltip,
   Chip,
-  Grid,
-  TableHead,
-  TableBody,
-  Typography,
-  Table,
-  TableCell,
-  TableRow,
+  //Grid,
+  //TableHead,
+  //TableBody,
+  //Typography,
+  //Table,
+  //TableCell,
+  //TableRow,
   Collapse,
   Button,
   ListItemIcon,
   ListItemText,
   IconButton,
 } from "@material-ui/core";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import { styled } from "@mui/material/styles";
+import Divider from "@mui/material/Divider";
+
 // import icon
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import PrintTwoToneIcon from "@material-ui/icons/PrintTwoTone";
@@ -44,8 +55,8 @@ import orderApi from "../../../../../api/orderApi";
 import { VNDFormat } from "../../../../../components/TextField/NumberFormatCustom";
 import PayRemaining from "../../../../../components/Modal/PayRemaining";
 import invoiceApi from "../../../../../api/invoiceApi";
-import setting from "../../../../../assets/constant/setting"
-import {statusAction} from '../../../../../store/slice/statusSlice'
+import setting from "../../../../../assets/constant/setting";
+import { statusAction } from "../../../../../store/slice/statusSlice";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -92,6 +103,26 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: "#2196f3",
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  "&:last-child td, &:last-child th": {
+    border: 0,
+  },
+}));
+
 function InvoiceDetail(props) {
   const { row, openRow, onReload } = props.parentProps;
   const { isMini } = props;
@@ -99,11 +130,9 @@ function InvoiceDetail(props) {
   const info = useSelector((state) => state.info);
   const store_uuid = info.store.uuid;
   const branch_uuid = info.branch.uuid;
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
- 
   //  tam thoi
-
 
   const theme = useTheme();
   const xsScreen = useMediaQuery(theme.breakpoints.down("xs"));
@@ -138,9 +167,9 @@ function InvoiceDetail(props) {
       onReload();
     } catch (err) {
       dispatch(statusAction.failedStatus("Xóa hóa đơn thất bại"));
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   const [order, setOrder] = useState({
     customer: { name: "" },
@@ -149,13 +178,12 @@ function InvoiceDetail(props) {
     details: [],
   });
 
-
   useEffect(() => {
     const loadData = async () => {
       try {
         const res = await orderApi.getOrder(store_uuid, row.uuid);
         // console.log(res.data)
-        console.log("res",res.data)
+        console.log("res", res.data);
         setOrder(res.data);
       } catch (error) {
         setOrder({
@@ -192,23 +220,22 @@ function InvoiceDetail(props) {
     content: () => componentRef.current,
   });
 
-
   function getDifferenceInDays(date1, date2) {
     const diffInMs = Math.abs(date2 - date1);
     return diffInMs / (1000 * 60 * 60 * 24);
   }
-  const store_setting = info.store.general_configuration? JSON.parse(info.store.general_configuration): setting
+  const store_setting = info.store.general_configuration
+    ? JSON.parse(info.store.general_configuration)
+    : setting;
   const type = store_setting?.printReceiptWhenSell.cartModal;
 
-  const returnLimit = store_setting?.returnLimit
-
+  const returnLimit = store_setting?.returnLimit;
 
   // const haveReturnQuantity = order.details.ex(()=>returned_quantity)
-  var haveReturnQuantity =   order.details.every(function (element, index) {
-    if ( Number(element.returned_quantity) === 0) return false;
+  var haveReturnQuantity = order.details.every(function (element, index) {
+    if (Number(element.returned_quantity) === 0) return false;
     else return true;
-  })
-
+  });
 
   return (
     <Collapse
@@ -232,169 +259,253 @@ function InvoiceDetail(props) {
         editApiCall={editInventoryOrderApiCall}
       />
       {/* <Collapse in={true } timeout="auto" unmountOnExit> */}
-      <Box margin={1}>
-        <Typography
-          variant="h3"
-          gutterBottom
-          component="div"
-          className={classes.typo}
-        >
-          {row.name}
-        </Typography>
 
-        <Grid container direction="row" justifyContent="flex-start">
-          <Grid item xs={12} sm={5}>
-            <Grid container direction="row" justifyContent="flex-start">
-              <Grid item xs={7} sm={5}>
-                <Typography variant="h5" gutterBottom component="div">
-                  Mã hoá đơn
-                </Typography>
+      <Box margin={5}>
+        <Grid container direction="row" sx={{ mb: 5 }}>
+          <Grid item md={4} sx={{ mb: 5 }}>
+            <Grid container direction="column">
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 400,
+                    color: "#878787",
+                    letterSpacing: 1,
+                  }}
+                >
+                  MÃ HOÁ ĐƠN
+                </Box>
               </Grid>
-              <Grid item sm={4}>
-                <Typography variant="body1" gutterBottom component="div">
-                  {row.order_code}{" "}
-                </Typography>
-              </Grid>
-            </Grid>
-            <Grid container direction="row" justifyContent="flex-start">
-              <Grid item xs={7} sm={5}>
-                <Typography variant="h5" gutterBottom component="div">
-                  Ngày bán{" "}
-                </Typography>
-              </Grid>
-              <Grid item sm={4}>
-                <Typography variant="body1" gutterBottom component="div">
-                  {/* {row.creation_date}{" "} */}
-                  {row.creation_date?.split(" ")[0].split('-').reverse().join('/').concat("\u00a0\u00a0"+ row.creation_date?.split(" ")[1].substr(0, 5)) }
-
-                </Typography>
-              </Grid>
-            </Grid>
-            <Grid container direction="row" justifyContent="flex-start">
-              <Grid item xs={7} sm={5}>
-                <Typography variant="h5" gutterBottom component="div">
-                  Khách hàng
-                </Typography>
-              </Grid>
-              <Grid item sm={4}>
-                <Typography variant="body1" gutterBottom component="div">
-                  {order.customer ? order.customer.name : ""}
-                </Typography>
-              </Grid>
-            </Grid>
-            <Grid container direction="row" justifyContent="flex-start">
-              <Grid item xs={7} sm={5}>
-                <Typography variant="h5" gutterBottom component="div">
-                  Người bán
-                </Typography>
-              </Grid>
-              <Grid item sm={4}>
-                <Typography variant="body1" gutterBottom component="div">
-                  {order.created_by_user ? order.created_by_user.name : ""}{" "}
-                </Typography>
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                  }}
+                >
+                  {row.order_code}
+                </Box>
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={12} sm={7}>
-            <Grid
-              container
-              direction="row"
-              justifyContent="flex-start"
-              alignItems="center"
-            >
-              <Grid item xs={7} sm={4}>
-                <Typography variant="h5" gutterBottom component="div">
-                  Trạng thái
-                </Typography>
+          <Grid item md={4}>
+            <Grid container direction="column">
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 400,
+                    color: "#878787",
+                    letterSpacing: 1,
+                  }}
+                >
+                  NGƯỜI BÁN
+                </Box>
               </Grid>
-              <Grid item xs={3} sm={4}>
-                <Typography variant="body1" gutterBottom component="div">
-                  {/* Cần thu <VNDFormat value={debtAmount} /> */}
-                  {debtAmount > 0 ? "Cần thu thêm " : "Trả đủ"}
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    color: "#2196f3",
+                  }}
+                >
+                  {order.created_by_user ? order.created_by_user.name : ""}{" "}
+                </Box>
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid item md={4}>
+            <Grid container direction="column">
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 400,
+                    color: "#878787",
+                    letterSpacing: 1,
+                  }}
+                >
+                  CHI NHÁNH THỰC HIỆN
+                </Box>
+              </Grid>
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                  }}
+                >
+                  {order.branch ? order.branch.name : ""}
+                </Box>
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid item md={4} sx={{ mb: 5 }}>
+            <Grid container direction="column">
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 400,
+                    color: "#878787",
+                    letterSpacing: 2,
+                  }}
+                >
+                  NGÀY BÁN
+                </Box>
+              </Grid>
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    //color: "#878787",
+                  }}
+                >
+                  {row.creation_date
+                    ?.split(" ")[0]
+                    .split("-")
+                    .reverse()
+                    .join("/")
+                    .concat(
+                      "\u00a0\u00a0" +
+                        row.creation_date?.split(" ")[1].substr(0, 5)
+                    )}
+                </Box>
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid item md={4}>
+            <Grid container direction="column">
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 400,
+                    color: "#878787",
+                  }}
+                >
+                  TRẠNG THÁI
+                </Box>
+              </Grid>
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    //color: "#878787",
+                  }}
+                >
+                  {debtAmount > 0 ? "Còn nợ " : "Trả đủ"}
                   {debtAmount > 0 ? <VNDFormat value={debtAmount} /> : null}
-                </Typography>
-              </Grid>
-              <Grid item xs={2}>
-                {debtAmount > 0 ? (
-                  <Button
-                    color="primary"
-                    size="small"
-                    variant="contained"
-                    onClick={() => setOpenPayRemaining(true)}
-                  >
-                    Trả tiếp
-                  </Button>
-                ) : null}
+                </Box>
               </Grid>
             </Grid>
-            <Grid container direction="row" justifyContent="flex-start">
-              <Grid item xs={7} sm={4}>
-                <Typography variant="h5" gutterBottom component="div">
-                  Tổng tiền hoá đơn
-                </Typography>
+          </Grid>
+          <Grid item md={4}>
+            <Grid container direction="column">
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 400,
+                    color: "#878787",
+                  }}
+                >
+                  PHƯƠNG THỨC THANH TOÁN
+                </Box>
               </Grid>
-              <Grid item sm={4}>
-                <Typography variant="body1" gutterBottom component="div">
-                  <VNDFormat value={order.total_amount - order.discount} />
-                </Typography>
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    //color: "#878787",
+                  }}
+                >
+                  {row.payment_method === "cash" ? "Tiền mặt" : "Thẻ"}
+                </Box>
               </Grid>
             </Grid>
-            <Grid container direction="row" justifyContent="flex-start">
-              <Grid item xs={7} sm={4}>
-                <Typography variant="h5" gutterBottom component="div">
-                  Chi nhánh thực hiện
-                </Typography>
+          </Grid>
+          <Grid item md={4}>
+            <Grid container direction="column">
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 400,
+                    color: "#878787",
+                  }}
+                >
+                  KHÁCH HÀNG
+                </Box>
               </Grid>
-              <Grid item sm={4}>
-                <Typography variant="body1" gutterBottom component="div">
-                  {order.branch ? order.branch.name : ""}{" "}
-                </Typography>
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    //color: "#878787",
+                  }}
+                >
+                  {order.customer ? order.customer.name : ""}
+                </Box>
               </Grid>
             </Grid>
-            <Grid container direction="row" justifyContent="flex-start">
-              <Grid item xs={7} sm={4}>
-                <Typography variant="h5" gutterBottom component="div">
-                  Phương thức thanh toán
-                </Typography>
+          </Grid>
+          <Grid item md={4}>
+            <Grid container direction="column">
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 400,
+                    color: "#878787",
+                  }}
+                >
+                  TỔNG TIỀN HOÁ ĐƠN
+                </Box>
               </Grid>
-              <Grid item sm={4}>
-                <Typography variant="body1" gutterBottom component="div">
-                  {row.payment_method === "cash" ? "Tiền mặt" : "Thẻ"}{" "}
-                </Typography>
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    //color: "#878787",
+                  }}
+                >
+                  <VNDFormat
+                    value={row.total_amount - row.discount}
+                  ></VNDFormat>{" "}
+                </Box>
               </Grid>
             </Grid>
           </Grid>
         </Grid>
 
-        <Typography
-          variant="h4"
-          gutterBottom
-          component="div"
-          style={{ marginTop: 30 }}
-        >
-          Danh sách sản phẩm
-        </Typography>
-        <Table size="small" aria-label="purchases">
-          <TableHead>
-            <TableRow>
-              <TableCell>Mã SP</TableCell>
-              <TableCell>Sản phẩm</TableCell>
+        <Table size="small" aria-label="purchases" sx={{ borderBottom: 0 }}>
+          <TableHead sx={{ borderBottom: 0 }}>
+            <TableRow sx={{ borderBottom: 0 }}>
+              <StyledTableCell>Mã SP</StyledTableCell>
+              <StyledTableCell>Sản phẩm</StyledTableCell>
               {/* <TableCell>Mã vạch</TableCell> */}
-              <TableCell align="right">Số lượng</TableCell>
-              {haveReturnQuantity ?<TableCell align="right">Đổi trả</TableCell>:null}
-              <TableCell align="right">Giá bán</TableCell>
-              <TableCell align="right">Thành tiền</TableCell>
+              <StyledTableCell align="right">Số lượng</StyledTableCell>
+              <StyledTableCell align="right">Đổi trả</StyledTableCell>
+              <StyledTableCell align="right">Giá nhập</StyledTableCell>
+              <StyledTableCell align="right">Thành tiền</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {order.details.map((detail) => (
-              <TableRow key={detail.product_id}>
-                <TableCell component="th" scope="row">
+              <StyledTableRow key={detail.product_id}>
+                <StyledTableCell component="th" scope="row">
                   {detail.product_code}
-                </TableCell>
-                <TableCell>{detail.name}</TableCell>
+                </StyledTableCell>
+                <StyledTableCell>{detail.name}</StyledTableCell>
                 {/* <TableCell>{detail.bar_code}</TableCell> */}
-                <TableCell align="right">
+                <StyledTableCell align="right">
                   <div>
                     {detail.quantity}
                     <div>
@@ -408,7 +519,7 @@ function InvoiceDetail(props) {
                                 batch?.expiry_date
                                   ? batch?.expiry_date.substring(0, 10)
                                   : ""
-                              }) - ${batch.additional_quantity}`}
+                              })-${batch.additional_quantity}`}
                               key={batch.id}
                               color={batch.is_new ? "primary" : "secondary"}
                               variant="outlined"
@@ -417,10 +528,9 @@ function InvoiceDetail(props) {
                         : null}
                     </div>
                   </div>
-                </TableCell>
-                {/* <TableCell align="right">{detail.returned_quantity}</TableCell> */}
-                {haveReturnQuantity?
-                 <TableCell align="right">
+                </StyledTableCell>
+
+                <StyledTableCell align="right">
                   <div>
                     {detail.returned_quantity}
                     <div>
@@ -443,94 +553,160 @@ function InvoiceDetail(props) {
                         : null}
                     </div>
                   </div>
-                </TableCell>:null}
-                <TableCell align="right">
+                </StyledTableCell>
+                <StyledTableCell align="right">
                   <VNDFormat value={detail.unit_price} />
-                </TableCell>
-                <TableCell align="right" style={{ fontWeight: 700 }}>
-                  <VNDFormat value={detail.quantity * detail.unit_price} />
-                </TableCell>
-              </TableRow>
+                </StyledTableCell>
+                <StyledTableCell align="right" style={{ fontWeight: 700 }}>
+                  <VNDFormat
+                    value={Number(detail.quantity) * Number(detail.unit_price)}
+                  />
+                </StyledTableCell>
+              </StyledTableRow>
             ))}
           </TableBody>
         </Table>
-        <Box
-          className={classes.background}
-          style={{
-            padding: 10,
-            borderRadius: theme.customization.borderRadius,
-            marginTop: 10,
-          }}
-        >
-          <Grid container direction="column">
-            <Grid container direction="row" justifyContent={"flex-end"}>
-              <Grid item xs={7} sm={2}>
-                {/* <Typography variant="h5" gutterBottom component="div">Tổng số lượng</Typography> */}
-                <Typography variant="h5" gutterBottom component="div">
-                  Tổng SL sản phẩm ({order.details.length})
-                </Typography>
-              </Grid>
-              <Grid item xs={2} sm={2}>
-                <Typography variant="body1" gutterBottom component="div">
-                  {calculateTotalQuantity(order.details)}
-                </Typography>
-              </Grid>
-            </Grid>
-
-            <Grid container direction="row" justifyContent={"flex-end"}>
-              <Grid item xs={7} sm={2}>
-                <Typography variant="h5" gutterBottom component="div">
-                  Tiền hàng
-                </Typography>
-              </Grid>
-              <Grid item xs={2} sm={2}>
-                <Typography variant="body1" gutterBottom component="div">
-                  <VNDFormat value={row.total_amount} />
-                </Typography>
+        <Grid container direction="column" sx={{ mt: 5 }}>
+          <Grid
+            container
+            direction="row"
+            justifyContent={"flex-end"}
+            sx={{ mb: 1 }}
+          >
+            <Grid item md={2}>
+              <Grid container justifyContent="flex-end">
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    letterSpacing: 1,
+                    //color: "#878787",
+                  }}
+                >
+                  TIỀN HÀNG
+                </Box>
               </Grid>
             </Grid>
-
-            <Grid container direction="row" justifyContent={"flex-end"}>
-              <Grid item xs={7} sm={2}>
-                <Typography variant="h5" gutterBottom component="div">
-                  Giảm giá
-                </Typography>
-              </Grid>
-              <Grid item xs={2} sm={2}>
-                <Typography variant="body1" gutterBottom component="div">
-                  <VNDFormat value={row.discount} />
-                </Typography>
-              </Grid>
-            </Grid>
-
-            <Grid container direction="row" justifyContent={"flex-end"}>
-              <Grid item xs={7} sm={2}>
-                <Typography variant="h5" gutterBottom component="div">
-                  Tổng tiền hoá đơn
-                </Typography>
-              </Grid>
-              <Grid item xs={2} sm={2}>
-                <Typography variant="body1" gutterBottom component="div" style={{fontWeight:500, color:theme.customization.primaryColor[500]}}>
-                  <VNDFormat value={row.total_amount - row.discount} />
-                </Typography>
-              </Grid>
-            </Grid>
-
-            <Grid container direction="row" justifyContent={"flex-end"}>
-              <Grid item xs={7} sm={2}>
-                <Typography variant="h5" gutterBottom component="div">
-                  Khách đã trả
-                </Typography>
-              </Grid>
-              <Grid item xs={2} sm={2}>
-                <Typography variant="body1" gutterBottom component="div">
-                  <VNDFormat value={row.paid_amount} />
-                </Typography>
+            <Grid item md={2.5}>
+              <Grid container justifyContent="flex-end">
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    //color: "#878787",
+                  }}
+                >
+                  <VNDFormat value={order.total_amount} />
+                </Box>
               </Grid>
             </Grid>
           </Grid>
-        </Box>
-
+          <Grid
+            container
+            direction="row"
+            justifyContent={"flex-end"}
+            sx={{ mb: 1 }}
+          >
+            <Grid item md={2}>
+              <Grid container justifyContent="flex-end">
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    letterSpacing: 1,
+                    //color: "#878787",
+                  }}
+                >
+                  GIẢM GIÁ
+                </Box>
+              </Grid>
+            </Grid>
+            <Grid item md={2.5}>
+              <Grid container justifyContent="flex-end">
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    //color: "#878787",
+                  }}
+                >
+                  <VNDFormat value={order.discount} />
+                </Box>
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid container justifyContent="flex-end">
+            <Divider sx={{ width: 410, mb: 1 }}></Divider>
+          </Grid>
+          <Grid
+            container
+            direction="row"
+            justifyContent={"flex-end"}
+            sx={{ mb: 1 }}
+          >
+            <Grid item md={2}>
+              <Grid container justifyContent="flex-end">
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    letterSpacing: 1,
+                    //color: "#878787",
+                  }}
+                >
+                  TỔNG TIỀN HOÁ ĐƠN
+                </Box>
+              </Grid>
+            </Grid>
+            <Grid item md={2.5}>
+              <Grid container justifyContent="flex-end">
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    //color: "#878787",
+                  }}
+                >
+                  <VNDFormat value={row.total_amount - row.discount} />
+                </Box>
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            direction="row"
+            justifyContent={"flex-end"}
+            sx={{ mb: 1 }}
+          >
+            <Grid item md={2}>
+              <Grid container justifyContent="flex-end">
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    letterSpacing: 1,
+                    //color: "#878787",
+                  }}
+                >
+                  KHÁCH ĐÃ TRẢ
+                </Box>
+              </Grid>
+            </Grid>
+            <Grid item md={2.5}>
+              <Grid container justifyContent="flex-end">
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    //color: "#878787",
+                  }}
+                >
+                  <VNDFormat value={row.paid_amount} />
+                </Box>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
         <Grid
           container
           direction="row"
@@ -558,30 +734,47 @@ function InvoiceDetail(props) {
               </Button>{" "}
             </>
           ) : null} */}
-        
-          {info.user.uuid?.includes(order?.created_by_user.uuid) ||  info.role?.includes("owner") ?
+
+          {info.user.uuid?.includes(order?.created_by_user.uuid) ||
+          info.role?.includes("owner") ? (
             <Button
               variant="contained"
               size="small"
               // disabled={Number(row.total_amount) - Number(row.discount) - Number(row.paid_amount) > 0}
-              style={{ marginLeft: 15}}
+              style={{ marginLeft: 15 }}
               onClick={handleDelete}
             >
               Xóa hóa đơn
-          </Button> :null}
-
-          {returnLimit.status === false || returnLimit.status === true && (getDifferenceInDays(new Date(),new Date(row.creation_date)) < returnLimit.day) ?
-              <Button
-                variant="contained"
-                size="small"
-                disabled={Number(row.total_amount) - Number(row.discount) - Number(row.paid_amount) > 0}
-                style={{ marginLeft: 15 }}
-                onClick={handleClickOpen}
-              >
-                Trả hàng
             </Button>
-          :null}
-           <Button variant="contained" color="primary"size="small" style={{ marginLeft: 15 }} startIcon={<PrintTwoToneIcon fontSize="small" />} onClick={() => handlePrint()}>
+          ) : null}
+
+          {returnLimit.status === false ||
+          (returnLimit.status === true &&
+            getDifferenceInDays(new Date(), new Date(row.creation_date)) <
+              returnLimit.day) ? (
+            <Button
+              variant="contained"
+              size="small"
+              disabled={
+                Number(row.total_amount) -
+                  Number(row.discount) -
+                  Number(row.paid_amount) >
+                0
+              }
+              style={{ marginLeft: 15 }}
+              onClick={handleClickOpen}
+            >
+              Trả hàng
+            </Button>
+          ) : null}
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            style={{ marginLeft: 15 }}
+            startIcon={<PrintTwoToneIcon fontSize="small" />}
+            onClick={() => handlePrint()}
+          >
             In hoá đơn
           </Button>
 
@@ -595,7 +788,6 @@ function InvoiceDetail(props) {
           >
             <MoreVertIcon />
           </IconButton> */}
-         
 
           {/* <StyledMenu
             id="customized-menu"
@@ -627,7 +819,16 @@ function InvoiceDetail(props) {
       {/* 3. Receipt */}
       <div style={{ display: "none" }}>
         <div ref={componentRef}>
-          <ReceiptPrinter cart={order} date={row.creation_date?.split(" ")[0].split('-').reverse().join('/')} code={row.order_code} type={type}/>
+          <ReceiptPrinter
+            cart={order}
+            date={row.creation_date
+              ?.split(" ")[0]
+              .split("-")
+              .reverse()
+              .join("/")}
+            code={row.order_code}
+            type={type}
+          />
         </div>
       </div>
 
