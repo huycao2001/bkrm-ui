@@ -659,6 +659,110 @@ const InventoryOrderDetail = (props) => {
             </Grid>
           </Grid>
         </Grid>
+        <Grid
+          container
+          direction="row"
+          justifyContent={"flex-end"}
+          style={{ marginTop: 20 }}
+        >
+          {/* {currentUser === row.employee ? (
+            <>
+              {" "}
+              <Button
+                variant="contained"
+                size="small"
+                style={{ marginLeft: 15 }}
+              >
+                Sửa
+              </Button>
+              <Button
+                variant="contained"
+                size="small"
+                style={{ marginLeft: 15 }}
+              >
+                Xoá
+              </Button>{" "}
+            </>
+          ) : null} */}
+          {/* {info.user?.uuid?.includes(purchaseOrder?.created_by_user?.uuid) ||  info.role?.includes("owner") ?
+            <Button
+              variant="contained"
+              size="small"
+              style={{ marginLeft: 15}}
+              // onClick={handleDelete}
+            >
+              Xóa đơn nhập
+          </Button> :null} */}
+
+          <Button
+            variant="contained"
+            size="small"
+            // disabled={Number(row.total_amount) - Number(row.discount) - Number(row.paid_amount) > 0}
+            style={{ marginLeft: 15 }}
+            onClick={handleDelete}
+          >
+            Xóa đơn nhập
+          </Button>
+
+          <Button
+            variant="contained"
+            size="small"
+            style={{ marginLeft: 15 }}
+            onClick={handleClickOpen}
+            disabled={
+              Number(row.total_amount) -
+                Number(row.discount) -
+                Number(row.paid_amount) >
+              0
+            }
+          >
+            Trả hàng
+          </Button>
+
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            style={{ marginLeft: 15 }}
+            startIcon={<PrintTwoToneIcon fontSize="small" />}
+            onClick={() => handlePrint()}
+          >
+            In đơn nhập
+          </Button>
+          {/* 
+          <IconButton
+            aria-label="more"
+            aria-controls="long-menu"
+            aria-haspopup="true"
+            onClick={handleClick}
+            size="small"
+            style={{ marginLeft: 10 }}
+          >
+            <MoreVertIcon />
+          </IconButton>
+
+          <StyledMenu
+            id="customized-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+          >
+            <StyledMenuItem onClick={() => handlePrint()}>
+              <ListItemIcon style={{ marginRight: -15 }}>
+                <PrintTwoToneIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText primary="In đơn nhập" />
+            </StyledMenuItem>
+
+            <StyledMenuItem>
+              <ListItemIcon style={{ marginRight: -15 }}>
+                <GetAppTwoToneIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText primary="Xuất excel" />
+            </StyledMenuItem>
+          </StyledMenu> */}
+        </Grid>
       </Box>
       {/* <Collapse in={ true } timeout="auto" unmountOnExit> */}
     </Collapse>

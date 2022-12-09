@@ -1,44 +1,96 @@
-import React , { useRef}from 'react';
-import { useTheme, makeStyles, createStyles } from '@material-ui/core/styles';
+import React, { useRef } from "react";
+import { useTheme, makeStyles, createStyles } from "@material-ui/core/styles";
 import { useReactToPrint } from "react-to-print";
-import {ReceiptPrinter} from "../../../../../components/ReceiptPrinter/ReceiptPrinter"
+import { ReceiptPrinter } from "../../../../../components/ReceiptPrinter/ReceiptPrinter";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import {VNDFormat,ThousandFormat} from "../../../../../components/TextField/NumberFormatCustom"
-import {calculateTotalQuantity} from "../../../../../components/TableCommon/util/sortUtil"
+import {
+  VNDFormat,
+  ThousandFormat,
+} from "../../../../../components/TextField/NumberFormatCustom";
+import { calculateTotalQuantity } from "../../../../../components/TableCommon/util/sortUtil";
 
 // import library
 import {
-  Box, Grid, TableHead, TableBody, Typography, Table, TableCell, TableRow, Collapse, Button, ListItemIcon, ListItemText, IconButton,Chip
-} from '@material-ui/core';
-
+  Box,
+  //Grid,
+  //TableHead,
+  //TableBody,
+  //Typography,
+  //Table,
+  //TableCell,
+  //TableRow,
+  Collapse,
+  Button,
+  ListItemIcon,
+  ListItemText,
+  IconButton,
+  Chip,
+} from "@material-ui/core";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import { styled } from "@mui/material/styles";
+import Divider from "@mui/material/Divider";
 // import icon
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import PrintTwoToneIcon from '@material-ui/icons/PrintTwoTone';
-import GetAppTwoToneIcon from '@material-ui/icons/GetAppTwoTone';
+import MoreVertIcon from "@material-ui/icons/MoreVert";
+import PrintTwoToneIcon from "@material-ui/icons/PrintTwoTone";
+import GetAppTwoToneIcon from "@material-ui/icons/GetAppTwoTone";
 
 // import project
-import { grey } from '@material-ui/core/colors';
-import { StyledMenu, StyledMenuItem } from '../../../../../components/Button/MenuButton';
-import { useSelector } from 'react-redux';
-import refundApi from '../../../../../api/refundApi';
+import { grey } from "@material-ui/core/colors";
+import {
+  StyledMenu,
+  StyledMenuItem,
+} from "../../../../../components/Button/MenuButton";
+import { useSelector } from "react-redux";
+import refundApi from "../../../../../api/refundApi";
 // dơn trả giá trả có khác ko ???
 
-const useStyles = makeStyles((theme) => createStyles({
-  root: {
-    '& .MuiTextField-root': {
-      marginTop: theme.spacing(2),
+const useStyles = makeStyles((theme) =>
+  createStyles({
+    root: {
+      "& .MuiTextField-root": {
+        marginTop: theme.spacing(2),
+      },
     },
-  },
-  headerTitle: {
-    fontSize: '1.125rem',
-  },
-  typo: {
-    marginBottom: 20,
-  },
-  background: {
-    background: theme.customization.mode === 'Light' ? theme.customization.primaryColor[50] : grey[700],
-  },
+    headerTitle: {
+      fontSize: "1.125rem",
+    },
+    typo: {
+      marginBottom: 20,
+    },
+    background: {
+      background:
+        theme.customization.mode === "Light"
+          ? theme.customization.primaryColor[50]
+          : grey[700],
+    },
+  })
+);
 
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: "#2196f3",
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "&:nth-of-type(odd)": {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  "&:last-child td, &:last-child th": {
+    border: 0,
+  },
 }));
 
 function InvoiceReturnDetail(props) {
@@ -46,13 +98,12 @@ function InvoiceReturnDetail(props) {
   const { isMini } = props;
 
   //  tam thoi
-  const currentUser = 'Minh Tri';
+  const currentUser = "Minh Tri";
 
   const theme = useTheme();
   const classes = useStyles(theme);
 
-  const xsScreen = useMediaQuery(theme.breakpoints.down("xs")) ;
-
+  const xsScreen = useMediaQuery(theme.breakpoints.down("xs"));
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -66,11 +117,11 @@ function InvoiceReturnDetail(props) {
 
   const info = useSelector((state) => state.info);
   const store_uuid = info.store.uuid;
-  
+
   const [refund, setRefund] = React.useState({
     branch: null,
-    details: []
-  })
+    details: [],
+  });
 
   React.useEffect(() => {
     const loadData = async () => {
@@ -80,166 +131,302 @@ function InvoiceReturnDetail(props) {
       } catch (error) {
         setRefund({
           branch: null,
-          details: []
+          details: [],
         });
       }
-    }
+    };
     if (openRow === row.uuid) {
       loadData();
-
     }
-  }
-  , [props.parentProps.openRow]);
-
+  }, [props.parentProps.openRow]);
 
   //print
 
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
-      content: () => componentRef.current,
+    content: () => componentRef.current,
   });
 
-  console.log("refund",refund)
+  console.log("refund", refund);
 
   return (
-    <Collapse in={isMini?true:openRow === row.uuid} timeout="auto" unmountOnExit>
-      <Box margin={1}>
-        <Typography variant="h3" gutterBottom component="div" className={classes.typo}>
-          {row.name}
-        </Typography>
-
-        <Grid container direction="row" justifyContent="flex-start">
-          <Grid item xs={12} sm={5}>
-            <Grid container direction="row" justifyContent="flex-start">
-              <Grid item xs={5} sm={5}>
-                <Typography variant="h5" gutterBottom component="div">Mã đơn trả </Typography>
+    <Collapse
+      in={isMini ? true : openRow === row.uuid}
+      timeout="auto"
+      unmountOnExit
+    >
+      <Box margin={5}>
+        <Grid container direction="row" sx={{ mb: 5 }}>
+          <Grid item md={4} sx={{ mb: 5 }}>
+            <Grid container direction="column">
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 400,
+                    color: "#878787",
+                    letterSpacing: 1,
+                  }}
+                >
+                  MÃ ĐƠN TRẢ
+                </Box>
               </Grid>
-              <Grid item  sm={4}>
-                <Typography variant="body1" gutterBottom component="div">
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                  }}
+                >
                   {row.refund_code}
-                  {' '}
-                </Typography>
+                </Box>
               </Grid>
             </Grid>
-            <Grid container direction="row" justifyContent="flex-start">
-              <Grid item xs={5}sm={5}>
-                <Typography variant="h5" gutterBottom component="div">Mã hoá đơn</Typography>
+          </Grid>
+          <Grid item md={4} sx={{ mb: 5 }}>
+            <Grid container direction="column">
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 400,
+                    color: "#878787",
+                    letterSpacing: 1,
+                  }}
+                >
+                  MÃ HOÁ ĐƠN
+                </Box>
               </Grid>
-              <Grid item sm={4}>
-                <Typography variant="body1" gutterBottom component="div">{refund.order?.order_code}</Typography>
-              </Grid>
-            </Grid>
-            <Grid container direction="row" justifyContent="flex-start">
-              <Grid item xs={5} sm={5}>
-                <Typography variant="h5" gutterBottom component="div">Ngày trả </Typography>
-              </Grid>
-              <Grid item  sm={4}>
-                <Typography variant="body1" gutterBottom component="div">
-                  {/* {row.created_at}
-                  {' '} */}
-                  {row.created_at?.split(" ")[0].split('-').reverse().join('/').concat("\u00a0\u00a0"+ row.created_at?.split(" ")[1].substr(0, 5)) }
-
-                </Typography>
-              </Grid>
-            </Grid>
-            <Grid container direction="row" justifyContent="flex-start">
-              <Grid item xs={5}sm={5}>
-                <Typography variant="h5" gutterBottom component="div">Khách hàng</Typography>
-              </Grid>
-              <Grid item sm={4}>
-                <Typography variant="body1" gutterBottom component="div">
-                  {refund.customer?.name}
-                  {' '}
-                </Typography>
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                  }}
+                >
+                  {refund.order?.order_code}
+                </Box>
               </Grid>
             </Grid>
-            <Grid container direction="row" justifyContent="flex-start">
-              <Grid item xs={5} sm={5}>
-                <Typography variant="h5" gutterBottom component="div">Người thực hiện</Typography>
+          </Grid>
+          <Grid item md={4}>
+            <Grid container direction="column">
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 400,
+                    color: "#878787",
+                    letterSpacing: 1,
+                  }}
+                >
+                  NGƯỜI THỰC HIỆN
+                </Box>
               </Grid>
-              <Grid item  sm={4}>
-                <Typography variant="body1" gutterBottom component="div">
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    color: "#2196f3",
+                  }}
+                >
                   {refund.created_by_user?.name}
-                  {' '}
-                </Typography>
+                </Box>
               </Grid>
             </Grid>
-
           </Grid>
-          <Grid item xs={12}sm={5}>
-            {/* <Grid container direction="row" justifyContent="flex-start">
-              <Grid item xs={5} sm={6}>
-                <Typography variant="h5" gutterBottom component="div">Tình trạng</Typography>
+          <Grid item md={4}>
+            <Grid container direction="column">
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 400,
+                    color: "#878787",
+                    letterSpacing: 1,
+                  }}
+                >
+                  CHI NHÁNH THỰC HIỆN
+                </Box>
               </Grid>
-              <Grid item  sm={4}>
-                <Typography variant="body1" gutterBottom component="div">{`Cần trả ${(row.total_amount - row.paid_amount).toString()}`}</Typography>
-              </Grid>
-            </Grid> */}
-            <Grid container direction="row" justifyContent="flex-start">
-              <Grid item xs={5} sm={6}>
-                <Typography variant="h5" gutterBottom component="div">Tổng tiền trả</Typography>
-              </Grid>
-              <Grid item sm={4}>
-                <Typography variant="body1" gutterBottom component="div"><VNDFormat value={row.total_amount} /></Typography>
-              </Grid>
-            </Grid>
-            <Grid container direction="row" justifyContent="flex-start">
-              <Grid item xs={5} sm={6}>
-                <Typography variant="h5" gutterBottom component="div">Chi nhánh thực hiện</Typography>
-              </Grid>
-              <Grid item  sm={4}>
-                <Typography variant="body1" gutterBottom component="div">
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                  }}
+                >
                   {refund.branch?.name}
-                  {' '}
-                </Typography>
+                </Box>
               </Grid>
             </Grid>
-            <Grid container direction="row" justifyContent="flex-start">
-              <Grid item xs={5} sm={6}>
-                <Typography variant="h5" gutterBottom component="div">Phương thức thanh toán</Typography>
-              </Grid>
-              <Grid item  sm={4}>
-                <Typography variant="body1" gutterBottom component="div">
-                {row.payment_method === "cash" ? "Tiền mặt" : "Thẻ"}{" "}
-                  {' '}
-                </Typography>
-              </Grid>
-            </Grid>
-
           </Grid>
-
+          <Grid item md={4} sx={{ mb: 5 }}>
+            <Grid container direction="column">
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 400,
+                    color: "#878787",
+                    letterSpacing: 2,
+                  }}
+                >
+                  NGÀY TRẢ
+                </Box>
+              </Grid>
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    //color: "#878787",
+                  }}
+                >
+                  {row.created_at
+                    ?.split(" ")[0]
+                    .split("-")
+                    .reverse()
+                    .join("/")
+                    .concat(
+                      "\u00a0\u00a0" +
+                        row.created_at?.split(" ")[1].substr(0, 5)
+                    )}
+                </Box>
+              </Grid>
+            </Grid>
+          </Grid>
+          {/* <Grid item md={4}>
+            <Grid container direction="column">
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 400,
+                    color: "#878787",
+                  }}
+                >
+                  TRẠNG THÁI
+                </Box>
+              </Grid>
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    //color: "#878787",
+                  }}
+                >
+                  {debtAmount > 0 ? "Còn nợ " : "Trả đủ"}
+                  {debtAmount > 0 ? <VNDFormat value={debtAmount} /> : null}
+                </Box>
+              </Grid>
+            </Grid>
+          </Grid> */}
+          <Grid item md={4}>
+            <Grid container direction="column">
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 400,
+                    color: "#878787",
+                  }}
+                >
+                  PHƯƠNG THỨC THANH TOÁN
+                </Box>
+              </Grid>
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    //color: "#878787",
+                  }}
+                >
+                  {row.payment_method === "cash" ? "Tiền mặt" : "Thẻ"}
+                </Box>
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid item md={4}>
+            <Grid container direction="column">
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 400,
+                    color: "#878787",
+                  }}
+                >
+                  KHÁCH HÀNG
+                </Box>
+              </Grid>
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    //color: "#878787",
+                  }}
+                >
+                  {refund.customer?.name}
+                </Box>
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid item md={4}>
+            <Grid container direction="column">
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 400,
+                    color: "#878787",
+                  }}
+                >
+                  TỔNG TIỀN TRẢ
+                </Box>
+              </Grid>
+              <Grid item>
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    //color: "#878787",
+                  }}
+                >
+                  <VNDFormat value={row.total_amount}></VNDFormat>{" "}
+                </Box>
+              </Grid>
+            </Grid>
+          </Grid>
         </Grid>
-
-        <Typography variant="h4" gutterBottom component="div" style={{ marginTop: 30 }}>
-          Danh sách sản phẩm
-        </Typography>
-        <Table size="small" aria-label="purchases">
-          <TableHead>
-            <TableRow>
-              <TableCell>Ma SP</TableCell>
-              <TableCell>Sản phẩm</TableCell>
+        <Table size="small" aria-label="purchases" sx={{ borderBottom: 0 }}>
+          <TableHead sx={{ borderBottom: 0 }}>
+            <TableRow sx={{ borderBottom: 0 }}>
+              <StyledTableCell>Mã SP</StyledTableCell>
+              <StyledTableCell>Sản phẩm</StyledTableCell>
               {/* <TableCell>Mã vạch</TableCell> */}
-              <TableCell align="right">Số lượng</TableCell>
-              <TableCell align="right">Giá trả</TableCell>
-              <TableCell align="right">Thành tiền</TableCell>
-
+              <StyledTableCell align="right">Số lượng</StyledTableCell>
+              <StyledTableCell align="right">Đổi trả</StyledTableCell>
+              <StyledTableCell align="right">Giá nhập</StyledTableCell>
+              <StyledTableCell align="right">Thành tiền</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-
             {refund.details.map((detail) => (
-              <TableRow key={detail.product_code}>
-                <TableCell component="th" scope="row">
+              <StyledTableRow key={detail.product_id}>
+                <StyledTableCell component="th" scope="row">
                   {detail.product_code}
-                </TableCell>
-                
-                <TableCell>{detail.name}</TableCell>
-                {/* <TableCell>
-                  {detail.bar_code}
-                </TableCell> */}
-                <TableCell align="right">
-                  <ThousandFormat value={detail.quantity} />
+                </StyledTableCell>
+                <StyledTableCell>{detail.name}</StyledTableCell>
+                {/* <TableCell>{detail.bar_code}</TableCell> */}
+                <StyledTableCell align="right">
                   <div>
+                    {detail.quantity}
+                    <div>
                       {detail.batches
                         ? JSON.parse(detail.batches).map((batch) => (
                             <Chip
@@ -250,7 +437,7 @@ function InvoiceReturnDetail(props) {
                                 batch?.expiry_date
                                   ? batch?.expiry_date.substring(0, 10)
                                   : ""
-                              }) - ${batch.returned_quantity}`}
+                              })-${batch.additional_quantity}`}
                               key={batch.id}
                               color={batch.is_new ? "primary" : "secondary"}
                               variant="outlined"
@@ -258,75 +445,88 @@ function InvoiceReturnDetail(props) {
                           ))
                         : null}
                     </div>
-                </TableCell>
-                <TableCell align="right">
-                <VNDFormat value={detail.unit_price} />
-                </TableCell>
-               
-                <TableCell align="right" style={{ fontWeight: 700 }}>
-                <VNDFormat value={detail.quantity * detail.unit_price} />
-                </TableCell>
+                  </div>
+                </StyledTableCell>
 
-              </TableRow>
+                <StyledTableCell align="right">
+                  <div>
+                    {detail.returned_quantity}
+                    <div>
+                      {detail.batches
+                        ? JSON.parse(detail.batches).map((batch) => (
+                            <Chip
+                              size="small"
+                              label={`${
+                                batch?.batch_code ? batch?.batch_code : "Mới"
+                              }(${
+                                batch?.expiry_date
+                                  ? batch?.expiry_date.substring(0, 10)
+                                  : ""
+                              })-${batch.returned_quantity}`}
+                              key={batch.id}
+                              color={batch.is_new ? "primary" : "secondary"}
+                              variant="outlined"
+                            />
+                          ))
+                        : null}
+                    </div>
+                  </div>
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                  <VNDFormat value={detail.unit_price} />
+                </StyledTableCell>
+                <StyledTableCell align="right" style={{ fontWeight: 700 }}>
+                  <VNDFormat
+                    value={Number(detail.quantity) * Number(detail.unit_price)}
+                  />
+                </StyledTableCell>
+              </StyledTableRow>
             ))}
           </TableBody>
         </Table>
-        <Box className={classes.background} style={{ padding: 10, borderRadius: theme.customization.borderRadius, marginTop: 10 }}>
-          <Grid container direction="column">
-
-            <Grid container direction="row" justifyContent={"flex-end"}>
-              <Grid item xs={5} sm={2}>
-                <Typography variant="h5" gutterBottom component="div">Tổng SL sản phẩm ({refund.details?.length})</Typography>
-              </Grid>
-              <Grid item xs={2}sm={2}>
-                <Typography variant="body1" gutterBottom component="div"><ThousandFormat 
-                  value={calculateTotalQuantity(refund.details)}
-                /></Typography>
-              </Grid>
-            </Grid>
-
-            <Grid container direction="row" justifyContent={ "flex-end"}>
-              <Grid item xs={5} sm={2}>
-                <Typography variant="h5" gutterBottom component="div">Tổng tiền trả</Typography>
-              </Grid>
-              <Grid item xs={2}sm={2}>
-                <Typography variant="body1" gutterBottom component="div"  style={{fontWeight:500, color:theme.customization.primaryColor[500]}}>
-                <VNDFormat value={row.total_amount} />
-                  {' '}
-                </Typography>
+        <Grid container direction="column" sx={{ mt: 5 }}>
+          <Grid
+            container
+            direction="row"
+            justifyContent={"flex-end"}
+            sx={{ mb: 1 }}
+          >
+            <Grid item md={2}>
+              <Grid container justifyContent="flex-end">
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    letterSpacing: 1,
+                    //color: "#878787",
+                  }}
+                >
+                  TỔNG TIỀN TRẢ
+                </Box>
               </Grid>
             </Grid>
-            {/* <Grid container direction="row" justifyContent="flex-end">
-              <Grid item xs={2}>
-                <Typography variant="h5" gutterBottom component="div">Phí trả hàng</Typography>
+            <Grid item md={2.5}>
+              <Grid container justifyContent="flex-end">
+                <Box
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    //color: "#878787",
+                  }}
+                >
+                  <VNDFormat value={row.total_amount} />
+                </Box>
               </Grid>
-              <Grid item xs={2}>
-                <Typography variant="body1" gutterBottom component="div">200</Typography>
-              </Grid>
-            </Grid> */}
-
-            {/* <Grid container direction="row" justifyContent="flex-end">
-              <Grid item xs={2}>
-                <Typography variant="h5" gutterBottom component="div">Tổng đơn trả</Typography>
-              </Grid>
-              <Grid item xs={2}>
-                <Typography variant="body1" gutterBottom component="div">100</Typography>
-              </Grid>
-            </Grid> */}
-
-            {/* <Grid container direction="row" justifyContent={ "flex-end"}>
-              <Grid item xs={5} sm={2}>
-                <Typography variant="h5" gutterBottom component="div">Đã trả khách</Typography>
-              </Grid>
-              <Grid item xs={2}sm={2}>
-                <Typography variant="body1" gutterBottom component="div">{row.paid_amount}</Typography>
-              </Grid>
-            </Grid> */}
-
+            </Grid>
           </Grid>
-        </Box>
+        </Grid>
 
-        <Grid container direction="row" justifyContent={"flex-end"}style={{ marginTop: 20 }}>
+        <Grid
+          container
+          direction="row"
+          justifyContent={"flex-end"}
+          style={{ marginTop: 20 }}
+        >
           {/* Chỉ có nhân viên thực hiện nhập đơn đó  mới có thể xoá sửa */}
           {/* {currentUser === row.employee
             ? (
@@ -372,19 +572,15 @@ function InvoiceReturnDetail(props) {
               <ListItemText primary="Xuất excel" />
             </StyledMenuItem>
           </StyledMenu> */}
-
         </Grid>
-
       </Box>
 
-         {/* 3. Receipt */}
-         <div style={{ display: "none" }}>
+      {/* 3. Receipt */}
+      <div style={{ display: "none" }}>
         <div ref={componentRef}>
           <ReceiptPrinter cart={refund} date={row.created_at} />
         </div>
       </div>
-
-
     </Collapse>
   );
 }
