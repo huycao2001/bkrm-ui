@@ -1,4 +1,4 @@
-import { React, Suspense } from "react";
+import { React, useEffect, useState, Suspense } from "react";
 import {
   Route,
   Redirect,
@@ -52,6 +52,9 @@ import MenuIcon from "@material-ui/icons/Menu";
 // import AdbIcon from '@mui/icons-material/Adb';
 
 import useStyles from "./styles";
+// import Listener from "../../components/Listener/Listener";
+import Echo from "laravel-echo";
+import Pusher from "pusher-js";
 
 const HomePage = (props) => {
   const { path } = useRouteMatch();
@@ -97,6 +100,36 @@ const HomePage = (props) => {
   };
 
   //console.log( "Permissions : " +  JSON.stringify(permissions))
+
+  const [ws, setWs] = useState();
+
+  useEffect(async () => {
+    // console.log(process.env.REACT_APP_PUSHER_APP_KEY);
+    if (!ws) {
+      const echo = new Echo({
+        broadcaster: 'pusher',
+        key: 'apollo13',
+        wsHost: window.location.hostname,
+        wsPort: 6001,
+        wssPort: 6001,
+        forceTLS: false,
+        disableStats: true,
+        encrypted: false,
+        enabledTransports: ['ws', 'wss'],
+        // cluster: 'mt1',
+      });
+      echo
+        .channel('orders')
+        .subscribed(() => {
+          console.log('You are subscribed');
+        })
+        .listen('.order.new', (data) => {
+          console.log("WS got: " + JSON.stringify(data));
+        }
+        );
+      setWs(echo);
+    }
+  });
 
   return (
     <div className={classes.root}>

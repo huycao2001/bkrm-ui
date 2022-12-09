@@ -92,6 +92,8 @@
     ]
   },
   "devDependencies": {
-    "case-sensitive-paths-webpack-plugin": "^2.4.0"
+    "case-sensitive-paths-webpack-plugin": "^2.4.0",
+    "laravel-echo": "^1.14.2",
+    "pusher-js": "^7.5.0"
   }
 }
