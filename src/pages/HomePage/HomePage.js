@@ -103,33 +103,33 @@ const HomePage = (props) => {
 
   const [ws, setWs] = useState();
 
-  useEffect(async () => {
-    // console.log(process.env.REACT_APP_PUSHER_APP_KEY);
-    if (!ws) {
-      const echo = new Echo({
-        broadcaster: 'pusher',
-        key: 'apollo13',
-        wsHost: window.location.hostname,
-        wsPort: 6001,
-        wssPort: 6001,
-        forceTLS: false,
-        disableStats: true,
-        encrypted: false,
-        enabledTransports: ['ws', 'wss'],
-        // cluster: 'mt1',
-      });
-      echo
-        .channel('orders')
-        .subscribed(() => {
-          console.log('You are subscribed');
-        })
-        .listen('.order.new', (data) => {
-          console.log("WS got: " + JSON.stringify(data));
-        }
-        );
-      setWs(echo);
-    }
-  });
+  // useEffect(async () => {
+  //   // console.log(process.env.REACT_APP_PUSHER_APP_KEY);
+  //   if (!ws) {
+  //     const echo = new Echo({
+  //       broadcaster: 'pusher',
+  //       key: 'apollo13',
+  //       wsHost: window.location.hostname,
+  //       wsPort: 6001,
+  //       wssPort: 6001,
+  //       forceTLS: false,
+  //       disableStats: true,
+  //       encrypted: false,
+  //       enabledTransports: ['ws', 'wss'],
+  //       // cluster: 'mt1',
+  //     });
+  //     echo
+  //       .channel('orders')
+  //       .subscribed(() => {
+  //         console.log('You are subscribed');
+  //       })
+  //       .listen('.order.new', (data) => {
+  //         console.log("WS got: " + JSON.stringify(data));
+  //       }
+  //       );
+  //     setWs(echo);
+  //   }
+  // });
 
   return (
     <div className={classes.root}>
@@ -272,19 +272,19 @@ const HomePage = (props) => {
                 <Route path={`${path}/inventory`} component={InventoryView} />
                 <Route path={`${path}/sales`} component={SalesView} />
                 <Route path={`${path}/hr`} component={HRView} />
-                <Route path={`${path}/`}>
+                {/* <Route path={`${path}/`}>
                   <Redirect
                     to={`${path}/inventory`}
                     component={InventoryView}
                   />
-                </Route>
-                {/* <Route path={`${path}/`} component={HomeView}/>
+                </Route> */}
+                <Route path={`${path}/`} component={HomeView}/>
                 <Route path={`${path}/`} >
                   <Redirect
                     to={`${path}/`}
                     component={HomeView}
                   />
-                </Route> */}
+                </Route>
               </Switch>
             )}
           </Suspense>
