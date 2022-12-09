@@ -15,7 +15,23 @@ import GlobalSnackbar from "./components/GlobalSnackBar/GlobalSnackBar";
 import { useState, useEffect } from "react";
 import { verifyToken } from "./store/actionCreator"
 
+import Echo from "laravel-echo";
+import Pusher from "pusher-js";
+
 // const SignupPage = React.lazy(() => import("./pages/SignupPage/SignupPage.js"));
+
+window.Echo = new Echo({
+  broadcaster: 'pusher',
+  key: process.env.REACT_APP_PUSHER_APP_KEY,
+  wsHost: process.env.REACT_APP_PUSHER_URL,
+  wsPort: process.env.REACT_APP_PUSHER_PORT,
+  wssPort: process.env.REACT_APP_PUSHER_PORT,
+  forceTLS: false,
+  disableStats: true,
+  encrypted: false,
+  enabledTransports: ['ws', 'wss'],
+  // cluster: 'mt1',
+});
 
 function App() {
   var isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
