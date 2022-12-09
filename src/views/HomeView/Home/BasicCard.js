@@ -12,6 +12,7 @@ import { useTheme, makeStyles, createStyles } from "@material-ui/core/styles";
 import useStyles from "../../../components/TableCommon/style/mainViewStyle";
 import { Grid, Paper } from '@material-ui/core';
 import { useState } from 'react';
+import ChatWindow from '../../../components/ChatWindow/ChatWindow';
 
 const bull = (
   <Box
@@ -68,12 +69,13 @@ export default function BasicCard() {
               </Typography>
             </Grid>
             <Grid item xs={6} sm={6}>
-              <Typography variant="h4" color="text.secondary">
+              {/* <Typography variant="h4" color="text.secondary">
                 Bây giờ là
               </Typography>
               <Typography style={{ overflowWrap: 'break-word' }} variant="h4">
                 {datetime}
-              </Typography>
+              </Typography> */}
+              <ChatWindow></ChatWindow>
             </Grid>
           </Grid>
         </CardContent>
