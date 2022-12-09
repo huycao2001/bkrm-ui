@@ -96,8 +96,8 @@ const Cart = () => {
     : setting;
 
   const defaultPaymentAmount = store_setting?.defaultPaymentAmount.status && store_setting?.defaultPaymentAmount.cart 
-  console.log("store_setting",store_setting)
-  console.log("defaultPaymentAmount",defaultPaymentAmount)
+  // console.log("store_setting",store_setting)
+  // console.log("defaultPaymentAmount",defaultPaymentAmount)
 
     const canEnterDiscountWhenSell = store_setting?.canEnterDiscountWhenSell?.status
 
@@ -174,7 +174,7 @@ const Cart = () => {
     if (window.localStorage.getItem("products")) {
       const products = JSON.parse(window.localStorage.getItem("products"));
       if (products.store_uuid === store_uuid && products.branch_uuid === branch_uuid ) {
-        console.log(products.data)
+        // console.log(products.data)
         setProducts(products.data);
       }
     }
@@ -229,7 +229,7 @@ const Cart = () => {
       });
       setCustomers(response.data);
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
   };
 
@@ -243,7 +243,7 @@ const Cart = () => {
         statusAction.successfulStatus("Cập nhật voucher của khách thành công")
       );
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       dispatch(statusAction.failedStatus("Cập nhật vouchers thất bại"));
     }
   };
@@ -258,13 +258,13 @@ const Cart = () => {
       setProducts(response.data)
 
     } catch (err) {
-      console.log(err)
+      // console.log(err)
     }
     // dispatch(infoActions.setProducts(response.data));
   };
 
   useEffect(() => {
-    console.log("reload heer")
+    // console.log("reload heer")
     loadProducts();
   }, [reloadProduct])
 
@@ -278,12 +278,12 @@ const Cart = () => {
         }));
         setCustomers(customers);
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       }
     };
     const loadPromotionCoupons = async () => {
       const response = await promotionCouponApi.getActivePromotionVoucher(store_uuid)
-      console.log("eeeeee",response)
+      // console.log("eeeeee",response)
       setDiscountData(response.promotions);
     } 
     if (store_uuid) {
@@ -313,7 +313,7 @@ const Cart = () => {
         const response = await customerApi.getCustomers(store_uuid);
         setCustomers(response.data);
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       }
     };
     if (store_uuid) {
@@ -683,7 +683,7 @@ const Cart = () => {
    
     let percentFee = otherfee?.listCost?.reduce((sum,fee)=>fee.type==="%"? sum + Number(fee.value):sum , 0);
     let totalOtherFee = percentFee * (Number(total) - Number(cartList[selectedIndex].discount))/100 +  otherFeeMoney
-    console.log("percentFee",percentFee)
+    // console.log("percentFee",percentFee)
     newCartList = update(newCartList, {
       [selectedIndex]: {
         otherFee: { $set:totalOtherFee },
@@ -722,7 +722,7 @@ const Cart = () => {
     setOpenPopUpWarning(false)
   }
 
-  console.log("otherFeeeee",cartList[selectedIndex]?.otherFee)
+  // console.log("otherFeeeee",cartList[selectedIndex]?.otherFee)
   
 
   const handleConfirm = async () => {
@@ -793,7 +793,7 @@ const Cart = () => {
       //   .format("YYYY-MM-DD HH:mm:ss", { trim: false });
 
       // let details = cart.cartItem.map((item) => ({ ...item, discount: "0" }));
-      // console.log(cart.paid_amount, cart.total_amount, cart.discount);
+      // // console.log(cart.paid_amount, cart.total_amount, cart.discount);
       // let body = {
       //   customer_uuid: cart.customer ? cart.customer.uuid : "",
       //   total_amount: cart.total_amount.toString(),
@@ -833,7 +833,7 @@ const Cart = () => {
       //     message: "Tạo hóa đơn thất bại!",
       //   });
       //   setOpenSnack(true);
-      //   console.log(err);
+      //   // console.log(err);
       // }
       // loadProducts()
     }
@@ -849,7 +849,7 @@ const Cart = () => {
       .format("YYYY-MM-DD HH:mm:ss", { trim: false });
 
     let details = cart.cartItem.map((item) => ({ ...item, discount: "0" }));
-    console.log(cart.paid_amount, cart.total_amount, cart.discount);
+    // console.log(cart.paid_amount, cart.total_amount, cart.discount);
     let body = {
       customer_uuid: cart.customer ? cart.customer.uuid : "",
       total_amount: cart.total_amount.toString(),
@@ -892,7 +892,7 @@ const Cart = () => {
         message: "Tạo hóa đơn thất bại!",
       });
       setOpenSnack(true);
-      console.log(err);
+      // console.log(err);
     }
     setDisable(false)
     loadProducts()
@@ -912,8 +912,8 @@ const Cart = () => {
   // };
   const [barcodeChecked, setBarcodeChecked] = useState(true);
 
-  console.log("typeShow==='image''",typeShow)
-  console.log("store_setting?.printReceiptWhenSell",store_setting?.printReceiptWhenSell)
+  // console.log("typeShow==='image''",typeShow)
+  // console.log("store_setting?.printReceiptWhenSell",store_setting?.printReceiptWhenSell)
   return (
     <>
     <Grid  container   direction="row" justifyContent="space-between"  alignItems="center"  spacing={2}>

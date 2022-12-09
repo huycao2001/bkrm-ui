@@ -47,7 +47,7 @@ export default function BranchSelectAppBar({ store_uuid }) {
 
   const renderMenuItem = () => {
     return branches.map((branch) => {
-      return <MenuItem value={branch}>{branch.name}</MenuItem>;
+      return <MenuItem key={branch.id} value={branch}>{branch.name}</MenuItem>;
     });
   };
 
@@ -55,7 +55,7 @@ export default function BranchSelectAppBar({ store_uuid }) {
     if (branches.length <= 0) {
       return (
         <Select value="hello" label="Chi nhánh" onChange={handleChange} disabled={true}>
-          <MenuItem value="hello">Not available</MenuItem>
+          <MenuItem key="" value="hello">Not available</MenuItem>
         </Select>
       );
     }

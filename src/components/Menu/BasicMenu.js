@@ -377,7 +377,7 @@ export default function BasicMenu(props) {
           backgroundColor: "transparent",
         }}
         sx={ButtonSX}
-        //color = "secondary"
+      //color = "secondary"
       >
         {section}
       </Button>
@@ -406,38 +406,40 @@ export default function BasicMenu(props) {
         {/* <MenuItem onClick={handleCloseMenu}>Profile</MenuItem> */}
         {section === "Bán hàng"
           ? salesModule.children.map((item) => (
-              <ListItem
-                onClick={handleCloseMenu}
-                to={item.url}
-                component={Link}
-                divider={
-                  item.id !=
+            <ListItem
+              onClick={handleCloseMenu}
+              key={item.key}
+              to={item.url}
+              component={Link}
+              divider={
+                item.id !=
                   salesModule.children.at(salesModule.children.length - 1).id
-                    ? true
-                    : false
-                }
-                sx={{
-                  "&:hover": {
-                    backgroundColor: "#f8f8f8",
-                    color: "black",
-                  },
+                  ? true
+                  : false
+              }
+              sx={{
+                "&:hover": {
+                  backgroundColor: "#f8f8f8",
                   color: "black",
-                }}
-              >
-                {item.title}
-              </ListItem>
-            ))
+                },
+                color: "black",
+              }}
+            >
+              {item.title}
+            </ListItem>
+          ))
           : section === "Kho hàng"
-          ? inventoryModule.children.map((item) => (
+            ? inventoryModule.children.map((item) => (
               <ListItem
                 onClick={handleCloseMenu}
+                key={item.key}
                 to={item.url}
                 component={Link}
                 divider={
                   item.id !=
-                  inventoryModule.children.at(
-                    inventoryModule.children.length - 1
-                  ).id
+                    inventoryModule.children.at(
+                      inventoryModule.children.length - 1
+                    ).id
                     ? true
                     : false
                 }
@@ -452,15 +454,16 @@ export default function BasicMenu(props) {
                 {item.title}
               </ListItem>
             ))
-          : section === "Nhân sự"
-            ? hrModule.children.map((item) => (
+            : section === "Nhân sự"
+              ? hrModule.children.map((item) => (
                 <ListItem
                   onClick={handleCloseMenu}
+                  key={item.key}
                   to={item.url}
                   component={Link}
                   divider={
                     item.id !=
-                    hrModule.children.at(hrModule.children.length - 1).id
+                      hrModule.children.at(hrModule.children.length - 1).id
                       ? true
                       : false
                   }
@@ -475,75 +478,78 @@ export default function BasicMenu(props) {
                   {item.title}
                 </ListItem>
               ))
-          : section === "Quản lý"
-          ? manageModule.children.map((item) => (
-              <ListItem
-                onClick={handleCloseMenu}
-                to={item.url}
-                component={Link}
-                divider={
-                  item.id !=
-                  hrModule.children.at(hrModule.children.length - 1).id
-                    ? true
-                    : false
-                }
-                sx={{
-                  "&:hover": {
-                    backgroundColor: "#f8f8f8",
-                    color: "black",
-                  },
-                  color: "black",
-                }}
-              >
-                {item.title}
-              </ListItem>
-            ))
-          : section === "Cài đặt"
-          ? settingModule.children.map((item) => (
-              <ListItem
-                onClick={handleCloseMenu}
-                to={item.url}
-                component={Link}
-                divider={
-                  item.id !=
-                  settingModule.children.at(settingModule.children.length - 1)
-                    .id
-                    ? true
-                    : false
-                }
-                sx={{
-                  "&:hover": {
-                    backgroundColor: "#f8f8f8",
-                    color: "black",
-                  },
-                  color: "black",
-                }}
-              >
-                {item.title}
-              </ListItem>
-            ))
-          : statModule.children.map((item) => (
-              <ListItem
-                onClick={handleCloseMenu}
-                to={item.url}
-                component={Link}
-                divider={
-                  item.id !=
-                  statModule.children.at(statModule.children.length - 1).id
-                    ? true
-                    : false
-                }
-                sx={{
-                  "&:hover": {
-                    backgroundColor: "#f8f8f8",
-                    color: "black",
-                  },
-                  color: "black",
-                }}
-              >
-                {item.title}
-              </ListItem>
-            ))}
+              : section === "Quản lý"
+                ? manageModule.children.map((item) => (
+                  <ListItem
+                    onClick={handleCloseMenu}
+                    key={item.key}
+                    to={item.url}
+                    component={Link}
+                    divider={
+                      item.id !=
+                        hrModule.children.at(hrModule.children.length - 1).id
+                        ? true
+                        : false
+                    }
+                    sx={{
+                      "&:hover": {
+                        backgroundColor: "#f8f8f8",
+                        color: "black",
+                      },
+                      color: "black",
+                    }}
+                  >
+                    {item.title}
+                  </ListItem>
+                ))
+                : section === "Cài đặt"
+                  ? settingModule.children.map((item) => (
+                    <ListItem
+                      onClick={handleCloseMenu}
+                      key={item.key}
+                      to={item.url}
+                      component={Link}
+                      divider={
+                        item.id !=
+                          settingModule.children.at(settingModule.children.length - 1)
+                            .id
+                          ? true
+                          : false
+                      }
+                      sx={{
+                        "&:hover": {
+                          backgroundColor: "#f8f8f8",
+                          color: "black",
+                        },
+                        color: "black",
+                      }}
+                    >
+                      {item.title}
+                    </ListItem>
+                  ))
+                  : statModule.children.map((item) => (
+                    <ListItem
+                      onClick={handleCloseMenu}
+                      key={item.key}
+                      to={item.url}
+                      component={Link}
+                      divider={
+                        item.id !=
+                          statModule.children.at(statModule.children.length - 1).id
+                          ? true
+                          : false
+                      }
+                      sx={{
+                        "&:hover": {
+                          backgroundColor: "#f8f8f8",
+                          color: "black",
+                        },
+                        color: "black",
+                      }}
+                    >
+                      {item.title}
+                    </ListItem>
+                  ))}
         {/* <ListItem onClick={handleClose} to = "/signup" component = {Link} >Tổng quan</ListItem> */}
         {/* <ListItem onClick={handleClose}>Sổ quỹ</ListItem> */}
         {/* <Link to={"/home"}> */}
