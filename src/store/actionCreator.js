@@ -23,8 +23,7 @@ export const verifyToken = () => {
     };
     try {
       const rs = await verifyToken();
-      if (rs && rs.error && rs.error == "Requires admin approval")
-      {
+      if (rs && rs.error && rs.error == "Requires admin approval") {
         dispatch(
           statusAction.failedStatus(
             "This account needs to be approved by an admin."
@@ -33,7 +32,6 @@ export const verifyToken = () => {
       }
       if (rs) {
         dispatch(infoActions.setRole(rs.role));
-        dispatch(authActions.logIn());
         if (rs.role === "admin") {
           dispatch(infoActions.setAdmin({ ...rs.admin }));
         } else {
@@ -57,7 +55,13 @@ export const verifyToken = () => {
             );
           }
           dispatch(infoActions.setStore(rs.store));
+          dispatch(infoActions.setBranch({
+            uuid: rs.store.branches[0].uuid,
+            name: rs.store.branches[0].name,
+            id: rs.store.branches[0].id,
+          }));
         }
+        dispatch(authActions.logIn());
       } else {
         dispatch(authActions.logOut());
       }
@@ -84,8 +88,7 @@ export const logInHandler = (userName, password, role) => {
 
     try {
       const rs = await logIn();
-      if (rs && rs.error && rs.error == "Requires admin approval")
-      {
+      if (rs && rs.error && rs.error == "Requires admin approval") {
         dispatch(
           statusAction.failedStatus(
             "This account needs to be approved by an admin."
@@ -103,8 +106,6 @@ export const logInHandler = (userName, password, role) => {
             statusAction.successfulStatus("Đăng nhập thành công - admin")
           );
         } else {
-          dispatch(authActions.logIn());
-          dispatch(loadingActions.finishLoad());
           dispatch(statusAction.successfulStatus("Đăng nhập thành công"));
           dispatch(setCustomization(rs.user.customization));
           dispatch(
@@ -120,7 +121,14 @@ export const logInHandler = (userName, password, role) => {
             })
           );
           dispatch(infoActions.setStore(rs.store));
+          dispatch(infoActions.setBranch({
+            uuid: rs.store.branches[0].uuid,
+            name: rs.store.branches[0].name,
+            id: rs.store.branches[0].id,
+          }));
           dispatch(infoActions.setRole(rs.role));
+          dispatch(authActions.logIn());
+          dispatch(loadingActions.finishLoad());
         }
         // dispatch(statusAction.successfulStatus("Login successfully"));
       }
@@ -172,6 +180,11 @@ export const empLogInHandler = (userName, password) => {
           infoActions.setUser({ ...rs.user, permissions: rs.permissions })
         );
         dispatch(infoActions.setStore(rs.store));
+        dispatch(infoActions.setBranch({
+          uuid: rs.store.branches[0].uuid,
+          name: rs.store.branches[0].name,
+          id: rs.store.branches[0].id,
+        }));
         dispatch(infoActions.setRole(rs.role));
         dispatch(statusAction.successfulStatus("Login successfully"));
       }
@@ -246,7 +259,7 @@ export const setCustomization = (paramCustomization) => {
         ],
       };
       sessionStorage.setItem("customization", JSON.stringify(customization));
-      console.log(error);
+      // console.log(error);
     }
   };
 };
