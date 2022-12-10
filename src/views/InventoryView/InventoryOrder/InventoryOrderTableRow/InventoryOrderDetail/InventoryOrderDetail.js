@@ -763,6 +763,33 @@ const InventoryOrderDetail = (props) => {
             </StyledMenuItem>
           </StyledMenu> */}
         </Grid>
+        {/* 3. Receipt */}
+        <div style={{ display: "none" }}>
+          <div ref={componentRef}>
+            <ImportReceiptPrinter
+              cart={purchaseOrder}
+              date={row.creation_date}
+            />
+          </div>
+        </div>
+
+        {/* Tra hang */}
+
+        <Dialog
+          fullWidth={true}
+          maxWidth="lg"
+          open={open}
+          onClose={handleCloseReturn}
+          aria-labelledby="form-dialog-title"
+        >
+          <InventoryReturnPopUp
+            handleCloseReturn={handleCloseReturn}
+            purchaseOrder={purchaseOrder}
+            classes={classes}
+            reload={props.parentProps.onReload}
+            reloadDetail={() => setReload(!reload)}
+          />
+        </Dialog>
       </Box>
       {/* <Collapse in={ true } timeout="auto" unmountOnExit> */}
     </Collapse>
