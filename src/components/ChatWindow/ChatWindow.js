@@ -1,6 +1,6 @@
 import React from "react";
 import { createStyles, makeStyles, useTheme } from "@material-ui/core/styles";
-import { Paper } from "@material-ui/core";
+import { Paper, Drawer, Fab, Box } from "@material-ui/core";
 import ChatInput from "./ChatInput";
 import ChatBubble from "./ChatBubble";
 import { useState } from "react";
@@ -8,15 +8,16 @@ import { useEffect } from "react";
 import messageApi from "../../api/messageApi";
 import { useSelector } from "react-redux";
 import { useRef } from "react";
-import { message } from "antd";
+import { MessageOutlined } from "@material-ui/icons";
+import Echo from "laravel-echo";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
     paper: {
       width: "80vw",
-      height: "80vh",
+      height: "8100vh",
       maxWidth: "500px",
-      maxHeight: "700px",
+      maxHeight: "100%",
       display: "flex",
       alignItems: "center",
       flexDirection: "column",
@@ -42,7 +43,12 @@ const useStyles = makeStyles((theme) =>
       margin: 10,
       overflowY: "scroll",
       height: "calc( 100% - 80px )"
-    }
+    },
+    fab: {
+      position: 'fixed',
+      bottom: theme.spacing(2),
+      right: theme.spacing(2),
+    },
   })
 );
 
@@ -50,10 +56,11 @@ export default function ChatWindow() {
   const theme = useTheme();
   const classes = useStyles(theme);
   const info = useSelector((state) => state.info);
-  const user_uuid = info.user.uuid;
-  const store_uuid = info.store.uuid;
+  let user_uuid = info.user.uuid;
+  let store_uuid = info.store.uuid;
   const branch_uuid = info.branch.uuid;
   const scrollRef = useRef(null);
+  const [drawerOpen, setDrawerOpen] = useState(true);
 
   const placeholderMessages = [
     { message: "This is a test.", timestamp: "Today", photoURL: "", displayName: "Diavolo", myMessage: false, key: 1 },
@@ -74,44 +81,55 @@ export default function ChatWindow() {
   }
 
   const handleReceiveNewMessage = (payload) => {
-    // let newMessage = { message: payload.message, timestamp: payload.timestamp, photoURL: "", displayName: payload.name, myMessage: (user_uuid == payload.user.uuid), key: messages.length + 1 };
-    // let oldMessages = JSON.parse(JSON.stringify(messages));
-    // console.log(oldMessages);
-    // oldMessages.push(newMessage);
-    // console.log(oldMessages);
-    // setMessages(oldMessages);
     setMessages(messages => messages.concat([{ message: payload.message, timestamp: payload.timestamp, photoURL: "", displayName: payload.user.name, myMessage: (user_uuid == payload.user.uuid), key: messages.length + 1 }]));
-    // console.log(messages);
     if (scrollRef.current) {
       scrollRef.current.scrollIntoView({ behaviour: "smooth" });
     }
   }
 
+  const openDrawer = () => {
+
+    setDrawerOpen(true);
+  }
+
+
+  const closeDrawer = () => {
+
+    setDrawerOpen(false);
+  }
+
   useEffect(() => {
     const channel = `messages.${store_uuid}.${branch_uuid}.default`;
-    window.Echo.channel(channel)
-      .subscribed(() => {
-        console.log('Now listening to events from channel: ' + channel);
-      })
-      .listen('MessagePublished', (data) => {
-        console.log("WS got: " + JSON.stringify(data));
-        handleReceiveNewMessage(data);
-      }
-      );
-
+    // if (!window.Echo.channel(channel)) {
+    if (true) {
+      window.Echo.channel(channel)
+        .subscribed(() => {
+          console.log('Now listening to events from channel: ' + channel);
+        })
+        .listen('MessagePublished', (data) => {
+          console.log("WS got: " + JSON.stringify(data));
+          handleReceiveNewMessage(data);
+        }
+        );
+    }
   }, []);
 
   return (
-    // <div className={classes.container}>
-    <Paper className={classes.paper} zdepth={2}>
-      <Paper id="style-1" className={classes.messagesBody}>
-        {messages.map((message) => (
-          <ChatBubble key={message.key} data={message}></ChatBubble>
-        ))}
-        <div ref={scrollRef} />
-      </Paper>
-      <ChatInput handleSend={handleSendMessage} />
-    </Paper>
-    // </div>
+    <React.Fragment>
+      <Fab color="primary" classes={classes.fab} aria-label="add" onClick={openDrawer}>
+        <MessageOutlined />
+      </Fab>
+      <Drawer open={drawerOpen} anchor="right" onClose={() => { closeDrawer(); }}>
+        <Paper className={classes.paper} zdepth={2}>
+          <Paper id="style-1" className={classes.messagesBody}>
+            {messages.map((message) => (
+              <ChatBubble key={message.key} data={message}></ChatBubble>
+            ))}
+            <div ref={scrollRef} />
+          </Paper>
+          <ChatInput handleSend={handleSendMessage} />
+        </Paper>
+      </Drawer>
+    </React.Fragment>
   );
 }

@@ -27,6 +27,7 @@ import {
   Box,
   IconButton,
   useMediaQuery,
+  Fab,
 } from "@material-ui/core";
 
 import PersonIcon from "@material-ui/icons/Person";
@@ -55,6 +56,7 @@ import useStyles from "./styles";
 // import Listener from "../../components/Listener/Listener";
 import Echo from "laravel-echo";
 import Pusher from "pusher-js";
+import ChatWindow from "../../components/ChatWindow/ChatWindow";
 
 const HomePage = (props) => {
   const { path } = useRouteMatch();
@@ -278,7 +280,7 @@ const HomePage = (props) => {
                     component={InventoryView}
                   />
                 </Route> */}
-                <Route path={`${path}/`} component={HomeView}/>
+                <Route path={`${path}/`} component={HomeView} />
                 <Route path={`${path}/`} >
                   <Redirect
                     to={`${path}/`}
@@ -289,7 +291,13 @@ const HomePage = (props) => {
             )}
           </Suspense>
         </Box>
+        <ChatWindow ></ChatWindow>
       </main>
+      {/* <Fab vertical="bottom" horizontal="end" classes={{
+        position: 'fixed',
+        bottom: "40px%",
+        right: "40px",
+      }}>Hi</Fab> */}
     </div>
   );
 };
