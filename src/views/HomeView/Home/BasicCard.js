@@ -41,11 +41,11 @@ export default function BasicCard() {
 
   const [datetime, setDatetime] = useState(new Date().toLocaleDateString("vi-vn", datetimeOptions));
 
-  React.useEffect(() => {
-    setInterval(() => {
-      setDatetime(new Date().toLocaleDateString("vi-vn", datetimeOptions));
-    }, 1000);
-  });
+  // React.useEffect(() => {
+  //   setInterval(() => {
+  //     setDatetime(new Date().toLocaleDateString("vi-vn", datetimeOptions));
+  //   }, 1000);
+  // });
 
   const theme = useTheme();
   const classes = useStyles(theme);
