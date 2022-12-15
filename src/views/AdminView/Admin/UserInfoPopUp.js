@@ -101,8 +101,8 @@ const UserInfoPopUp = (props) => {
               >
                 <Carousel showThumbs={false}>
                   <img
-                    key={user ? user.img_url : "Not set"}
-                    src={user ? user.img_url : "Not set"}
+                    key={user ? user.img_url ? user.img_url  : 'https://i.imgur.com/IMX423R.png' : "Not set"}
+                    src={user ? user.img_url ? user.img_url  : 'https://i.imgur.com/IMX423R.png' : "Not set"}
                     height={xsScreen ? "100" : "170"}
                     width={xsScreen ? "100" : "170"}
                   />
