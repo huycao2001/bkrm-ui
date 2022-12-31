@@ -13,10 +13,11 @@ export default makeStyles((theme) => ({
         : theme.customization.primaryColor[theme.customization.colorLevel],
   },
   container: {
-    marginTop : 30,
-    background: theme.palette.background.default,
-    minHeight: "90vh",
-    width: 400,
+    opacity: 0.9,
+    marginTop: 30,
+    background: "theme.palette.background.default",
+    //minHeight: "90vh",
+    width: 600,
     padding: 20,
     display: "flex",
     flexDirection: "column",
@@ -27,13 +28,14 @@ export default makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    justifyContent: "center",
   },
   avatar: {
     backgroundColor: theme.palette.secondary.main,
     margin: theme.spacing(1),
   },
   form: {
-    width: "100%", // Fix IE 11 issue.
+    //width: "100%", // Fix IE 11 issue.
     marginTop: theme.spacing(1),
   },
   submit: {

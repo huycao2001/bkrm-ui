@@ -18,16 +18,123 @@ import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import Image from "../../assets/img/background.jpg";
+import Image from "../../assets/img/background.gif";
 import { logInHandler } from "../../store/actionCreator";
 import userAPi from "../../api/userApi";
 import LoadingIndicator from "../../components/LoadingIndicator/LoadingIndicator";
+import { styled } from "@mui/material/styles";
+import EmployeeIcon from "../../assets/img/ava/employee.png";
+import OwnerIcon from "../../assets/img/ava/owner.png";
+import AdminIcon from "../../assets/img/ava/admin.png";
+import FBIcon from "../../assets/img/icon/F&B.png";
+import GroceryIcon from "../../assets/img/icon/grocery.png";
+import InputAdornment from "@mui/material/InputAdornment";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import LockIcon from "@mui/icons-material/Lock";
 
 const styles = {
   paperContainer: {
     backgroundImage: `url(${Image})`,
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "cover",
+    backgroundPosition: "center center",
   },
 };
+
+const EmployeeRadioIcon = styled("span")(({ theme }) => ({
+  width: 130,
+  height: 150,
+  backgroundImage: `url(${EmployeeIcon})`,
+  backgroundSize: "120px 140px",
+  ".Mui-focusVisible &": {
+    outline: "2px auto rgba(19,124,189,.6)",
+    outlineOffset: 2,
+  },
+  backgroundPosition: "center",
+  backgroundRepeat: "no-repeat",
+  backgroundColor: "transparent",
+}));
+
+const OwnerRadioIcon = styled("span")(({ theme }) => ({
+  width: 130,
+  height: 150,
+  backgroundImage: `url(${OwnerIcon})`,
+  backgroundSize: "130px 140px",
+  ".Mui-focusVisible &": {
+    outline: "2px auto rgba(19,124,189,.6)",
+    outlineOffset: 2,
+  },
+  backgroundPosition: "center",
+  backgroundRepeat: "no-repeat",
+  backgroundColor: "transparent",
+}));
+
+const AdminRadioIcon = styled("span")(({ theme }) => ({
+  width: 130,
+  height: 150,
+  backgroundImage: `url(${AdminIcon})`,
+  backgroundSize: "140px 140px",
+  ".Mui-focusVisible &": {
+    outline: "2px auto rgba(19,124,189,.6)",
+    outlineOffset: 2,
+  },
+  backgroundPosition: "center",
+  backgroundRepeat: "no-repeat",
+  backgroundColor: "transparent",
+}));
+
+const OwnerRadioCheckedIcon = styled(OwnerRadioIcon)({
+  borderRadius: "10%",
+  backgroundColor: "#ebf1f5",
+});
+
+const EmployeeRadioCheckedIcon = styled(EmployeeRadioIcon)({
+  borderRadius: "10%",
+  backgroundColor: "#ebf1f5",
+});
+
+const AdminRadioCheckedIcon = styled(AdminRadioIcon)({
+  borderRadius: "10%",
+  backgroundColor: "#ebf1f5",
+});
+
+const FBRadioIcon = styled("span")(({ theme }) => ({
+  width: 130,
+  height: 150,
+  backgroundImage: `url(${FBIcon})`,
+  backgroundSize: "140px 140px",
+  ".Mui-focusVisible &": {
+    outline: "2px auto rgba(19,124,189,.6)",
+    outlineOffset: 2,
+  },
+  backgroundPosition: "center",
+  backgroundRepeat: "no-repeat",
+  backgroundColor: "transparent",
+}));
+
+const GroceryRadioIcon = styled("span")(({ theme }) => ({
+  width: 130,
+  height: 150,
+  backgroundImage: `url(${GroceryIcon})`,
+  backgroundSize: "140px 140px",
+  ".Mui-focusVisible &": {
+    outline: "2px auto rgba(19,124,189,.6)",
+    outlineOffset: 2,
+  },
+  backgroundPosition: "center",
+  backgroundRepeat: "no-repeat",
+  backgroundColor: "transparent",
+}));
+
+const FBRadioCheckedIcon = styled(FBRadioIcon)({
+  borderRadius: "10%",
+  backgroundColor: "#ebf1f5",
+});
+
+const GroceryRadioCheckedIcon = styled(GroceryRadioIcon)({
+  borderRadius: "10%",
+  backgroundColor: "#ebf1f5",
+});
 
 const LoginPage = (props) => {
   const [role, setRole] = useState("owner");
@@ -60,170 +167,237 @@ const LoginPage = (props) => {
         style={{ minHeight: "100vh" }}
       >
         <Paper className={classes.container}>
-          <Box className={classes.paper}>
-            <Typography variant="h3" gutterBottom color="textSecondary">
-              BKRM HCMUT
-            </Typography>
-            <Typography variant="h5">Đăng nhập</Typography>
-            <Box className={classes.form}>
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  //dispatch(authActions.logIn()); // Remove this
+          <FormControl>
+            <FormLabel
+              sx={{ fontSize: 20 }}
+              align="center"
+              id="demo-row-radio-buttons-group-label"
+            >
+              Chọn loại tài khoản
+            </FormLabel>
+            <RadioGroup
+              row
+              aria-labelledby="demo-row-radio-buttons-group-label"
+              name="row-radio-buttons-group"
+              defaultValue={role}
+              //style={{ display: "flex" }}
+            >
+              <FormControlLabel
+                value="owner"
+                control={
+                  <Radio
+                    disableFocusRipple
+                    disableRipple
+                    color="default"
+                    checkedIcon={<OwnerRadioCheckedIcon />}
+                    icon={<OwnerRadioIcon />}
+                    {...props}
+                  />
+                }
+                label="Chủ cửa hàng"
+                labelPlacement="bottom"
+                onClick={() => {
+                  setRole("owner");
                 }}
-              >
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  label="Tên đăng nhập"
-                  name="user_name"
-                  autoFocus
-                  value={loginFormik.values.user_name}
-                  onChange={loginFormik.handleChange}
-                  error={
-                    loginFormik.touched.user_name &&
-                    loginFormik.errors.user_name
-                  }
-                  helperText={
-                    loginFormik.touched.user_name
-                      ? loginFormik.errors.user_name
-                      : null
-                  }
-                  onBlur={loginFormik.handleBlur}
-                />
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  name="password"
-                  label="Mật khẩu"
-                  type="password"
-                  value={loginFormik.values.password}
-                  onChange={loginFormik.handleChange}
-                  error={
-                    loginFormik.touched.password && loginFormik.errors.password
-                  }
-                  helperText={
-                    loginFormik.touched.password
-                      ? loginFormik.errors.password
-                      : null
-                  }
-                  onBlur={loginFormik.handleBlur}
-                />
-                <Grid justifyContent="flex-end">
-                  <FormControl>
-                    <FormLabel id="demo-row-radio-buttons-group-label">
-                      Select role
-                    </FormLabel>
-                    <RadioGroup
-                      row
-                      aria-labelledby="demo-row-radio-buttons-group-label"
-                      name="row-radio-buttons-group"
-                      defaultValue={role}
-                    >
-                      <FormControlLabel
-                        value="owner"
-                        control={<Radio />}
-                        label="Owner"
-                        onClick={() => {
-                          setRole("owner");
-                        }}
-                      />
-                      <FormControlLabel
-                        value="employee"
-                        control={<Radio />}
-                        label="Employee"
-                        onClick={() => {
-                          setRole("employee");
-                        }}
-                      />
-                      <FormControlLabel
-                        value="admin"
-                        control={<Radio />}
-                        label="Admin"
-                        onClick={() => {
-                          setRole("admin");
-                        }}
-                      />
-                    </RadioGroup>
-                  </FormControl>
-                </Grid>
-                <FormControl>
-                  <FormLabel id="demo-row-radio-buttons-group-label">
-                    Chọn loại cửa hàng
-                  </FormLabel>
-                  <RadioGroup
-                    row
-                    aria-labelledby="demo-row-radio-buttons-group-label"
-                    name="row-radio-buttons-group"
-                  >
-                    <FormControlLabel
-                      value="F&B"
-                      control={<Radio />}
-                      label="F&B"
-                      onClick={() => {
-                        setStoreType("fnb");
-                        //console.log("Store type : " + storeType);
-                      }}
-                    />
-                    <FormControlLabel
-                      value="Tạp hoá"
-                      control={<Radio />}
-                      label="Tạp hoá"
-                      onClick={() => {
-                        setStoreType("grocery");
-                        //console.log("Store type : " + storeType);
-                      }}
-                    />
-                  </RadioGroup>
-                </FormControl>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  className={classes.submit}
-                  // && Object.keys(loginFormik.touched).length > 0
-                  disabled={!loginFormik.isValid}
-                  onClick={() => {
-                    //if (role) {
-                    dispatch(
-                      logInHandler(
-                        loginFormik.values.user_name,
-                        loginFormik.values.password,
-                        role
-                      )
-                    );
-                    // } else {
-                    //   dispatch(
-                    //     empLogInHandler(
-                    //       loginFormik.values.user_name,
-                    //       loginFormik.values.password
-                    //     )
-                    //   );
-                    // }
-                  }}
-                >
-                  Đăng nhập
-                </Button>
-              </form>
-              <Grid container>
-                <Grid item xs></Grid>
-                <Grid item>
-                  <Typography
-                    style={{ textDecoration: "none" }}
-                    component={Link}
-                    to="/signup"
-                  >
-                    Chưa có tài khoản? Đăng kí cửa hàng mới
-                  </Typography>
-                </Grid>
-              </Grid>
-            </Box>
+              />
+              <FormControlLabel
+                value="employee"
+                control={
+                  <Radio
+                    disableFocusRipple
+                    disableRipple
+                    color="default"
+                    checkedIcon={<EmployeeRadioCheckedIcon />}
+                    icon={<EmployeeRadioIcon />}
+                    {...props}
+                  />
+                }
+                label="Nhân viên"
+                labelPlacement="bottom"
+                onClick={() => {
+                  setRole("employee");
+                }}
+              />
+              <FormControlLabel
+                value="admin"
+                control={
+                  <Radio
+                    disableFocusRipple
+                    disableRipple
+                    color="default"
+                    checkedIcon={<AdminRadioCheckedIcon />}
+                    icon={<AdminRadioIcon />}
+                    {...props}
+                  />
+                }
+                label="Admin"
+                labelPlacement="bottom"
+                onClick={() => {
+                  setRole("admin");
+                }}
+              />
+            </RadioGroup>
+          </FormControl>
+          <Box className={classes.form}>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                //dispatch(authActions.logIn()); // Remove this
+              }}
+            >
+              <Typography align="center" variant="h2">
+                こんにちは {role}-san ！！！
+              </Typography>
+              <TextField
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <AccountCircle />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{ marginRight: 5 }}
+                variant="standard"
+                margin="normal"
+                required
+                //fullWidth
+                label="Tên đăng nhập"
+                name="user_name"
+                autoFocus
+                value={loginFormik.values.user_name}
+                onChange={loginFormik.handleChange}
+                error={
+                  loginFormik.touched.user_name && loginFormik.errors.user_name
+                }
+                helperText={
+                  loginFormik.touched.user_name
+                    ? loginFormik.errors.user_name
+                    : null
+                }
+                onBlur={loginFormik.handleBlur}
+              />
+
+              <TextField
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                variant="standard"
+                margin="normal"
+                required
+                //fullWidth
+                name="password"
+                label="Mật khẩu"
+                type="password"
+                value={loginFormik.values.password}
+                onChange={loginFormik.handleChange}
+                error={
+                  loginFormik.touched.password && loginFormik.errors.password
+                }
+                helperText={
+                  loginFormik.touched.password
+                    ? loginFormik.errors.password
+                    : null
+                }
+                onBlur={loginFormik.handleBlur}
+              />
+            </form>
           </Box>
+          <FormControl>
+            <FormLabel align="center" id="demo-row-radio-buttons-group-label">
+              Chọn loại cửa hàng
+            </FormLabel>
+            <RadioGroup
+              row
+              aria-labelledby="demo-row-radio-buttons-group-label"
+              name="row-radio-buttons-group"
+              defaultValue="F&B"
+            >
+              <FormControlLabel
+                value="F&B"
+                control={
+                  <Radio
+                    disableFocusRipple
+                    disableRipple
+                    color="default"
+                    checkedIcon={<FBRadioCheckedIcon />}
+                    icon={<FBRadioIcon />}
+                    {...props}
+                  />
+                }
+                label="F&B"
+                labelPlacement="bottom"
+                onClick={() => {
+                  setStoreType("fnb");
+                  //console.log("Store type : " + storeType);
+                }}
+              />
+              <FormControlLabel
+                value="Tạp hoá"
+                control={
+                  <Radio
+                    disableFocusRipple
+                    disableRipple
+                    color="default"
+                    checkedIcon={<GroceryRadioCheckedIcon />}
+                    icon={<GroceryRadioIcon />}
+                    {...props}
+                  />
+                }
+                label="Tạp hoá"
+                labelPlacement="bottom"
+                onClick={() => {
+                  setStoreType("grocery");
+                  //console.log("Store type : " + storeType);
+                }}
+              />
+            </RadioGroup>
+          </FormControl>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+            // && Object.keys(loginFormik.touched).length > 0
+            disabled={!loginFormik.isValid}
+            onClick={() => {
+              //if (role) {
+              dispatch(
+                logInHandler(
+                  loginFormik.values.user_name,
+                  loginFormik.values.password,
+                  role
+                )
+              );
+              // } else {
+              //   dispatch(
+              //     empLogInHandler(
+              //       loginFormik.values.user_name,
+              //       loginFormik.values.password
+              //     )
+              //   );
+              // }
+            }}
+          >
+            Đăng nhập
+          </Button>
+          <Grid container justifyContent="flex-end">
+            <Typography
+              style={{
+                textDecoration: "none",
+                marginTop: 5,
+                alignItems: "flex-end",
+              }}
+              component={Link}
+              to="/signup"
+            >
+              Chưa có tài khoản? Đăng kí cửa hàng mới
+            </Typography>
+          </Grid>
         </Paper>
       </Grid>
     </Paper>

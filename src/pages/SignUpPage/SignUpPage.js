@@ -15,7 +15,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 // import { statusAction } from "../../store/slice/statusSlice";
 // import getGeoCode from "../../components/BranchMap/Geocode";
-import Image from "../../assets/img/background.jpg";
+import Image from "../../assets/img/background.gif";
 // import { authActions } from "../../store/slice/authSlice";
 import { authActions } from "../../store/slice/authSlice";
 
@@ -24,9 +24,6 @@ const styles = {
     backgroundImage: `url(${Image})`,
   },
 };
-
-
-
 
 export default function SignUp() {
   const classes = useStyles();
@@ -65,8 +62,6 @@ export default function SignUp() {
     }),
   });
 
-
-
   const store_formik = useFormik({
     initialValues: {
       name: "",
@@ -85,8 +80,6 @@ export default function SignUp() {
     }),
   });
 
-
-
   const dispatch = useDispatch();
   const handleSignUp = async () => {
     const ward = wardList.find(
@@ -98,7 +91,8 @@ export default function SignUp() {
     const district = districtList.find(
       (district) => district.id === store_formik.values.district
     ).name;
-    let lat = null, lng = null;
+    let lat = null,
+      lng = null;
     // try {
     //   ({ lat, lng } = await getGeoCode(
     //     store_formik.values.address +
@@ -150,7 +144,7 @@ export default function SignUp() {
       }
     } catch (error) {
       //dispatch(statusAction.failedStatus("Tạo tài khoản thất bại"));
-      console.log("can not create an account")
+      console.log("can not create an account");
     }
   };
   const [cityList, setCityList] = useState([]);
