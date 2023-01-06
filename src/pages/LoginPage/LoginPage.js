@@ -31,6 +31,7 @@ import GroceryIcon from "../../assets/img/icon/grocery.png";
 import InputAdornment from "@mui/material/InputAdornment";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import LockIcon from "@mui/icons-material/Lock";
+import Backdrop from "@mui/material/Backdrop";
 
 const styles = {
   paperContainer: {
@@ -137,6 +138,14 @@ const GroceryRadioCheckedIcon = styled(GroceryRadioIcon)({
 });
 
 const LoginPage = (props) => {
+  const [open, setOpen] = React.useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleToggle = () => {
+    setOpen(!open);
+  };
+
   const [role, setRole] = useState("owner");
   const [storeType, setStoreType] = useState("");
   const classes = useStyles();
@@ -157,7 +166,6 @@ const LoginPage = (props) => {
 
   return (
     <Paper style={styles.paperContainer}>
-      <LoadingIndicator />
       <Grid
         container
         spacing={0}
@@ -365,6 +373,7 @@ const LoginPage = (props) => {
             // && Object.keys(loginFormik.touched).length > 0
             disabled={!loginFormik.isValid}
             onClick={() => {
+              handleToggle();
               //if (role) {
               dispatch(
                 logInHandler(
@@ -400,6 +409,13 @@ const LoginPage = (props) => {
           </Grid>
         </Paper>
       </Grid>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={open}
+        onClick={handleClose}
+      >
+        <LoadingIndicator />
+      </Backdrop>
     </Paper>
   );
 };
