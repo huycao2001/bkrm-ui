@@ -18,11 +18,52 @@ import FormLabel from "@mui/material/FormLabel";
 import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
 import Paper from "@mui/material/Paper";
+import FBIcon from "../../assets/img/icon/F&B.png";
+import GroceryIcon from "../../assets/img/icon/grocery.png";
+import { styled } from "@mui/material/styles";
 
+const FBRadioIcon = styled("span")(({ theme }) => ({
+  width: 130,
+  height: 150,
+  backgroundImage: `url(${FBIcon})`,
+  backgroundSize: "140px 140px",
+  ".Mui-focusVisible &": {
+    outline: "2px auto rgba(19,124,189,.6)",
+    outlineOffset: 2,
+  },
+  backgroundPosition: "center",
+  backgroundRepeat: "no-repeat",
+  backgroundColor: "transparent",
+}));
+
+const GroceryRadioIcon = styled("span")(({ theme }) => ({
+  width: 130,
+  height: 150,
+  backgroundImage: `url(${GroceryIcon})`,
+  backgroundSize: "140px 140px",
+  ".Mui-focusVisible &": {
+    outline: "2px auto rgba(19,124,189,.6)",
+    outlineOffset: 2,
+  },
+  backgroundPosition: "center",
+  backgroundRepeat: "no-repeat",
+  backgroundColor: "transparent",
+}));
+
+const FBRadioCheckedIcon = styled(FBRadioIcon)({
+  borderRadius: "10%",
+  backgroundColor: "#ebf1f5",
+});
+
+const GroceryRadioCheckedIcon = styled(GroceryRadioIcon)({
+  borderRadius: "10%",
+  backgroundColor: "#ebf1f5",
+});
 const StoreInfo = (props) => {
   const { store_formik, cityList, districtList, wardList } = {
     ...props,
   };
+  const [storeType, setStoreType] = useState("");
   return (
     <React.Fragment>
       <Grid container spacing={2} style={{ maxWidth: 600, marginTop: 10 }}>
@@ -43,19 +84,52 @@ const StoreInfo = (props) => {
           />
         </Grid>
         <FormControl>
-          <FormLabel id="demo-row-radio-buttons-group-label">
+          <FormLabel align="center" id="demo-row-radio-buttons-group-label">
             Chọn loại cửa hàng
           </FormLabel>
           <RadioGroup
             row
             aria-labelledby="demo-row-radio-buttons-group-label"
             name="row-radio-buttons-group"
+            defaultValue="F&B"
           >
-            <FormControlLabel value="F&B" control={<Radio />} label="F&B" />
+            <FormControlLabel
+              value="F&B"
+              control={
+                <Radio
+                  disableFocusRipple
+                  disableRipple
+                  color="default"
+                  checkedIcon={<FBRadioCheckedIcon />}
+                  icon={<FBRadioIcon />}
+                  {...props}
+                />
+              }
+              label="F&B"
+              labelPlacement="bottom"
+              onClick={() => {
+                setStoreType("fnb");
+                //console.log("Store type : " + storeType);
+              }}
+            />
             <FormControlLabel
               value="Tạp hoá"
-              control={<Radio />}
+              control={
+                <Radio
+                  disableFocusRipple
+                  disableRipple
+                  color="default"
+                  checkedIcon={<GroceryRadioCheckedIcon />}
+                  icon={<GroceryRadioIcon />}
+                  {...props}
+                />
+              }
               label="Tạp hoá"
+              labelPlacement="bottom"
+              onClick={() => {
+                setStoreType("grocery");
+                //console.log("Store type : " + storeType);
+              }}
             />
           </RadioGroup>
         </FormControl>

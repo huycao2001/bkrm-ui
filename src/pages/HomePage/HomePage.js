@@ -33,7 +33,6 @@ import PersonIcon from "@material-ui/icons/Person";
 
 import { logOutHandler } from "../../store/actionCreator";
 
-
 // Import views
 import SalesView from "../../views/SalesView/SalesView";
 import InventoryView from "../../views/InventoryView/InventoryView";
@@ -65,8 +64,8 @@ const HomePage = (props) => {
     infoDetail.role === "owner"
       ? "Chủ cửa hàng"
       : infoDetail.role === "employee"
-        ? "Nhân viên"
-        : "Admin";
+      ? "Nhân viên"
+      : "Admin";
   const permissions = useSelector((state) => state.info.user.permissions);
   console.log("home page called with path " + `${path}`);
   // console.log(useLocation());
@@ -100,8 +99,8 @@ const HomePage = (props) => {
 
   return (
     <div className={classes.root}>
-      <AppBar position="fixed" className={classes.appBar}>
-        <Toolbar>
+      <AppBar position="fixed" className={classes.appBar} elevation={2}>
+        <Toolbar variant="dense">
           {matchDownSm ? (
             <Box
               display="flex"
@@ -115,7 +114,7 @@ const HomePage = (props) => {
               </Typography>
               <IconButton
                 aria-label="open drawer"
-                onClick={() => { }}
+                onClick={() => {}}
                 edge="start"
               >
                 <MenuIcon />

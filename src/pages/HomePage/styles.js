@@ -12,7 +12,7 @@ export default makeStyles((theme) => ({
     //background: theme.palette.background.primaryMain,
     // background: theme.palette.secondary.,
     background: "white",
-    boxShadow: "none",
+    //boxShadow: "none",
   },
   hide: {
     display: "none",
@@ -64,8 +64,8 @@ export default makeStyles((theme) => ({
     borderRadius: theme.customization.borderRadius,
     marginRight: 20,
     padding: 20,
-    // marginTop:40,
-    marginTop: 100,
+    //marginTop: 40,
+    marginTop: 60,
   },
   backgroundMini: {
     background:
