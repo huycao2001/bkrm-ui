@@ -214,8 +214,8 @@ const Invoice = () => {
           <ButtonBase
             sx={{ borderRadius: "16px" }}
             onClick={() => {
-              dispatch(customizeAction.setSidebarOpen(false));
-              dispatch(customizeAction.setItemMenuOpen(1));
+              //dispatch(customizeAction.setSidebarOpen(false));
+              //dispatch(customizeAction.setItemMenuOpen(1));
             }}
             component={Link}
             to="/home/sales/cart"
