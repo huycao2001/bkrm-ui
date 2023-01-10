@@ -39,6 +39,7 @@ import InventoryView from "../../views/InventoryView/InventoryView";
 import AdminView from "../../views/AdminView/AdminView";
 import HRView from "../../views/HRView/HRView";
 import HomeView from "../../views/HomeView/HomeView";
+import ManagerView from "../../views/ManagerView/ManagerView";
 
 import BasicMenu from "../../components/Menu/BasicMenu";
 
@@ -238,6 +239,7 @@ const HomePage = (props) => {
                 <Route path={`${path}/inventory`} component={InventoryView} />
                 <Route path={`${path}/sales`} component={SalesView} />
                 <Route path={`${path}/hr`} component={HRView} />
+                <Route path={`${path}/manager`} component={ManagerView} />
                 <Route path={`${path}/`}>
                   <Redirect
                     to={`${path}/inventory`}
