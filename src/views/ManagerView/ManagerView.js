@@ -15,7 +15,7 @@ import Customer from "./Customer/Customer";
 // import Report from "./Report/Report";
 
 // import AbousUsSetting from "./Setting/WebSetting/AbousUsSetting";
-// import EndDateStatistics from "./Statistics/EndDateStatistics/EndDateStatistics";
+import EndDateStatistics from "./Statistics/EndDateStatistics/EndDateStatistics";
 // import ProductStatistics from "./Statistics/ProductStatistics/ProductStatistics"
 // import CustomerStatistics from "./Statistics/CustomerStatistics/CustomerStatistics"
 // import EmployeeStatistics from "./Statistics/EmployeeStatistic/EmployeeStatistics"
@@ -44,6 +44,7 @@ const ManagerView = (props) => {
 
       
        <Route path={`${path}/cashbook`} component={CashBook} />
+       <Route path={`${path}/end-date-report`} component={EndDateStatistics} />
       {/* <Route path={`${path}/income-report`} component={IncomeStatistics} />
       <Route path={`${path}/product-report`} component={ProductStatistics} />
       <Route path={`${path}/customer-report`} component={CustomerStatistics} />
@@ -53,7 +54,7 @@ const ManagerView = (props) => {
       <Route path={`${path}/financial-report`} component={FinancialReport} />
 
 
-      <Route path={`${path}/end-date-report`} component={EndDateStatistics} /> */}
+       */}
      
       
 

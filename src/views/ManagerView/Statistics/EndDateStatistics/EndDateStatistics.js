@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux'
 import storeApi from "../../../../api/storeApi";
 import defaultProduct from "../../../../assets/img/product/default-product.png"
 import ReportCard from "../../../../components/CardWrapper/ReportCard"
-import TypeReportSelect from "../../../../components/Select/TypeReportSelect"
+// import TypeReportSelect from "../../../../components/Select/TypeReportSelect"
 import moment from 'moment';
 
 const EndDateStatistic = () => {
@@ -73,7 +73,7 @@ const EndDateStatistic = () => {
                     <Grid item >
                         <Typography style={{color:'#757575', fontSize:18,fontWeight:500,}}>Thu - Chi</Typography>
                         <Typography style={{ fontSize:22,fontWeight:500}}>{overview.inAccount ?(Number(overview.inAccount)- Number(overview.outAccount)).toLocaleString() :0}</Typography>
-                        <Button  variant='contained'color='primary'size="small" style={{marginTop:15}}>Chi tiết</Button>
+                        {/* <Button  variant='contained'color='primary'size="small" style={{marginTop:15}}>Chi tiết</Button> */}
                     </Grid>
                     <Grid item >
                         <Box style={{marginBottom:5}}>
@@ -175,7 +175,7 @@ const SmallDetailBox = ({bgColor, color, title, value}) =>{
 const useStyles = makeStyles((theme) =>
 createStyles({
   root: {
-    background: theme.customization.mode === "Light"? '#fafbfb': grey[800],
+    background: theme.customization.mode === "Light"? theme.palette.primary.light: grey[800],
     borderRadius:theme.customization.borderRadius,
     color: '#000000',
     color: '#fafbfb',
