@@ -116,7 +116,7 @@ export const SupplierHeadCells = [
 
 export const InvoiceHeadCells = [
   // thêm cột Tiền hàng, Giảm giá, (tiền còn thiếu)
-  { id: "id", align: "left", disablePadding: true, label: "#" },
+  { id: "id", align: "left", disablePadding: true, label: "Mã hóa đơn" },
   { id: "date", align: "left", disablePadding: false, label: "Ngày bán" },
   { id: "customer", align: "left", disablePadding: false, label: "Khách hàng" },
   // { id: "branch", align: "left", disablePadding: false, label: "Chi nhánh" },
@@ -386,7 +386,7 @@ export const TransferInventoryHeadCells = [
 export const CashbookHeadCells = [
   // { id: "stt", align: "left", disablePadding: true, label: "Stt" },
   { id: "id", align: "left", disablePadding: true, label: "Mã" },
-  { id: "date", align: "left", disablePadding: false, label: "Ngày" },
+  { id: "date", align: "left", disablePadding: false, label: "Thời điểm" },
   { id: "quantity", align: "left", disablePadding: false, label: "Giá trị" },
   { id: "user_type", align: "left", disablePadding: false, label: "Đối tác" },
   { id: "user_name", align: "left", disablePadding: false, label: "Tên" },
