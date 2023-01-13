@@ -177,14 +177,14 @@ export const EmployeeHeadCells = [
 ];
 
 export const CustomerHeadCells = [
-  { id: "id", align: "left", disablePadding: true, label: "#" },
+  { id: "id", align: "left", disablePadding: true, label: "Mã khách hàng" },
   // { id: 'img', align: false, disablePadding: true, label: '#' },
   { id: "name", align: "left", disablePadding: true, label: "Khách hàng" },
   { id: "phone", align: "left", disablePadding: true, label: "Số điện thoại" },
   { id: "score", align: "right", disablePadding: true, label: "Tích điểm" },
   { id: "total", align: "right", disablePadding: true, label: "Tổng tiền mua" },
   { id: "debt", align: "right", disablePadding: true, label: "Tổng nợ" },
-  { id: "debtStatus", align: "center", disablePadding: true, label: "" },
+  { id: "debtStatus", align: "center", disablePadding: true, label: "Tình trạng nợ" },
 ];
 
 export const CartHeadCells = [

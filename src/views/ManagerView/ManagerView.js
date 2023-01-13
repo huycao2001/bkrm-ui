@@ -11,7 +11,7 @@ import Branch from './Branch/Branch'
 // import VoucherSetting from "./Setting/VoucherSetting/VoucherSetting";
 // import WebSetting from "./Setting/WebSetting/WebSetting";
 // import EmailSetting from "./Setting/EmailSetting/EmailSetting"
-// import Customer from "./Customer/Customer";
+import Customer from "./Customer/Customer";
 // import Report from "./Report/Report";
 
 // import AbousUsSetting from "./Setting/WebSetting/AbousUsSetting";
@@ -37,9 +37,9 @@ const ManagerView = (props) => {
       <Route exact path={`${path}/history`} component={History} />
       <Route path={`${path}/branch`} component={Branch} />
 
-      {/* 
+      
       <Route path={`${path}/customer`} component={Customer} />
-      <Route path={`${path}/report`} component={Report} />
+     {/*  <Route path={`${path}/report`} component={Report} />
 
 
       <Route path={`${path}/general-report`} component={GeneralStatistics} />
