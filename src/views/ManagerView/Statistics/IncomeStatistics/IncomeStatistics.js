@@ -155,7 +155,7 @@ const IncomeStatistics = () => {
     };
 
     return (
-      <div style={{ background: theme.customization.mode === "Light"? '#fafbfb': grey[800],
+      <div style={{ background: theme.customization.mode === "Light"? theme.palette.primary.light: grey[800],
       borderRadius:theme.customization.borderRadius, color: '#000000',  color: '#fafbfb',boxShadow: "none", padding:20, // paddingRight:10, // paddingLeft:20,
       margin:-20}}
       > 

@@ -402,7 +402,7 @@ const useStyles = makeStyles((theme) =>
         theme.customization.mode === "Light" ? grey[50] : grey[700],
     },
     root:{
-      background: theme.customization.mode === "Light"? '#fafbfb': grey[800],
+      background: theme.customization.mode === "Light"?  theme.palette.primary.light: grey[800],
       borderRadius:theme.customization.borderRadius, color: '#000000',  color: '#fafbfb',boxShadow: "none", padding:20, // paddingRight:10, // paddingLeft:20,
       margin:-20
     }
