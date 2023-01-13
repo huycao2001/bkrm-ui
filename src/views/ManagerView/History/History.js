@@ -1,9 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useTheme, makeStyles, createStyles } from "@material-ui/core/styles";
-import { Typography,Box, Card, Grid, ButtonBase, Tooltip, Select, MenuItem } from "@material-ui/core";
+import { Typography, Box, Card, Grid, ButtonBase, Tooltip
+} from "@material-ui/core";
+
+import OutlinedInput from '@mui/material/OutlinedInput';
+
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Checkbox from '@mui/material/Checkbox';
+import Select from '@mui/material/Select';
+import ListItemText from '@mui/material/ListItemText'
+
+
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { grey } from "@material-ui/core/colors";
-import HistoryTable  from './HistoryTable.js'
+import HistoryTable from './HistoryTable.js'
 import { useSelector } from "react-redux";
 import HistoryFilter from "./HistoryFilter.js"
 import storeApi from "../../../api/storeApi";
@@ -35,7 +46,7 @@ const useStyles = makeStyles((theme) =>
       flexGrow: 1,
       textAlign: "center",
       marginTop: 5,
-      
+
     },
   })
 );
@@ -44,11 +55,11 @@ const History = () => {
   const theme = useTheme();
   const classes = useStyles(theme);
 
-   //3.2. filter
-   const [openFilter, setOpenFilter] = React.useState(false);
-   const handleToggleFilter = () => {
-     setOpenFilter(!openFilter);
-   };
+  //3.2. filter
+  const [openFilter, setOpenFilter] = React.useState(false);
+  const handleToggleFilter = () => {
+    setOpenFilter(!openFilter);
+  };
 
   const str = "2020-06-11";
 
@@ -75,25 +86,29 @@ const History = () => {
       fetchActivities();
     }
   }, [store_uuid, branch_uuid, period]);
- 
+
   return (
     <Card className={classes.root}>
-      <Grid container direction="row" alignItems="center">
-        <Typography className={classes.headerTitle} variant="h2">
-          Lịch sử hoạt động
-        </Typography>
-        <ButtonBase
-          className={classes.addBtn}
+      <Grid container direction="column" alignItems="center">
+        <Grid container direction="row" alignItems="center" item>
+          <Typography className={classes.headerTitle} variant="h2">
+            Lịch sử hoạt động
+          </Typography>
+          <ButtonBase
+            className={classes.addBtn}
           // onClick={handleToggleFilter}
-        >
-          {/* <Tooltip title="Lọc">
+          >
+            {/* <Tooltip title="Lọc">
             <FilterListIcon size="small" />
           </Tooltip> */}
-        </ButtonBase>
+          </ButtonBase>
+        </Grid>
+        <Typography className={classes.textTitle} variant="body2">
+          ( Chi nhánh {info.branch.name})
+        </Typography>
       </Grid>
-      <Typography className={classes.textTitle} variant="body2">
-        ( Chi nhánh {info.branch.name})
-      </Typography>
+
+
       <div
         style={{
           display: "flex",
@@ -107,17 +122,19 @@ const History = () => {
           onChange={(e) => setPeriod(e.target.value)}
           label="Thời gian"
           size="small"
+          input={<OutlinedInput label="Tag" />}
         >
           <MenuItem value={1}>Hôm nay</MenuItem>
           <MenuItem value={7}>7 ngày</MenuItem>
           <MenuItem value={30}>30 ngày</MenuItem>
         </Select>
 
-        <Select 
+        <Select
           multiple
           value={filters}
           onChange={e => setFilters(e.target.value)}
-          style={{width: 100}}
+          style={{ width: '20%' }}
+          input={<OutlinedInput label="Tag" />}
         >
           <MenuItem value="order">Bán hàng</MenuItem>
           <MenuItem value="purchase_order">Nhập hàng</MenuItem>
@@ -125,6 +142,11 @@ const History = () => {
           <MenuItem value="purchase_return">Trả hàng nhập</MenuItem>
           <MenuItem value="inventory_check">Kiểm kho</MenuItem>
         </Select>
+
+
+
+
+
       </div>
       <Box style={{ marginTop: 15 }}>
         <HistoryTable activities={activities.filter(act => filters.find(filter => act.type === filter))} />

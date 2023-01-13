@@ -82,7 +82,7 @@ export default function HistoryCard({data}) {
                 <Typography style={{color:"grey", fontSize:12}} >
                   Chi nhánh: {data?.branch_name}
                 </Typography>
-                <Typography style={{fontWeight:600, fontSize:13}} >
+                <Typography style={{fontWeight:'600', fontSize:13}} >
                   Người thực hiện : {data?.user_name}, vai trò : {data?.user_type === 'owner' ? 'Chủ cửa hàng' : 'Nhân viên'}
                 </Typography>
                 <Grid container direction="row"alignItems="center" > 

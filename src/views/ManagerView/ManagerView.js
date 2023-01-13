@@ -4,7 +4,7 @@ import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import History from "./History/History";
-// import Branch from "./Branch/Branch";
+import Branch from './Branch/Branch'
 
 // import GeneralSetting from "./Setting/GeneralSetting/GeneralSetting";
 // import DiscountSetting from "./Setting/DiscountSetting/DiscountSetting";
@@ -35,8 +35,9 @@ const ManagerView = (props) => {
         <Redirect to={permissions?.find((p) => p.name === "report") ? `${path}/history` : "/home"}/>
       </Route>
       <Route exact path={`${path}/history`} component={History} />
-      {/* <Route path={`${path}/branch`} component={Branch} />
-      
+      <Route path={`${path}/branch`} component={Branch} />
+
+      {/* 
       <Route path={`${path}/customer`} component={Customer} />
       <Route path={`${path}/report`} component={Report} />
 
