@@ -250,6 +250,15 @@ const LoginPage = (props) => {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
+                handleToggle();
+                // Modify later when login for employee
+                dispatch(
+                  logInHandler(
+                    loginFormik.values.user_name,
+                    loginFormik.values.password,
+                    role
+                  )
+                );
                 //dispatch(authActions.logIn()); // Remove this
               }}
             >
@@ -312,6 +321,8 @@ const LoginPage = (props) => {
                 }
                 onBlur={loginFormik.handleBlur}
               />
+
+            <button type="submit" style={{display : 'none'}}>Submit</button> {/*To help hit enter when submit the form */}
             </form>
           </Box>
           <FormControl>
