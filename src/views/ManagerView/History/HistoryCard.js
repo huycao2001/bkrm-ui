@@ -66,27 +66,6 @@ export default function HistoryCard({data}) {
 
   
   return (
-    // <Card sx={{ minWidth: 275, marginBottom: 5, borderRadius: 5 }}>
-    //   <CardContent>
-    //     <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-    //       {"Tài liệu: " + data?.code}
-    //     </Typography>
-    //     <Typography component="div">
-    //       {"Đối tác: " + data?.partner_name}
-    //     </Typography>
-    //     <Typography sx={{ mb: 1.5 }} color="text.secondary">
-    //       {(data?.user_type === "owner" ? "Chủ cửa hàng - " : "Nhân viên - ") +
-    //         data?.user_name}
-    //     </Typography>
-    //     <Typography variant="body2">
-    //       {"Tổng giá trị: " + data?.total_amount}
-    //     </Typography>
-    //   </CardContent>
-    //   <CardActions>
-    //     <Button size="small">{"Thời gian: " + data?.created_at}</Button>
-    //     <Button size="small">{"Địa điểm: " + data?.branch_name}</Button>
-    //   </CardActions>
-    // </Card>
     <TimelineItem style={{marginLeft:xsScreen ? -30:0}} >
           <TimelineOppositeContent style={{ flex: 0.1 }} >
               <Typography variant="body2" color="textSecondary">{format(parseISO(data?.created_at), 'hh:mm a')}</Typography>  
@@ -103,7 +82,7 @@ export default function HistoryCard({data}) {
                 <Typography style={{color:"grey", fontSize:12}} >
                   Chi nhánh: {data?.branch_name}
                 </Typography>
-                <Typography style={{fontWeight:600, fontSize:13}} >
+                <Typography style={{fontWeight:'600', fontSize:13}} >
                   Người thực hiện : {data?.user_name}, vai trò : {data?.user_type === 'owner' ? 'Chủ cửa hàng' : 'Nhân viên'}
                 </Typography>
                 <Grid container direction="row"alignItems="center" > 

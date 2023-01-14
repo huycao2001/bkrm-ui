@@ -928,7 +928,7 @@ const Cart = () => {
         }}
       />}{" "}
     
-    <SnackBarGeneral handleClose={handleCloseSnackBar} open={openSnack} status={snackStatus}  />
+      <SnackBarGeneral handleClose={handleCloseSnackBar} open={openSnack} status={snackStatus}  />
      
      
      {/* 1. TABLE CARD (left) */}

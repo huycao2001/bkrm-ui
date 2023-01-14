@@ -4,26 +4,26 @@ import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import History from "./History/History";
-// import Branch from "./Branch/Branch";
+import Branch from './Branch/Branch'
 
 // import GeneralSetting from "./Setting/GeneralSetting/GeneralSetting";
 // import DiscountSetting from "./Setting/DiscountSetting/DiscountSetting";
 // import VoucherSetting from "./Setting/VoucherSetting/VoucherSetting";
 // import WebSetting from "./Setting/WebSetting/WebSetting";
 // import EmailSetting from "./Setting/EmailSetting/EmailSetting"
-// import Customer from "./Customer/Customer";
+import Customer from "./Customer/Customer";
 // import Report from "./Report/Report";
 
 // import AbousUsSetting from "./Setting/WebSetting/AbousUsSetting";
-// import EndDateStatistics from "./Statistics/EndDateStatistics/EndDateStatistics";
-// import ProductStatistics from "./Statistics/ProductStatistics/ProductStatistics"
+import EndDateStatistics from "./Statistics/EndDateStatistics/EndDateStatistics";
+import ProductStatistics from "./Statistics/ProductStatistics/ProductStatistics"
 // import CustomerStatistics from "./Statistics/CustomerStatistics/CustomerStatistics"
 // import EmployeeStatistics from "./Statistics/EmployeeStatistic/EmployeeStatistics"
 // import SupplierStatistics from "./Statistics/SupplierStatistics/SupplierStatistics"
 // import GeneralStatistics from "./Statistics/GeneralStatistics/GeneralStatistics"
-// import IncomeStatistics from "./Statistics/IncomeStatistics/IncomeStatistics"
+import IncomeStatistics from "./Statistics/IncomeStatistics/IncomeStatistics"
 // import BranchStatistics from "./Statistics/BranchStatistics/BranchStatistics"
-// import CashBook from "./Statistics/CashBook/CashBook";
+import CashBook from "./Statistics/CashBook/CashBook";
 // import FinancialReport from "./Statistics/FinancialReport/FinancialReport"
 const ManagerView = (props) => {
   
@@ -35,24 +35,26 @@ const ManagerView = (props) => {
         <Redirect to={permissions?.find((p) => p.name === "report") ? `${path}/history` : "/home"}/>
       </Route>
       <Route exact path={`${path}/history`} component={History} />
-      {/* <Route path={`${path}/branch`} component={Branch} />
+      <Route path={`${path}/branch`} component={Branch} />
+
       
       <Route path={`${path}/customer`} component={Customer} />
-      <Route path={`${path}/report`} component={Report} />
+      {/* <Route path={`${path}/report`} component={Report} /> */}
 
 
-      <Route path={`${path}/general-report`} component={GeneralStatistics} />
-      <Route path={`${path}/cashbook`} component={CashBook} />
+      
+       <Route path={`${path}/cashbook`} component={CashBook} />
+       <Route path={`${path}/end-date-report`} component={EndDateStatistics} />
       <Route path={`${path}/income-report`} component={IncomeStatistics} />
       <Route path={`${path}/product-report`} component={ProductStatistics} />
-      <Route path={`${path}/customer-report`} component={CustomerStatistics} />
+      {/* <Route path={`${path}/customer-report`} component={CustomerStatistics} />
       <Route path={`${path}/employee-report`} component={EmployeeStatistics} />
       <Route path={`${path}/supplier-report`} component={SupplierStatistics} />
       <Route path={`${path}/branch-report`} component={BranchStatistics} />
       <Route path={`${path}/financial-report`} component={FinancialReport} />
 
 
-      <Route path={`${path}/end-date-report`} component={EndDateStatistics} /> */}
+       */}
      
       
 
