@@ -253,7 +253,7 @@ const DetailStatistic= (props) =>{
                 </Grid>
                 <Grid item xs={2}><Typography style={{ fontSize:16,textAlign:"center"}}>{item.total_buy_times ? Number(item.total_buy_times).toLocaleString() :0}</Typography></Grid>
                 <Grid item xs={2}><Typography style={{ fontSize:16,textAlign:"center"}}>{ item.total_buy_price ? Number(item.total_buy_price).toLocaleString() :0}</Typography></Grid>
-                <Grid item xs={2}><Typography style={{ fontSize:16,textAlign:"center"}}>Tổng lợi nhuận</Typography></Grid>
+                <Grid item xs={2}><Typography style={{ fontSize:16,textAlign:"center"}}>{item.revenue ? Number(item.revenue).toLocaleString() :0}</Typography></Grid>
             </Grid>
             <Divider />
             </Box>
