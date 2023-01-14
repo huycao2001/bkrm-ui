@@ -17,7 +17,7 @@ import Customer from "./Customer/Customer";
 // import AbousUsSetting from "./Setting/WebSetting/AbousUsSetting";
 import EndDateStatistics from "./Statistics/EndDateStatistics/EndDateStatistics";
 import ProductStatistics from "./Statistics/ProductStatistics/ProductStatistics"
-// import CustomerStatistics from "./Statistics/CustomerStatistics/CustomerStatistics"
+import CustomerStatistics from "./Statistics/CustomerStatistics/CustomerStatistics"
 // import EmployeeStatistics from "./Statistics/EmployeeStatistic/EmployeeStatistics"
 // import SupplierStatistics from "./Statistics/SupplierStatistics/SupplierStatistics"
 // import GeneralStatistics from "./Statistics/GeneralStatistics/GeneralStatistics"
@@ -47,8 +47,8 @@ const ManagerView = (props) => {
        <Route path={`${path}/end-date-report`} component={EndDateStatistics} />
       <Route path={`${path}/income-report`} component={IncomeStatistics} />
       <Route path={`${path}/product-report`} component={ProductStatistics} />
-      {/* <Route path={`${path}/customer-report`} component={CustomerStatistics} />
-      <Route path={`${path}/employee-report`} component={EmployeeStatistics} />
+      <Route path={`${path}/customer-report`} component={CustomerStatistics} />
+      {/* <Route path={`${path}/employee-report`} component={EmployeeStatistics} />
       <Route path={`${path}/supplier-report`} component={SupplierStatistics} />
       <Route path={`${path}/branch-report`} component={BranchStatistics} />
       <Route path={`${path}/financial-report`} component={FinancialReport} />
