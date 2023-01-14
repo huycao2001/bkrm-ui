@@ -6,7 +6,7 @@
  import { purple } from '@mui/material/colors';
 
 export default function themePalette(theme) {
-  const level = theme.customization.colorLevel;
+  const level = theme.customization.colorLevel;  // Default value from the database is 50
   return {
     primary: {
       light: theme.customization.primaryColor[level],

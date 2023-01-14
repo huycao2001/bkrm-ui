@@ -251,7 +251,7 @@ const DetailStatistic= (props) =>{
                       </ListItem>
                   </Box>
                 </Grid>
-                <Grid item xs={2}><Typography style={{ fontSize:16,textAlign:"center"}}>{item.total_buy_price ? Number(item.total_buy_price).toLocaleString() :0}</Typography></Grid>
+                <Grid item xs={2}><Typography style={{ fontSize:16,textAlign:"center"}}>{item.total_buy_times ? Number(item.total_buy_times).toLocaleString() :0}</Typography></Grid>
                 <Grid item xs={2}><Typography style={{ fontSize:16,textAlign:"center"}}>{ item.total_buy_price ? Number(item.total_buy_price).toLocaleString() :0}</Typography></Grid>
                 <Grid item xs={2}><Typography style={{ fontSize:16,textAlign:"center"}}>Tổng lợi nhuận</Typography></Grid>
             </Grid>
@@ -274,7 +274,7 @@ const useStyles = makeStyles((theme) =>
         theme.customization.mode === "Light" ? grey[50] : grey[700],
     },
     root:{
-      background: theme.customization.mode === "Light"? '#fafbfb': grey[800],
+      background: theme.customization.mode === "Light"? theme.palette.primary.light : grey[800],
       borderRadius:theme.customization.borderRadius, color: '#000000',  color: '#fafbfb',boxShadow: "none", padding:20, // paddingRight:10, // paddingLeft:20,
       margin:-20
     }
