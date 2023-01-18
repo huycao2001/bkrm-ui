@@ -69,7 +69,7 @@ const SupplierStatistics = () => {
     topSortedRevenue.sort((a, b) => b.total_purchase_price - a.total_purchase_price ) 
 
     let topBestSeller = topData ? [...topData] :[]
-    topBestSeller.sort((a, b) => b.total_purchase_price - a.total_purchase_price ) 
+    topBestSeller.sort((a, b) => b.number_of_purchases - a.number_of_purchases ) 
 
 
     var dataRevenue= {   
@@ -88,7 +88,7 @@ const SupplierStatistics = () => {
     var dataBestSeller= {   
       series: [{
         name: 'Số lần nhập',
-        data: topBestSeller ? topBestSeller.map((item) =>item.total_purchase_price).slice(0, limit) :[]
+        data: topBestSeller ? topBestSeller.map((item) =>item.number_of_purchases).slice(0, limit) :[]
 
       }],
       options: {
@@ -157,7 +157,7 @@ const DetailStatistic= (props) =>{
   const theme = useTheme();
   const classes = useStyles(theme);
   const [productData , setProductData] = useState(data? data.sort((a, b) => Number(b.total_purchase_price) - Number(a.total_purchase_price) ):[])
-
+  const [type,setType] = useState("revenue")
   useEffect(() => {
     setType("revenue")
     setProductData(data)
@@ -169,7 +169,7 @@ const DetailStatistic= (props) =>{
   //             .replace(/đ/g, 'd').replace(/Đ/g, 'D');
   // }
 
-  const [type,setType] = useState("revenue")
+  
 
 
   const handleChangeType = (e)  =>{
@@ -228,7 +228,7 @@ const DetailStatistic= (props) =>{
                       </ListItem>
                   </Box>
                 </Grid>
-                <Grid item xs={2}><Typography style={{ fontSize:16,textAlign:"center"}}>{item.total_purchase_price ? Number(item.total_purchase_price).toLocaleString() :0}</Typography></Grid>
+                <Grid item xs={2}><Typography style={{ fontSize:16,textAlign:"center"}}>{item.number_of_purchases ? Number(item.number_of_purchases).toLocaleString() :0}</Typography></Grid>
                 <Grid item xs={2}><Typography style={{ fontSize:16,textAlign:"center"}}>{ item.total_purchase_price ?  Number(item.total_purchase_price).toLocaleString() :0}</Typography></Grid>
                 {/* <Grid item xs={2}><Typography style={{ fontSize:16,textAlign:"center"}}>Tổng lợi nhuận</Typography></Grid> */}
             </Grid>
@@ -251,7 +251,7 @@ const useStyles = makeStyles((theme) =>
         theme.customization.mode === "Light" ? grey[50] : grey[700],
     },
     root:{
-      background: theme.customization.mode === "Light"? '#fafbfb': grey[800],
+      background: theme.customization.mode === "Light"? theme.palette.primary.light: grey[800],
       borderRadius:theme.customization.borderRadius, color: '#000000',  color: '#fafbfb',boxShadow: "none", padding:20, // paddingRight:10, // paddingLeft:20,
       margin:-20
     }
