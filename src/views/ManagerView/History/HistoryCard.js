@@ -71,6 +71,9 @@ const timeFormat = (dateTime) =>{
   }
   else{
     var newHour = parseInt(hour) - 12; 
+    if(newHour > 9){
+      return [newHour.toString(), minute].join(':') + ' PM'
+    }
     return '0' + [newHour.toString(), minute].join(':') + ' PM'
   }
   //return dateTime.slice(11,16);
