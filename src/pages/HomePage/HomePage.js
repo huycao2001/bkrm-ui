@@ -146,10 +146,19 @@ const HomePage = (props) => {
                   alignItems="center"
                   justifyContent="space-between"
                 >
-                  <BasicMenu section="Bán hàng" />
-                  <BasicMenu section="Kho hàng" />
-                  <BasicMenu section="Nhân sự" />
-                  <BasicMenu section="Quản lý" />
+                  {permissions?.find((p) => p.name === "sales") && (
+                    <BasicMenu section="Bán hàng" />
+                  )}
+                  {permissions?.find((p) => p.name === "product") && (
+                    <BasicMenu section="Kho hàng" />
+                  )}
+                  {permissions?.find((p) => p.name === "employee") && (
+                    <BasicMenu section="Nhân sự" />
+                  )}
+                  {permissions?.find((p) => p.name === "report") && (
+                    <BasicMenu section="Quản lý" />
+                  )}
+
                   <BasicMenu section="Cài đặt" />
                   <BasicMenu section="Thống kê" />
                 </Box>
