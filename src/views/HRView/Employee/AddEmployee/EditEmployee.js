@@ -1,37 +1,38 @@
 import React, { useEffect } from "react";
 import { useTheme, makeStyles, createStyles } from "@material-ui/core/styles";
+//import { useTheme } from '@mui/material/styles';
+//import { createStyles, makeStyles } from '@mui/styles';
 
 //import library
-import {
-  Button,
-  TextField,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Typography,
-  Grid,
-  Avatar,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  FormHelperText,
-  Dialog,
-} from "@material-ui/core";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import FormControl from "@mui/material/FormControl";
+import MenuItem from "@mui/material/MenuItem";
+import InputLabel from "@mui/material/InputLabel";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid";
+import Avatar from "@mui/material/Avatar";
+import FormHelperText from "@mui/material/FormHelperText";
+import Dialog from "@mui/material/Dialog";
+
 import { useFormik } from "formik";
 
 //import project
 import NumberFormatCustom from "../../../../components/TextField/NumberFormatCustom";
 import MultipleSelect from "../../../../components/MultipleSelect/MultipleSelect";
 import { EmailRounded, YouTube } from "@material-ui/icons";
-import { verifyToken} from "../../../../store/actionCreator";
+import { verifyToken } from "../../../../store/actionCreator";
 import branchApi from "../../../../api/branchApi";
 import VNDInput from "../../../../components/TextField/NumberFormatCustom";
 import * as Yup from "yup";
 // api
 import { useDispatch, useSelector } from "react-redux";
 import employeeApi from "../../../../api/employeeApi";
-import ConfirmPopup from "../../../../components/ConfirmPopUp/ConfirmPopUp"
+import ConfirmPopup from "../../../../components/ConfirmPopUp/ConfirmPopUp";
 import userAPi from "../../../../api/userApi";
 import { statusAction } from "../../../../store/slice/statusSlice";
 
@@ -64,12 +65,12 @@ let permissionChoices = [
   { id: 5, name: "report", description: "Báo cáo" },
 ];
 
-const EditEmployee = ({ handleClose, open, employee ,fromAvatar}) => {
+const EditEmployee = ({ handleClose, open, employee, fromAvatar }) => {
   const theme = useTheme();
   const classes = useStyles(theme);
   const info = useSelector((state) => state.info);
   const store_uuid = info.store.uuid;
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   // đổi thành state sau (price format)
   const [values, setValues] = React.useState({
     numberformat: "",
@@ -115,21 +116,19 @@ const EditEmployee = ({ handleClose, open, employee ,fromAvatar}) => {
       date_of_birth: employee.date_of_birth || "",
       address: employee.address || "",
       branches: employee.branches?.map((b) => b.id) || [],
-      new_password: ""
+      new_password: "",
     },
     validationSchema: Yup.object().shape({
       name: Yup.string().required("Bắt buộc!"),
       user_name: Yup.string().required("Bắt buộc!"),
       phone: Yup.string()
-      .length(10, "Số điện thoại không chính xác")
-      // .required("Nhập số điện thoại")
-      .matches(/^\d+$/, "Số điển thoại không chính xác"),
+        .length(10, "Số điện thoại không chính xác")
+        // .required("Nhập số điện thoại")
+        .matches(/^\d+$/, "Số điển thoại không chính xác"),
       branches: Yup.array().min(1, "Ít nhất một chi nhánh"),
       email: Yup.string().email("Email không chính xác"),
       permissions: Yup.array().min(1, "Ít nhất một chức năng"),
       email: Yup.string().email("Email không chính xác"),
-      
-      
     }),
 
     onSubmit: async (values, actions) => {
@@ -149,7 +148,6 @@ const EditEmployee = ({ handleClose, open, employee ,fromAvatar}) => {
         }
       }
 
-
       if (image) {
         formData.append("image", image);
       }
@@ -167,7 +165,7 @@ const EditEmployee = ({ handleClose, open, employee ,fromAvatar}) => {
     },
   });
   // const [branches, setBranches] = React.useState([]);
-  
+
   React.useEffect(() => {
     const loadBranches = async () => {
       try {
@@ -189,57 +187,61 @@ const EditEmployee = ({ handleClose, open, employee ,fromAvatar}) => {
   //     setPermissions(permissions);
   //   };
 
-  console.log(employee)
-  const handleEditProfile = async (password) =>{
-    setConfirm(false)
+  console.log(employee);
+  const handleEditProfile = async (password) => {
+    setConfirm(false);
     handleClose();
     try {
-      const rs = await userAPi.confirmPassword(info.store.uuid,{
-        user_name:info.user.user_name,
-        password:password,
-        role:info.role
-      })
-      if(rs.message ==="success"){
+      const rs = await userAPi.confirmPassword(info.store.uuid, {
+        user_name: info.user.user_name,
+        password: password,
+        role: info.role,
+      });
+      if (rs.message === "success") {
         let formData = new FormData();
-        formData.append("date_of_birth",formik.values.date_of_birth)
-        formData.append("email",formik.values.email)
-        formData.append("phone",formik.values.phone) 
-        formData.append("gender",formik.values.gender) 
-        formData.append("id_card_num",formik.values.id_card_num) 
-        formData.append("address",formik.values.address)
-        formData.append("role",info.role)
-        if(formik.values.new_password != ""){
-          formData.append("new_password",formik.values.new_password) 
+        formData.append("date_of_birth", formik.values.date_of_birth);
+        formData.append("email", formik.values.email);
+        formData.append("phone", formik.values.phone);
+        formData.append("gender", formik.values.gender);
+        formData.append("id_card_num", formik.values.id_card_num);
+        formData.append("address", formik.values.address);
+        formData.append("role", info.role);
+        if (formik.values.new_password != "") {
+          formData.append("new_password", formik.values.new_password);
         }
         if (image) {
           formData.append("image", image);
         }
-        const rs_edit = await userAPi.editProfile(info.store.uuid,formData)
-        if(rs_edit.data === "Edit profile successfully"){
-          dispatch(statusAction.successfulStatus("Lưu thay đổi"))
-          dispatch(verifyToken())
-        }else{
+        const rs_edit = await userAPi.editProfile(info.store.uuid, formData);
+        if (rs_edit.data === "Edit profile successfully") {
+          dispatch(statusAction.successfulStatus("Lưu thay đổi"));
+          dispatch(verifyToken());
+        } else {
         }
-      }else{
-        dispatch(statusAction.failedStatus("Lưu thất bại"))
+      } else {
+        dispatch(statusAction.failedStatus("Lưu thất bại"));
       }
     } catch (error) {
-      dispatch(statusAction.failedStatus("Sửa thất bại"))
+      dispatch(statusAction.failedStatus("Sửa thất bại"));
     }
-  }
-  const [confirm,setConfirm] = React.useState(false);
+  };
+  const [confirm, setConfirm] = React.useState(false);
   return (
     <Dialog
       open={open}
       onClose={handleClose}
       aria-labelledby="form-dialog-title"
     >
-      <ConfirmPopup open={confirm} handleClose={() => setConfirm(false)} passwordRequired={true} handleConfirm={handleEditProfile}
-      message={
-        <Typography>
-          <b>Nhập mật khẩu để lưu thay đổi</b>
-        </Typography> 
-      }
+      <ConfirmPopup
+        open={confirm}
+        handleClose={() => setConfirm(false)}
+        passwordRequired={true}
+        handleConfirm={handleEditProfile}
+        message={
+          <Typography>
+            <b>Nhập mật khẩu để lưu thay đổi</b>
+          </Typography>
+        }
       />
       <DialogTitle id="form-dialog-title">
         <Typography className={classes.headerTitle} variant="h5">
@@ -295,7 +297,7 @@ const EditEmployee = ({ handleClose, open, employee ,fromAvatar}) => {
               <TextField
                 id="name"
                 name="name"
-                label={fromAvatar ?"Họ tên" : "Tên nhân viên"}
+                label={fromAvatar ? "Họ tên" : "Tên nhân viên"}
                 value={formik.values.name}
                 variant="outlined"
                 fullWidth
@@ -399,33 +401,36 @@ const EditEmployee = ({ handleClose, open, employee ,fromAvatar}) => {
                 onChange={formik.handleChange}
               />
 
-{formik.errors.email && formik.touched.email && (
+              {formik.errors.email && formik.touched.email && (
                 <FormHelperText error>{formik.errors.email}</FormHelperText>
               )}
-              {info.role != "owner" && 
-              <TextField
-                id="outlined-basic"
-                label="Địa chỉ"
-                value={formik.values.address}
-                variant="outlined"
-                fullWidth
-                size="small"
-                onChange={formik.handleChange}
-                name="address"
-              />}
+              {info.role != "owner" && (
+                <TextField
+                  id="outlined-basic"
+                  label="Địa chỉ"
+                  value={formik.values.address}
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  onChange={formik.handleChange}
+                  name="address"
+                />
+              )}
             </Grid>
             <Grid item xs={6}>
               {/* Select lưong */}
-              {fromAvatar&&<TextField
-                id="outlined-basic"
-                label="Mật khẩu mới"
-                variant="outlined"
-                fullWidth
-                size="small"
-                onChange={formik.handleChange}
-                name="new_password"
-                type="password"
-              />}
+              {fromAvatar && (
+                <TextField
+                  id="outlined-basic"
+                  label="Mật khẩu mới"
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  onChange={formik.handleChange}
+                  name="new_password"
+                  type="password"
+                />
+              )}
               <FormControl
                 className={classes.formControl}
                 fullWidth
@@ -504,15 +509,15 @@ const EditEmployee = ({ handleClose, open, employee ,fromAvatar}) => {
                     </MenuItem>
                   ))}
                 </Select>
-             
-              {formik.errors.permissions && formik.touched.permissions && (
-                <FormHelperText error>
-                  {formik.errors.permissions}
-                </FormHelperText>
-              )}
-            </FormControl>
 
-            <FormControl
+                {formik.errors.permissions && formik.touched.permissions && (
+                  <FormHelperText error>
+                    {formik.errors.permissions}
+                  </FormHelperText>
+                )}
+              </FormControl>
+
+              <FormControl
                 className={classes.formControl}
                 fullWidth
                 size="small"
@@ -522,7 +527,7 @@ const EditEmployee = ({ handleClose, open, employee ,fromAvatar}) => {
               >
                 <InputLabel id="branchSelect">Chi nhánh </InputLabel>
                 <Select
-                  multiple = {info.role ==="owner"?false:true}
+                  multiple={info.role === "owner" ? false : true}
                   variant="outlined"
                   fullWidth
                   id="branches"
@@ -548,8 +553,10 @@ const EditEmployee = ({ handleClose, open, employee ,fromAvatar}) => {
                 </Select>
 
                 {formik.errors.branches && formik.touched.branches && (
-                <FormHelperText error>{formik.errors.branches}</FormHelperText>
-              )}
+                  <FormHelperText error>
+                    {formik.errors.branches}
+                  </FormHelperText>
+                )}
               </FormControl>
             </Grid>
           </Grid>
@@ -566,7 +573,7 @@ const EditEmployee = ({ handleClose, open, employee ,fromAvatar}) => {
           Huỷ
         </Button>
         <Button
-          onClick={fromAvatar ?() => setConfirm(true) :formik.handleSubmit}
+          onClick={fromAvatar ? () => setConfirm(true) : formik.handleSubmit}
           variant="contained"
           size="small"
           color="primary"

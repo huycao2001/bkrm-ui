@@ -23,8 +23,8 @@ import { borders } from "@material-ui/system";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import HighlightOffTwoToneIcon from "@material-ui/icons/HighlightOffTwoTone";
-import DeleteIcon from '@mui/icons-material/Delete';
-import CreateIcon from '@mui/icons-material/Create';
+import DeleteIcon from "@mui/icons-material/Delete";
+import CreateIcon from "@mui/icons-material/Create";
 import LocalOfferTwoToneIcon from "@material-ui/icons/LocalOfferTwoTone";
 import VerifiedUserTwoToneIcon from "@material-ui/icons/VerifiedUserTwoTone";
 //import image
@@ -284,217 +284,256 @@ const InventoryDetail = (props) => {
           </Typography>
         }
       />
-      <Box margin={1}>
-        <Box
-          sx={{
-            fontSize: 18,
-            fontWeight: 400,
-            color: "#212121",
-            mb: 2,
-          }}
-        >
-          {productDetail.name}
-        </Box>
-
+      <Box margin={0} sx={{ mt: 3, mb: 2 }}>
         <Grid container direction="row" justifyContent="flex-start">
-          <Grid item xs={12} sm={4}>
-            {imageList.at(0) ? (
+          <Grid item xs={12} sm={3}>
+            <Grid item xs={9} align="center">
+              {imageList.at(0) ? (
+                <Box
+                  sx={{
+                    // height: 170,
+                    // width: 170,
+                    height: xsScreen ? 100 : 170,
+                    width: xsScreen ? 100 : 170,
+                    borderRadius: 2,
+                    marginLeft: 15,
+                    marginBottom: xsScreen ? 10 : 0,
+                  }}
+                >
+                  <Carousel showThumbs={false}>
+                    {imageList?.map((url) => (
+                      <img
+                        key={url}
+                        src={url}
+                        height={xsScreen ? "100" : "170"}
+                        width={xsScreen ? "100" : "170"}
+                        // height= "170"
+                        // width= "170"
+                      />
+                    ))}
+                  </Carousel>
+                </Box>
+              ) : (
+                <Box
+                  component="img"
+                  sx={{
+                    height: xsScreen ? 100 : 170,
+                    width: xsScreen ? 100 : 170,
+                    //marginLeft: 7,
+                    //marginRight: 7,
+                    borderRadius: 2,
+                  }}
+                  src={defaultProduct}
+                  style={{ marginBottom: 25 }}
+                />
+              )}
+            </Grid>
+            <Grid item xs={9} align="center">
               <Box
                 sx={{
-                  // height: 170,
-                  // width: 170,
-                  height: xsScreen ? 100 : 170,
-                  width: xsScreen ? 100 : 170,
-                  borderRadius: 2,
-                  marginLeft: 15,
-                  marginBottom: xsScreen ? 10 : 0,
+                  fontSize: 18,
+                  fontWeight: 400,
+                  color: "#212121",
+                  mb: 2,
                 }}
               >
-                <Carousel showThumbs={false}>
-                  {imageList?.map((url) => (
-                    <img
-                      key={url}
-                      src={url}
-                      height={xsScreen ? "100" : "170"}
-                      width={xsScreen ? "100" : "170"}
-                      // height= "170"
-                      // width= "170"
-                    />
-                  ))}
-                </Carousel>
+                {productDetail.name}
               </Box>
-            ) : (
-              <Box
-                component="img"
-                sx={{
-                  height: xsScreen ? 100 : 170,
-                  width: xsScreen ? 100 : 170,
-                  marginLeft: 7,
-                  marginRight: 7,
-                  borderRadius: 20,
-                }}
-                src={defaultProduct}
-                style={{ marginBottom: 20 }}
-              />
-            )}
+            </Grid>
           </Grid>
 
-          <Grid container direction="column" item xs={12} sm={8}>
+          <Grid container direction="column" item xs={12} sm={9}>
             <Grid container direction="row">
-              <Box sx={{ border: 1, borderColor: "#f0f0f0", p: 3, width: 1 }}>
-                <Grid item xs={12} sm={6}>
-                  <Grid item xs={6}>
+              <Grid item xs={6}>
+                <Box
+                  sx={{
+                    fontSize: 18,
+                    fontWeight: 400,
+                    color: "#212121",
+                    mb: 2,
+                  }}
+                >
+                  Thông tin sản phẩm
+                </Box>
+                <Grid container direction="row" justifyContent="flex-start">
+                  <Grid item xs={4}>
                     <Box
                       sx={{
-                        fontSize: 18,
+                        fontSize: 14,
                         fontWeight: 400,
-                        color: "#212121",
+                        color: "#878787",
                         mb: 2,
                       }}
                     >
-                      Thông tin sản phẩm
+                      Tên sản phẩm
                     </Box>
                   </Grid>
-                  <Grid container direction="row" justifyContent="flex-start">
-                    <Grid item xs={4}>
-                      <Box
-                        sx={{
-                          fontSize: 14,
-                          fontWeight: 400,
-                          color: "#878787",
-                          mb: 2,
-                        }}
-                      >
-                        Tên sản phẩm
-                      </Box>
-                    </Grid>
-                    <Grid item>
-                      <Box
-                        sx={{
-                          fontSize: 14,
-                          fontWeight: 400,
-                          color: "#212121",
-                        }}
-                      >
-                        {productDetail.name}
-                      </Box>
-                    </Grid>
-                  </Grid>
-                  <Grid container direction="row" justifyContent="flex-start">
-                    <Grid item xs={4}>
-                      <Box
-                        sx={{
-                          fontSize: 14,
-                          fontWeight: 400,
-                          color: "#878787",
-                          mb: 2,
-                        }}
-                      >
-                        Mã sản phẩm
-                      </Box>
-                    </Grid>
-                    <Grid item>
-                      <Box
-                        sx={{
-                          fontSize: 14,
-                          fontWeight: 400,
-                          color: "#212121",
-                        }}
-                      >
-                        {productDetail.product_code}
-                      </Box>
-                    </Grid>
-                  </Grid>
-                  <Grid container direction="row" justifyContent="flex-start">
-                    <Grid item xs={4}>
-                      <Box
-                        sx={{
-                          fontSize: 14,
-                          fontWeight: 400,
-                          color: "#878787",
-                          mb: 2,
-                        }}
-                      >
-                        Mã vạch
-                      </Box>
-                    </Grid>
-                    <Grid item sm={6}>
-                      <Box
-                        sx={{
-                          fontSize: 14,
-                          fontWeight: 400,
-                          color: "#212121",
-                        }}
-                      >
-                        {productDetail.bar_code}
-                      </Box>
-                    </Grid>
-                  </Grid>
-                  <Grid container direction="row" justifyContent="flex-start">
-                    <Grid item xs={4}>
-                      <Box
-                        sx={{
-                          fontSize: 14,
-                          fontWeight: 400,
-                          color: "#878787",
-                          mb: 2,
-                        }}
-                      >
-                        Danh mục
-                      </Box>
-                    </Grid>
-                    <Grid item>
-                      <Box
-                        sx={{
-                          fontSize: 14,
-                          fontWeight: 400,
-                          color: "#212121",
-                        }}
-                      >
-                        {productDetail.category.name}
-                      </Box>
-                    </Grid>
-                  </Grid>
-                  <Grid container direction="row" justifyContent="flex-start">
-                    <Grid item xs={4}>
-                      <Box
-                        sx={{
-                          fontSize: 14,
-                          fontWeight: 400,
-                          color: "#878787",
-                        }}
-                      >
-                        Đơn vị
-                      </Box>
-                    </Grid>
-                    <Grid ListItemText>
-                      <Box
-                        sx={{
-                          fontSize: 14,
-                          fontWeight: 400,
-                          color: "#212121",
-                        }}
-                      >
-                        {productDetail.quantity_per_unit}
-                      </Box>
-                    </Grid>
+                  <Grid item>
+                    <Box
+                      sx={{
+                        fontSize: 14,
+                        fontWeight: 400,
+                        color: "#212121",
+                      }}
+                    >
+                      {productDetail.name}
+                    </Box>
                   </Grid>
                 </Grid>
-              </Box>
+                <Grid container direction="row" justifyContent="flex-start">
+                  <Grid item xs={4}>
+                    <Box
+                      sx={{
+                        fontSize: 14,
+                        fontWeight: 400,
+                        color: "#878787",
+                        mb: 2,
+                      }}
+                    >
+                      Mã sản phẩm
+                    </Box>
+                  </Grid>
+                  <Grid item>
+                    <Box
+                      sx={{
+                        fontSize: 14,
+                        fontWeight: 400,
+                        color: "#212121",
+                      }}
+                    >
+                      {productDetail.product_code}
+                    </Box>
+                  </Grid>
+                </Grid>
+                <Grid container direction="row" justifyContent="flex-start">
+                  <Grid item xs={4}>
+                    <Box
+                      sx={{
+                        fontSize: 14,
+                        fontWeight: 400,
+                        color: "#878787",
+                        mb: 2,
+                      }}
+                    >
+                      Mã vạch
+                    </Box>
+                  </Grid>
+                  <Grid item sm={6}>
+                    <Box
+                      sx={{
+                        fontSize: 14,
+                        fontWeight: 400,
+                        color: "#212121",
+                      }}
+                    >
+                      {productDetail.bar_code}
+                    </Box>
+                  </Grid>
+                </Grid>
+                <Grid container direction="row" justifyContent="flex-start">
+                  <Grid item xs={4}>
+                    <Box
+                      sx={{
+                        fontSize: 14,
+                        fontWeight: 400,
+                        color: "#878787",
+                        mb: 2,
+                      }}
+                    >
+                      Danh mục
+                    </Box>
+                  </Grid>
+                  <Grid item>
+                    <Box
+                      sx={{
+                        fontSize: 14,
+                        fontWeight: 400,
+                        color: "#212121",
+                      }}
+                    >
+                      {productDetail.category.name}
+                    </Box>
+                  </Grid>
+                </Grid>
+                <Grid container direction="row" justifyContent="flex-start">
+                  <Grid item xs={4}>
+                    <Box
+                      sx={{
+                        fontSize: 14,
+                        fontWeight: 400,
+                        color: "#878787",
+                      }}
+                    >
+                      Đơn vị
+                    </Box>
+                  </Grid>
+                  <Grid ListItemText>
+                    <Box
+                      sx={{
+                        fontSize: 14,
+                        fontWeight: 400,
+                        color: "#212121",
+                      }}
+                    >
+                      {productDetail.quantity_per_unit}
+                    </Box>
+                  </Grid>
+                </Grid>
+              </Grid>
 
-              <Grid item xs={12} sm={12}>
+              <Grid item xs={6}>
                 <Box
                   sx={{
-                    borderTop: 0,
-                    borderBottom: 1,
-                    borderLeft: 1,
-                    borderRight: 1,
-                    borderColor: "#f0f0f0",
-                    p: 3,
-                    width: 1,
+                    fontSize: 18,
+                    fontWeight: 400,
+                    color: "#212121",
+                    mb: 2,
                   }}
                 >
-                  <Grid item xs={6}>
+                  Giá
+                </Box>
+                <Grid container direction="row" justifyContent="flex-start">
+                  <Grid item xs={4}>
+                    <Box
+                      sx={{
+                        fontSize: 14,
+                        fontWeight: 400,
+                        color: "#878787",
+                        mb: 2,
+                      }}
+                    >
+                      Giá bán
+                    </Box>
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="body1" gutterBottom component="div">
+                      <VNDFormat value={productDetail.list_price}></VNDFormat>
+                    </Typography>
+                  </Grid>
+                </Grid>
+                <Grid container direction="row" justifyContent="flex-start">
+                  <Grid item xs={4}>
+                    <Box
+                      sx={{
+                        fontSize: 14,
+                        fontWeight: 400,
+                        color: "#878787",
+                        mb: 2,
+                      }}
+                    >
+                      Giá vốn
+                    </Box>
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="body1" gutterBottom component="div">
+                      <VNDFormat
+                        value={productDetail.standard_price}
+                      ></VNDFormat>{" "}
+                    </Typography>
+                  </Grid>
+                </Grid>
+                {isManageInventory ? (
+                  <>
                     <Box
                       sx={{
                         fontSize: 18,
@@ -503,207 +542,131 @@ const InventoryDetail = (props) => {
                         mb: 2,
                       }}
                     >
-                      Giá
+                      Số lượng
                     </Box>
-                  </Grid>
-                  <Grid container direction="row" justifyContent="flex-start">
-                    <Grid item xs={2}>
-                      <Box
-                        sx={{
-                          fontSize: 14,
-                          fontWeight: 400,
-                          color: "#878787",
-                          mb: 2,
-                        }}
-                      >
-                        Giá bán
-                      </Box>
-                    </Grid>
-                    <Grid item>
-                      <Typography variant="body1" gutterBottom component="div">
-                        <VNDFormat value={productDetail.list_price}></VNDFormat>
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                  <Grid container direction="row" justifyContent="flex-start">
-                    <Grid item xs={2}>
-                      <Box
-                        sx={{
-                          fontSize: 14,
-                          fontWeight: 400,
-                          color: "#878787",
-                          mb: 2,
-                        }}
-                      >
-                        Giá vốn
-                      </Box>
-                    </Grid>
-                    <Grid item>
-                      <Typography variant="body1" gutterBottom component="div">
-                        <VNDFormat
-                          value={productDetail.standard_price}
-                        ></VNDFormat>{" "}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                </Box>
-                <Box
-                  sx={{
-                    borderTop: 0,
-                    borderBottom: 1,
-                    borderLeft: 1,
-                    borderRight: 1,
-                    borderColor: "#f0f0f0",
-                    p: 3,
-                    width: 1,
-                  }}
-                >
-                  {isManageInventory ? (
-                    <>
-                      <Grid item xs={6}>
+                    <Grid
+                      container
+                      direction="row"
+                      justifyContent="flex-start"
+                      //alignItems="center"
+                    >
+                      <Grid item xs={4}>
                         <Box
                           sx={{
-                            fontSize: 18,
+                            fontSize: 14,
                             fontWeight: 400,
-                            color: "#212121",
+                            color: "#878787",
                             mb: 2,
                           }}
                         >
-                          Số lượng
+                          Tồn kho
                         </Box>
                       </Grid>
-                      <Grid
-                        container
-                        direction="row"
-                        justifyContent="flex-start"
-                        alignItems="center"
-                      >
-                        <Grid item xs={2}>
-                          <Box
-                            sx={{
-                              fontSize: 14,
-                              fontWeight: 400,
-                              color: "#878787",
-                              mb: 2,
-                            }}
-                          >
-                            Tồn kho
-                          </Box>
-                        </Grid>
-                        <Grid item sm={2}>
-                          {/* <Typography variant="body1" gutterBottom component="div">
+                      <Grid item>
+                        {/* <Typography variant="body1" gutterBottom component="div">
                       {row.branch_quantity}{" "}
                     </Typography> */}
-                          <ThousandFormat value={row.branch_quantity} />
-                        </Grid>
-                        {branchs.length > 1 || row.has_batches ? (
-                          <Grid
-                            item
-                            sm={4}
-                            style={{ marginTop: -5, marginBottom: 5 }}
-                          >
-                            <Button
-                              size="small"
-                              variant="contained"
-                              color="primary"
-                              style={{ textTransform: "none" }}
-                              onClick={() => setOpenDetailInventory(true)}
-                            >
-                              {" "}
-                              Chi tiết
-                            </Button>
-                          </Grid>
-                        ) : null}
-                        {openDetailInventory ? (
-                          <BranchInventoryPopUp
-                            branch_inventories={row.branch_inventories}
-                            branchs={branchs}
-                            open={openDetailInventory}
-                            onClose={() => setOpenDetailInventory(false)}
-                            setReload={() => {
-                              setReload();
-                              setThisReload(!thisReload);
-                            }}
-                            batches={row.batches}
-                            has_batches={row.has_batches}
-                            row={row}
-                          />
-                        ) : null}
+                        <ThousandFormat value={row.branch_quantity} />
                       </Grid>
-                      {row.has_batches ? (
-                        <Typography
-                          variant="h6"
-                          style={{
-                            color: theme.customization.primaryColor[500],
-                          }}
+                      {branchs.length > 1 || row.has_batches ? (
+                        <Grid
+                          item
+                          sm={4}
+                          style={{ marginTop: -5, marginBottom: 5 }}
                         >
-                          * Sản phẩm quản lý theo lô *
-                        </Typography>
-                      ) : null}
-                      {row.has_batches ? (
-                        <Typography
-                          variant="h6"
-                          style={{
-                            color: theme.customization.primaryColor[500],
-                            marginBottom: 10,
-                          }}
-                        >
-                          Thông báo hết HSD trước {row.notification_period} ngày
-                        </Typography>
-                      ) : null}
-
-                      <Grid
-                        container
-                        direction="row"
-                        justifyContent="flex-start"
-                      >
-                        <Grid item xs={2}>
-                          <Box
-                            sx={{
-                              fontSize: 14,
-                              fontWeight: 400,
-                              color: "#878787",
-                              mb: 2,
-                            }}
+                          <Button
+                            size="small"
+                            variant="contained"
+                            color="primary"
+                            style={{ textTransform: "none" }}
+                            onClick={() => setOpenDetailInventory(true)}
                           >
-                            SL đặt hàng lại
-                          </Box>
+                            {" "}
+                            Chi tiết
+                          </Button>
                         </Grid>
-                        <Grid item>
-                          {/* <Typography variant="body1" gutterBottom component="div">
+                      ) : null}
+                      {openDetailInventory ? (
+                        <BranchInventoryPopUp
+                          branch_inventories={row.branch_inventories}
+                          branchs={branchs}
+                          open={openDetailInventory}
+                          onClose={() => setOpenDetailInventory(false)}
+                          setReload={() => {
+                            setReload();
+                            setThisReload(!thisReload);
+                          }}
+                          batches={row.batches}
+                          has_batches={row.has_batches}
+                          row={row}
+                        />
+                      ) : null}
+                    </Grid>
+                    {row.has_batches ? (
+                      <Typography
+                        variant="h6"
+                        style={{
+                          color: theme.customization.primaryColor[500],
+                        }}
+                      >
+                        * Sản phẩm quản lý theo lô *
+                      </Typography>
+                    ) : null}
+                    {row.has_batches ? (
+                      <Typography
+                        variant="h6"
+                        style={{
+                          color: theme.customization.primaryColor[500],
+                          marginBottom: 10,
+                        }}
+                      >
+                        Thông báo hết HSD trước {row.notification_period} ngày
+                      </Typography>
+                    ) : null}
+
+                    <Grid container direction="row" justifyContent="flex-start">
+                      <Grid item xs={4}>
+                        <Box
+                          sx={{
+                            fontSize: 14,
+                            fontWeight: 400,
+                            color: "#878787",
+                            mb: 2,
+                          }}
+                        >
+                          SL đặt hàng lại
+                        </Box>
+                      </Grid>
+                      <Grid item>
+                        {/* <Typography variant="body1" gutterBottom component="div">
                       {row.min_reorder_quantity}{" "}
                     </Typography> */}
-                          <ThousandFormat value={row.min_reorder_quantity} />
-                        </Grid>
+                        <ThousandFormat value={row.min_reorder_quantity} />
                       </Grid>
+                    </Grid>
 
-                      <Grid
-                        container
-                        direction="row"
-                        justifyContent="flex-start"
-                      >
-                        <Grid item xs={2}>
-                          <Box
-                            sx={{
-                              fontSize: 14,
-                              fontWeight: 400,
-                              color: "#878787",
-                              mb: 2,
-                            }}
-                          >
-                            SL nhập hàng tối đa
-                          </Box>
-                        </Grid>
-                        <Grid item>
-                          {/* <Typography variant="body1" gutterBottom component="div">
+                    <Grid container direction="row" justifyContent="flex-start">
+                      <Grid item xs={4}>
+                        <Box
+                          sx={{
+                            fontSize: 14,
+                            fontWeight: 400,
+                            color: "#878787",
+                            mb: 2,
+                          }}
+                        >
+                          SL nhập hàng tối đa
+                        </Box>
+                      </Grid>
+                      <Grid item>
+                        {/* <Typography variant="body1" gutterBottom component="div">
                       {row.max_order}{" "}
                     </Typography> */}
-                          <ThousandFormat value={row.max_order} />
-                        </Grid>
+                        <ThousandFormat value={row.max_order} />
                       </Grid>
-                    </>
-                  ) : null}
-                </Box>
+                    </Grid>
+                  </>
+                ) : null}
               </Grid>
             </Grid>
 
@@ -716,8 +679,8 @@ const InventoryDetail = (props) => {
               <Button
                 variant="contained"
                 size="small"
-                color = 'primary'
-                startIcon = {<CreateIcon/>}
+                color="primary"
+                startIcon={<CreateIcon />}
                 style={{ marginLeft: 15 }}
                 onClick={() => {
                   setIsOpenUpdate(true);
@@ -728,8 +691,8 @@ const InventoryDetail = (props) => {
               <Button
                 variant="contained"
                 size="small"
-                color = 'secondary'
-                startIcon = {<DeleteIcon/>}
+                color="secondary"
+                startIcon={<DeleteIcon />}
                 style={{ marginLeft: 15 }}
                 onClick={() => {
                   setDeleteConfirm(true);

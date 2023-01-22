@@ -23,8 +23,7 @@ export const verifyToken = () => {
     };
     try {
       const rs = await verifyToken();
-      if (rs && rs.error && rs.error == "Requires admin approval")
-      {
+      if (rs && rs.error && rs.error == "Requires admin approval") {
         dispatch(
           statusAction.failedStatus(
             "This account needs to be approved by an admin."
@@ -84,8 +83,7 @@ export const logInHandler = (userName, password, role) => {
 
     try {
       const rs = await logIn();
-      if (rs && rs.error && rs.error == "Requires admin approval")
-      {
+      if (rs && rs.error && rs.error == "Requires admin approval") {
         dispatch(
           statusAction.failedStatus(
             "This account needs to be approved by an admin."
@@ -107,18 +105,24 @@ export const logInHandler = (userName, password, role) => {
           dispatch(loadingActions.finishLoad());
           dispatch(statusAction.successfulStatus("Đăng nhập thành công"));
           dispatch(setCustomization(rs.user.customization));
-          dispatch(
-            infoActions.setUser({
-              ...rs.user,
-              permissions: [
-                { id: 1, name: "inventory", description: "Kho hàng" },
-                { id: 2, name: "employee", description: "Nhân sự" },
-                { id: 3, name: "sales", description: "Bán hàng" },
-                { id: 4, name: "product", description: "Sản phẩm" },
-                { id: 5, name: "report", description: "Báo cáo" },
-              ],
-            })
-          );
+          if (rs.role == "owner") {
+            dispatch(
+              infoActions.setUser({
+                ...rs.user,
+                permissions: [
+                  { id: 1, name: "inventory", description: "Kho hàng" },
+                  { id: 2, name: "employee", description: "Nhân sự" },
+                  { id: 3, name: "sales", description: "Bán hàng" },
+                  { id: 4, name: "product", description: "Sản phẩm" },
+                  { id: 5, name: "report", description: "Báo cáo" },
+                ],
+              })
+            );
+          } else if (rs.role == "employee") {
+            dispatch(
+              infoActions.setUser({ ...rs.user, permissions: rs.permissions })
+            );
+          }
           dispatch(infoActions.setStore(rs.store));
           dispatch(infoActions.setRole(rs.role));
         }
