@@ -11,7 +11,7 @@ export default makeStyles((theme) => ({
     //backgroundColor: theme.customization.mode === "Light" ? theme.palette.secondary.light : theme.palette.secondary.main ,
     // backgroundColor:
     //   theme.customization.mode === "Light" ? grey[200] : grey[700],
-    backgroundColor: theme.customization.primaryColor[400],
+    backgroundColor: theme.customization.primaryColor[100],
   },
   row: {
     cursor: "pointer",
@@ -20,7 +20,7 @@ export default makeStyles((theme) => ({
       // backgroundColor: theme.customization.mode === "Light" ? theme.palette.secondary.light : theme.palette.secondary.main ,
       // backgroundColor:
       //   theme.customization.mode === "Light" ? grey[200] : red[700],
-      backgroundColor: theme.customization.primaryColor[400],
+      backgroundColor: theme.customization.primaryColor[100],
     },
   },
   // oddRow: {
