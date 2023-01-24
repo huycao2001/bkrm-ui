@@ -6,7 +6,7 @@ import InventoryOrder from "./InventoryOrder/InventoryOrder";
 // // import OrderProduct from "./OrderProduct/OrderProduct";
 // import OrderProductList from "./OrderProductList/OrderProductList";
 // import Check from "./Check/Check";
-// import CheckHistory from "./CheckHistory/CheckHistory";
+import CheckHistory from "./CheckHistory/CheckHistory";
 import Supplier from "./Supplier/Supplier";
 import PageNotFound from "../../pages/PageNotFound/PageNotFound";
 
@@ -38,8 +38,8 @@ const InventoryView = (props) => {
       <Route path={`${path}/transfer-inventory`} component={TransferInventory} /> */}
       {/* <Route path={`${path}/order-list/order`}  component={OrderProduct}/>   
           <Route path={`${path}/order-list`}  component={OrderProductList}/>     */}
-      {/* <Route path={`${path}/check-history/check`} component={Check} />
-      <Route path={`${path}/check-history`} component={CheckHistory} />*/}
+      
+      <Route path={`${path}/check-history`} component={CheckHistory} />
       <Route path={`${path}/supplier`} component={Supplier} /> 
       <Route exact path={`${path}/*`} component={PageNotFound} />
     </Switch>
