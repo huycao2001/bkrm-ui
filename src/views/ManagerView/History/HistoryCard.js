@@ -58,17 +58,38 @@ const returnTextAction = (type) =>{
 //   }
 // }
 
+const timeFormat = (dateTime) =>{
+  //2023-01-13T12:57:07.000000Z
+  var time = dateTime.slice(11,16); 
+  var hour = time.split(':')[0];
+  var minute = time.split(':')[1]; 
+  if(parseInt(hour) < 12){
+    return time + ' AM'
+  }
+  else if(time === '12:00'){
+    return time + ' PM'
+  }
+  else{
+    var newHour = parseInt(hour) - 12; 
+    if(newHour > 9){
+      return [newHour.toString(), minute].join(':') + ' PM'
+    }
+    return '0' + [newHour.toString(), minute].join(':') + ' PM'
+  }
+  //return dateTime.slice(11,16);
 
+}
 export default function HistoryCard({data}) {
   const classes = useStyles();
   const theme = useTheme();
   const xsScreen = useMediaQuery(theme.breakpoints.down("xs")) ;
 
+  console.log( 'huycao : ' + timeFormat(data.created_at))
   
   return (
     <TimelineItem style={{marginLeft:xsScreen ? -30:0}} >
           <TimelineOppositeContent style={{ flex: 0.1 }} >
-              <Typography variant="body2" color="textSecondary">{format(parseISO(data?.created_at), 'hh:mm a')}</Typography>  
+              <Typography variant="body2" color="textSecondary">{timeFormat(data.created_at)}</Typography>  
           </TimelineOppositeContent>
 
           <TimelineSeparator>
