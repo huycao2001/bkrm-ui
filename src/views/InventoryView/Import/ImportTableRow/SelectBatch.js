@@ -19,17 +19,20 @@ export default function SelectBatch({ handleSubmit, handleClose, row }) {
   const [selectedBatches, setSelectedBatches] = useState([]);
   return (
     <Dialog open={true}>
+      <DialogTitle>
       <Typography
-        style={{ marginTop:15, marginLeft:15 }}
-        variant='h3'
-      >{`Chọn lô của ${row.product_code} - ${row.name}`}</Typography>
+        variant = 'h3'
+      >
+        {`Chọn lô của sản phẩm ${row.product_code} - ${row.name}`}
+      </Typography>
+      </DialogTitle>
       <DialogContent>
         <Autocomplete
           options={row.batches}
           getOptionLabel={(batch) =>
-            `${batch?.batch_code} - ${
+            {return `${batch?.batch_code} - ${
               batch?.expiry_date ? batch?.expiry_date : ""
-            } - Tồn kho: ${batch?.quantity}`
+            } - Tồn kho: ${batch?.quantity}`}
           }
           renderInput={(params) => (
             <TextField {...params} label="Tìm mã lô" variant="standard" />
