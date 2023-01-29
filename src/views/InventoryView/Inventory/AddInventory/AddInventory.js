@@ -128,6 +128,7 @@ const AddInventory = (props) => {
       max_order:999999999,
       description:"",
       notification_period:7,
+      expiration_date : ""
 
     },
     validationSchema: Yup.object({
@@ -150,6 +151,13 @@ const AddInventory = (props) => {
       notification_period: Yup.number().moreThan(-1, "Số ngày không được âm"),
     }),
   });
+
+
+
+  // useEffect(()=>{
+  //   console.log('date :' + productFormik.values.expiration_date);
+  //   console.log('date :' + productFormik.values.expiration_date + 'huycao');
+  // },[productFormik.values.expiration_date])
 
   const [openSnack, setOpenSnack] = React.useState(false);
   const [snackStatus, setSnackStatus] = React.useState({
@@ -212,6 +220,12 @@ const AddInventory = (props) => {
         "has_batches",
         Number(productFormik.values.has_batches)
       );
+      
+      bodyFormData.append(
+        "expiration_date",
+        productFormik.values.expiration_date
+      );
+
       bodyFormData.append(
         "description",
         productFormik.values.description.toString()
@@ -254,6 +268,7 @@ const AddInventory = (props) => {
     };
     fetchCategoryList();
   }, [store_uuid, reset]);
+
 
   const selectSampleProductHandler = (product) => {
     if (product && product.name) {
@@ -833,8 +848,20 @@ return (
           // <div style={{ flexGrow: 1, textAlign: "right" , alignItems:'center'}}>
              <Grid container alignItems="center" justifyContent='flex-end'>
             {productFormik.values.has_batches?
-            < >
-             <Typography>Thông báo trước khi hết HSD </Typography>
+            <>
+            <Typography>Ngày hết hạn :  </Typography>
+            <TextField
+              autoFocus
+              margin="dense"
+              name="expiration_date"
+              size = 'small'
+              // defaultValue={new Date().toISOString().substring(0, 10)}
+              type="date"
+              value={productFormik.values.expiration_date}
+              onChange={productFormik.handleChange}
+            />
+
+             <Typography>Thông báo trước khi hết HSD :  </Typography>
              <ThousandSeperatedInput
             //  label="Thông báo trước khi hết HSD"
               // variant="outlined"
@@ -856,6 +883,8 @@ return (
               onBlur={productFormik.handleBlur}
              />
             <Typography style={{marginRight:10}}>ngày </Typography>
+            
+            
           </>
         
              :null
@@ -987,6 +1016,7 @@ return (
               ) ||
               Number(productFormik.values.importedPrice) >
                 Number(productFormik.values.salesPrice)
+              || productFormik.values.has_batches === true && productFormik.values.expiration_date === ''
             }
           >
             Thêm

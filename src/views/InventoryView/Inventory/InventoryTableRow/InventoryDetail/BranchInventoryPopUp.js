@@ -61,6 +61,11 @@ const BranchInventoryPopUp = ({open,onClose, branchs,branch_inventories,setReloa
   const store_uuid = info.store.uuid;
   const branch_uuid = info.branch.uuid;
   console.log("branch_inventories",branch_inventories)
+
+// const dateFormat = (date){
+
+//   }  
+
   const findBranchQuantity = (id) => {
     // if(!branch_inventories){return -1}
     const rs = branch_inventories?.find(x => x.uuid === id)?.quantity_available
@@ -128,7 +133,7 @@ const BranchInventoryPopUp = ({open,onClose, branchs,branch_inventories,setReloa
                   <>
                   <Grid container  style={{ marginBottom:10}}>
                         <Grid item xs={3} style={{color:'#000', fontWeight:500}}> Mã lô </Grid>
-                        <Grid item xs={4} style={{color:'#000', fontWeight:500}}> Ngày hết hạn </Grid>
+                        <Grid item xs={4} style={{color:'#000', fontWeight:500}}> Ngày hết hạn (DD/MM/YY) </Grid>
                         <Grid item xs={3} style={{color:'#000', fontWeight:500}}> Vị trí </Grid>
                         <Grid item xs={2} style={{color:'#000', fontWeight:500}}> Tồn kho </Grid>
                     </Grid>
@@ -136,7 +141,7 @@ const BranchInventoryPopUp = ({open,onClose, branchs,branch_inventories,setReloa
                     {batches?.map((batch) => (
                         <Grid container  spacing={2}>
                                 <Grid item xs={3}> {batch?.batch_code} </Grid>
-                                <Grid item xs={4}> {batch?.expiry_date?.substring(0, 10)} </Grid>
+                                <Grid item xs={4}> {batch?.expiry_date?.substring(0, 10).split('-').reverse().join('/')} </Grid>
                                 <Grid item xs={3}> {batch?.position} </Grid>
                                 <Grid item xs={2}> {batch?.quantity} </Grid>
                         </Grid>

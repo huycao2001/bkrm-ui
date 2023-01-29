@@ -144,6 +144,7 @@ const SearchCustomer = (props) => {
         onChange={(event, value) => {
           if (value) {
             // setSelectedOption(value);
+            console.log("This is called" + JSON.stringify(value));
             props.handleSearchBarSelect(value);
           }
         }}
