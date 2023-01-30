@@ -63,6 +63,7 @@ export default makeStyles((theme) => ({
         : theme.customization.primaryColor[theme.customization.colorLevel],
     borderRadius: theme.customization.borderRadius,
     marginRight: 20,
+    marginLeft : 20,
     padding: 20,
     //marginTop: 40,
     marginTop: 70,
