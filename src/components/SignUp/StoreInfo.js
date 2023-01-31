@@ -64,6 +64,13 @@ const StoreInfo = (props) => {
     ...props,
   };
   const [storeType, setStoreType] = useState("");
+
+  const handleSetStoreTypes = e => {
+    //console.log('changing' + store_formik.values.store_type + ' to ' + e.target.value);
+    store_formik.values.store_type = e.target.value;
+    //console.log('after changing : ' + store_formik.values.store_type );
+  }
+
   return (
     <React.Fragment>
       <Grid container spacing={2} style={{ maxWidth: 600, marginTop: 10 }}>
@@ -91,10 +98,10 @@ const StoreInfo = (props) => {
             row
             aria-labelledby="demo-row-radio-buttons-group-label"
             name="row-radio-buttons-group"
-            defaultValue="F&B"
+            defaultValue={store_formik.values.store_type}
           >
             <FormControlLabel
-              value="F&B"
+              value="fb"
               control={
                 <Radio
                   disableFocusRipple
@@ -107,13 +114,14 @@ const StoreInfo = (props) => {
               }
               label="F&B"
               labelPlacement="bottom"
+              onChange={e => handleSetStoreTypes(e)}
               onClick={() => {
                 setStoreType("fnb");
                 //console.log("Store type : " + storeType);
               }}
             />
             <FormControlLabel
-              value="Tạp hoá"
+              value="grocery"
               control={
                 <Radio
                   disableFocusRipple
@@ -126,6 +134,7 @@ const StoreInfo = (props) => {
               }
               label="Tạp hoá"
               labelPlacement="bottom"
+              onChange={e => handleSetStoreTypes(e)}
               onClick={() => {
                 setStoreType("grocery");
                 //console.log("Store type : " + storeType);

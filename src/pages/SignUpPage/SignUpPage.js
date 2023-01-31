@@ -44,7 +44,7 @@ export default function SignUp() {
       password: "",
       passwordConfirm: "",
       phone: "",
-      dateOfBirth: "1991-01-01",
+      dateOfBirth: "1991-01-01"
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Nhập tên chủ cửa hàng"),
@@ -70,6 +70,7 @@ export default function SignUp() {
       district: "",
       city: "",
       phone: "",
+      store_type : 'grocery'
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Nhập tên cửa hàng"),
@@ -125,9 +126,11 @@ export default function SignUp() {
       default_branch: true,
       lat: lat ? lat.toString() : "",
       lng: lng ? lng.toString() : "",
+      store_type : store_formik.values.store_type
     };
     try {
       const response = await userApi.ownerRegister(body);
+      //const response = await userApi.testRequest(body);
       if (response.message === "error") {
         //dispatch(statusAction.failedStatus("Tên tài khoản đã được sử dụng"));
         console.log("error when creating an account");
@@ -150,6 +153,12 @@ export default function SignUp() {
   const [cityList, setCityList] = useState([]);
   const [districtList, setDistrictList] = useState([]);
   const [wardList, setWardList] = useState([]);
+
+
+  useEffect(() => {
+    console.log('store_type ' + store_formik.values.store_type);
+  } , [store_formik.values.store_type])
+
   useEffect(() => {
     const loadCity = async () => {
       try {
