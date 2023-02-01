@@ -6,6 +6,7 @@ import {
   useParams,
   useRouteMatch,
   Switch,
+  Link,
 } from "react-router-dom";
 import clsx from "clsx";
 import { Spin } from "antd";
@@ -40,7 +41,7 @@ import AdminView from "../../views/AdminView/AdminView";
 import HRView from "../../views/HRView/HRView";
 import HomeView from "../../views/HomeView/HomeView";
 import ManagerView from "../../views/ManagerView/ManagerView";
-
+//import Table from "../../views/TableView/Table/Table";
 import BasicMenu from "../../components/Menu/BasicMenu";
 
 import NotificationsIcon from "@mui/icons-material/Notifications";
@@ -52,6 +53,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 // import AdbIcon from '@mui/icons-material/Adb';
 
 import useStyles from "./styles";
+import TableAndRoom from "../../views/TableView/Table/Table";
 
 const HomePage = (props) => {
   const { path } = useRouteMatch();
@@ -163,6 +165,9 @@ const HomePage = (props) => {
                   <BasicMenu section="Thống kê" />
                 </Box>
               )}
+              <Button variant="outlined" to={"/home/table"} component={Link}>
+                Phòng\Bàn
+              </Button>
               <Box
                 display="flex"
                 flexDirection="row"
@@ -249,6 +254,7 @@ const HomePage = (props) => {
                 <Route path={`${path}/sales`} component={SalesView} />
                 <Route path={`${path}/hr`} component={HRView} />
                 <Route path={`${path}/manager`} component={ManagerView} />
+                <Route path={`${path}/fb`} component={TableAndRoom} />
                 <Route path={`${path}/`}>
                   <Redirect
                     to={`${path}/inventory`}
