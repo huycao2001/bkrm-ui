@@ -6,7 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import { Button, Paper, Step, StepLabel, Stepper } from "@material-ui/core";
 import useStyles from "./styles";
 import { useDispatch, useSelector } from "react-redux";
-//import { logInHandler } from "../../store/actionCreator";
+import { logInHandler } from "../../store/actionCreator";
 import { Link } from "react-router-dom";
 import UserInfo from "../../components/SignUp/UserInfo";
 import StoreInfo from "../../components/SignUp/StoreInfo";
@@ -18,6 +18,7 @@ import * as Yup from "yup";
 import Image from "../../assets/img/background.gif";
 // import { authActions } from "../../store/slice/authSlice";
 import { authActions } from "../../store/slice/authSlice";
+import {statusAction} from '../../store/slice/statusSlice';
 
 const styles = {
   paperContainer: {
@@ -132,21 +133,21 @@ export default function SignUp() {
       const response = await userApi.ownerRegister(body);
       //const response = await userApi.testRequest(body);
       if (response.message === "error") {
-        //dispatch(statusAction.failedStatus("Tên tài khoản đã được sử dụng"));
+        dispatch(statusAction.failedStatus("Tên tài khoản đã được sử dụng"));
         console.log("error when creating an account");
       } else {
-        // dispatch(statusAction.successfulStatus("Tạo cửa hàng thành công"));
-        // dispatch(
-        //   logInHandler(
-        //     user_formik.values.user_name,
-        //     user_formik.values.password
-        //   )
-        // );
+        dispatch(statusAction.successfulStatus("Tạo cửa hàng thành công"));
+        dispatch(
+          logInHandler(
+            user_formik.values.user_name,
+            user_formik.values.password
+          )
+        );
         console.log("Account created successfully");
         dispatch(authActions.logIn());
       }
     } catch (error) {
-      //dispatch(statusAction.failedStatus("Tạo tài khoản thất bại"));
+      dispatch(statusAction.failedStatus("Tạo tài khoản thất bại"));
       console.log("can not create an account");
     }
   };
