@@ -20,6 +20,7 @@ import { verifyToken } from "./store/actionCreator"
 function App() {
   var isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const customization = useSelector((state) => state.customize);
+  const info = useSelector((state)  => state.info);
   console.log(isLoggedIn);
   console.log("Customization : " + JSON.stringify(customization));
   const [path, setPath] = useState("/home");
@@ -28,8 +29,9 @@ function App() {
   useEffect(() => {
     dispatch(verifyToken());
     setPath(sessionStorage.getItem("BKRMprev"));
+    
     // dispatch(loadBranches(store_uuid));
-
+    console.log('Info of store ' + JSON.stringify(info));
   }, [dispatch]);
 
 

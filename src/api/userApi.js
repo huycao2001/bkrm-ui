@@ -1,5 +1,11 @@
 import axiosClient from "./axiosClient";
 const userAPi = {
+  testRequest : (params) => {
+    const url = '/test'; 
+    return axiosClient.post(url, params);
+
+  },
+
   ownerRegister: (params) => {
     const url = "/register";
     return axiosClient.post(url, JSON.stringify({ ...params }));
