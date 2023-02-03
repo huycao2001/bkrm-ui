@@ -253,6 +253,54 @@ export const settingModule = {
   ],
 };
 
+export const fbModule = {
+  title: "FB",
+  key: "fbModule",
+
+  children: [
+    {
+      id: 20,
+      title: "Table",
+      key: "Table",
+      url: "/home/fb/table",
+      // icon:  <Box component="img" sx={{ height: 24, width: 24 }} src={historyIcon} style={{marginLeft:-10}} />,
+      // iconColor: historyIcon,
+      // icon1: icons.RestoreOutlinedIcon,
+      // icon2: icons1.RestoreTwoToneIcon,
+    },
+    {
+      id: 21,
+      title: "Reservation",
+      key: "Reservation",
+      url: "/home/fb/reservation",
+      // icon:  <Box component="img" sx={{ height: 24, width: 24 }} src={branchIcon} style={{marginLeft:-10}} />,
+      // iconColor: branchIcon,
+      // icon1: icons.StorefrontOutlinedIcon,
+      // icon2: icons1.StorefrontTwoToneIcon,
+    },
+    {
+      id: 22,
+      title: "Reception",
+      key: "Reception",
+      url: "/home/fb/reception",
+      // icon:  <Box component="img" sx={{ height: 24, width: 24 }} src={customerIcon} style={{marginLeft:-10}} />,
+      // iconColor: customerIcon,
+      // icon1: icons.FavoriteBorderOutlinedIcon,
+      // icon2: icons1.FavoriteTwoToneIcon,
+    },
+    {
+      id: 23,
+      title: "Kitchen",
+      key: "Kitchen",
+      url: "/home/fb/kitchen",
+      // icon:  <Box component="img" sx={{ height: 24, width: 24 }} src={customerIcon} style={{marginLeft:-10}} />,
+      // iconColor: customerIcon,
+      // icon1: icons.FavoriteBorderOutlinedIcon,
+      // icon2: icons1.FavoriteTwoToneIcon,
+    },
+  ],
+};
+
 const statModule = {
   id: 20.1,
   title: "Thống Kê",
@@ -453,28 +501,28 @@ export default function BasicMenu(props) {
               </ListItem>
             ))
           : section === "Nhân sự"
-            ? hrModule.children.map((item) => (
-                <ListItem
-                  onClick={handleCloseMenu}
-                  to={item.url}
-                  component={Link}
-                  divider={
-                    item.id !=
-                    hrModule.children.at(hrModule.children.length - 1).id
-                      ? true
-                      : false
-                  }
-                  sx={{
-                    "&:hover": {
-                      backgroundColor: "#f8f8f8",
-                      color: "black",
-                    },
+          ? hrModule.children.map((item) => (
+              <ListItem
+                onClick={handleCloseMenu}
+                to={item.url}
+                component={Link}
+                divider={
+                  item.id !=
+                  hrModule.children.at(hrModule.children.length - 1).id
+                    ? true
+                    : false
+                }
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "#f8f8f8",
                     color: "black",
-                  }}
-                >
-                  {item.title}
-                </ListItem>
-              ))
+                  },
+                  color: "black",
+                }}
+              >
+                {item.title}
+              </ListItem>
+            ))
           : section === "Quản lý"
           ? manageModule.children.map((item) => (
               <ListItem
@@ -508,6 +556,29 @@ export default function BasicMenu(props) {
                   item.id !=
                   settingModule.children.at(settingModule.children.length - 1)
                     .id
+                    ? true
+                    : false
+                }
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "#f8f8f8",
+                    color: "black",
+                  },
+                  color: "black",
+                }}
+              >
+                {item.title}
+              </ListItem>
+            ))
+          : section === "FB"
+          ? fbModule.children.map((item) => (
+              <ListItem
+                onClick={handleCloseMenu}
+                to={item.url}
+                component={Link}
+                divider={
+                  item.id !=
+                  fbModule.children.at(fbModule.children.length - 1).id
                     ? true
                     : false
                 }

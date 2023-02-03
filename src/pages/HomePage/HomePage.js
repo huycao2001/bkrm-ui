@@ -53,7 +53,8 @@ import MenuIcon from "@material-ui/icons/Menu";
 // import AdbIcon from '@mui/icons-material/Adb';
 
 import useStyles from "./styles";
-import TableAndRoom from "../../views/TableView/Table/Table";
+import FBView from "../../views/FBView/FBView";
+import store from "../../store";
 
 const HomePage = (props) => {
   const { path } = useRouteMatch();
@@ -70,6 +71,7 @@ const HomePage = (props) => {
       ? "Nhân viên"
       : "Admin";
   const permissions = useSelector((state) => state.info.user.permissions);
+  const store_type = useSelector((state) => state.info.store.store_type);
   console.log("home page called with path " + `${path}`);
   // console.log(useLocation());
   // console.log("DD : " + classes.appBar)
@@ -160,9 +162,9 @@ const HomePage = (props) => {
                   {permissions?.find((p) => p.name === "report") && (
                     <BasicMenu section="Quản lý" />
                   )}
-
                   <BasicMenu section="Cài đặt" />
                   <BasicMenu section="Thống kê" />
+                  {store_type == "fb" && <BasicMenu section="FB" />}
                 </Box>
               )}
               <Button variant="outlined" to={"/home/table"} component={Link}>
@@ -254,7 +256,7 @@ const HomePage = (props) => {
                 <Route path={`${path}/sales`} component={SalesView} />
                 <Route path={`${path}/hr`} component={HRView} />
                 <Route path={`${path}/manager`} component={ManagerView} />
-                <Route path={`${path}/fb`} component={TableAndRoom} />
+                <Route path={`${path}/fb`} component={FBView} />
                 <Route path={`${path}/`}>
                   <Redirect
                     to={`${path}/inventory`}

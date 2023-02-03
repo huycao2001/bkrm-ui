@@ -25,30 +25,27 @@ import { visuallyHidden } from "@mui/utils";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 
-function createData(name, calories, fat, carbs, protein) {
+function createData(name, note, group, numberOfChairs, status, ordinalNumbers) {
   return {
     name,
-    calories,
-    fat,
-    carbs,
-    protein,
+    note,
+    group,
+    numberOfChairs,
+    status,
+    ordinalNumbers,
   };
 }
 
 const rows = [
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Donut", 452, 25.0, 51, 4.9),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-  createData("Honeycomb", 408, 3.2, 87, 6.5),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Jelly Bean", 375, 0.0, 94, 0.0),
-  createData("KitKat", 518, 26.0, 65, 7.0),
-  createData("Lollipop", 392, 0.2, 98, 0.0),
-  createData("Marshmallow", 318, 0, 81, 2.0),
-  createData("Nougat", 360, 19.0, 9, 37.0),
-  createData("Oreo", 437, 18.0, 63, 4.0),
+  createData(
+    "Bàn 1",
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    1,
+    1,
+    "đang hoạt động",
+    1
+  ),
+  createData("Bàn 2", "", 1, 1, "đang hoạt động", 2),
 ];
 
 function descendingComparator(a, b, orderBy) {
@@ -91,25 +88,31 @@ const headCells = [
     label: "Tên phòng/bàn",
   },
   {
-    id: "calories",
+    id: "note",
+    numeric: false,
+    disablePadding: false,
+    label: "Ghi chú",
+  },
+  {
+    id: "group",
     numeric: true,
     disablePadding: false,
     label: "Nhóm",
   },
   {
-    id: "fat",
+    id: "numberOfChairs",
     numeric: true,
     disablePadding: false,
     label: "Số ghế",
   },
   {
-    id: "carbs",
+    id: "status",
     numeric: true,
     disablePadding: false,
     label: "Trạng thái",
   },
   {
-    id: "protein",
+    id: "ordinalNumbers",
     numeric: true,
     disablePadding: false,
     label: "Số thứ tự",
@@ -145,7 +148,7 @@ function EnhancedTableHead(props) {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? "right" : "left"}
+            align={headCell.id == "name" ? "left" : "right"}
             padding={headCell.disablePadding ? "none" : "normal"}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -215,7 +218,7 @@ function EnhancedTableToolbar(props) {
           id="tableTitle"
           component="div"
         >
-          Nutrition
+          Phòng/Bàn
         </Typography>
       )}
       <Button
@@ -246,7 +249,7 @@ function EnhancedTableToolbar(props) {
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
-export default function TableAndRoom() {
+export default function FBTable() {
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("calories");
   const [selected, setSelected] = React.useState([]);
@@ -360,10 +363,15 @@ export default function TableAndRoom() {
                         >
                           {row.name}
                         </TableCell>
-                        <TableCell align="right">{row.calories}</TableCell>
-                        <TableCell align="right">{row.fat}</TableCell>
-                        <TableCell align="right">{row.carbs}</TableCell>
-                        <TableCell align="right">{row.protein}</TableCell>
+                        <TableCell align="right">{row.note}</TableCell>
+                        <TableCell align="right">{row.group}</TableCell>
+                        <TableCell align="right">
+                          {row.numberOfChairs}
+                        </TableCell>
+                        <TableCell align="right">{row.status}</TableCell>
+                        <TableCell align="right">
+                          {row.ordinalNumbers}
+                        </TableCell>
                       </TableRow>
                     );
                   })}
