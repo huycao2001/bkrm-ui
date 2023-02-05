@@ -47,7 +47,7 @@ const AddTable = (props) => {
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Nhập tên bàn"),
-      seats: Yup.number().required("Nhập mật khẩu"),
+      seats: Yup.number().required("Nhập số ghế"),
     }),
   });
   const dispatch = useDispatch();

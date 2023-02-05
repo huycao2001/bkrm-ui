@@ -111,7 +111,12 @@ export const SupplierHeadCells = [
     disablePadding: false,
     label: "Nợ NCC",
   },
-  { id: "debtStatus", align: "center", disablePadding: false, label: "Trạng thái" },
+  {
+    id: "debtStatus",
+    align: "center",
+    disablePadding: false,
+    label: "Trạng thái",
+  },
 ];
 
 export const InvoiceHeadCells = [
@@ -184,7 +189,12 @@ export const CustomerHeadCells = [
   { id: "score", align: "right", disablePadding: true, label: "Tích điểm" },
   { id: "total", align: "right", disablePadding: true, label: "Tổng tiền mua" },
   { id: "debt", align: "right", disablePadding: true, label: "Tổng nợ" },
-  { id: "debtStatus", align: "center", disablePadding: true, label: "Tình trạng nợ" },
+  {
+    id: "debtStatus",
+    align: "center",
+    disablePadding: true,
+    label: "Tình trạng nợ",
+  },
 ];
 
 export const CartHeadCells = [
@@ -379,7 +389,12 @@ export const TransferInventoryHeadCells = [
   { id: "quantity", align: "left", disablePadding: false, label: "Số lượng" },
   { id: "from", align: "left", disablePadding: false, label: "Từ" },
   { id: "to", align: "left", disablePadding: false, label: "Đến" },
-  { id: "user", align: "left", disablePadding: false, label: "Ngừoi thực hiện" },
+  {
+    id: "user",
+    align: "left",
+    disablePadding: false,
+    label: "Ngừoi thực hiện",
+  },
   { id: "date", align: "left", disablePadding: false, label: "Ngày" },
 ];
 
@@ -391,4 +406,18 @@ export const CashbookHeadCells = [
   { id: "user_type", align: "left", disablePadding: false, label: "Đối tác" },
   { id: "user_name", align: "left", disablePadding: false, label: "Tên" },
   { id: "type", align: "left", disablePadding: false, label: "Loại thu chi" },
+];
+
+export const FBTableHeadCells = [
+  // { id: "stt", align: "left", disablePadding: true, label: "Stt" },
+  { id: "id", align: "left", disablePadding: true, label: "Tên phòng/bàn" },
+  { id: "description", align: "left", disablePadding: false, label: "Mô tả" },
+  { id: "group", align: "left", disablePadding: false, label: "Nhóm" },
+  {
+    id: "numberOfChairs",
+    align: "left",
+    disablePadding: false,
+    label: "Số ghế",
+  },
+  { id: "status", align: "left", disablePadding: false, label: "Trạng thái" },
 ];
