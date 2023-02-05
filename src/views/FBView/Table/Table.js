@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
-
+import { trackPromise } from "react-promise-tracker";
 import AddIcon from "@mui/icons-material/Add";
 import {
   Typography,
@@ -15,6 +15,8 @@ import {
   TableBody,
   Box,
 } from "@material-ui/core";
+
+import LoadingIndicator from '../../../components/LoadingIndicator/LoadingIndicator';
 
 //styling
 import { useTheme } from "@mui/material/styles";
@@ -38,6 +40,7 @@ function Table(props) {
   };
   const [totalRows, setTotalRows] = useState(0);
   const [openRow, setRowOpen] = React.useState(null);
+  const [reload, setReload] = useState(true);
   const handleOpenRow = (row) => {
     if (row !== openRow) {
       setRowOpen(row);
@@ -64,10 +67,12 @@ function Table(props) {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const response = await fbTableApi.getTablesOfBranch(
-          store_uuid,
-          branch_uuid,
-          {}
+        const response = await trackPromise(
+          fbTableApi.getTablesOfBranch(
+            store_uuid,
+            branch_uuid,
+            {}
+          )
         );
         //setTotalRows(response.total_rows);
         setTableList(response.data.tables);
@@ -80,9 +85,11 @@ function Table(props) {
     if (store_uuid && branch_uuid) {
       loadData();
     }
-  });
+  }, [branch_uuid, reload]);
   return (
     <Card className={classes.root}>
+
+      
       <Grid container direction="row" justifyContent="space-between">
         <Typography className={classes.headerTitle} variant="h5">
           Phòng bàn
@@ -105,8 +112,10 @@ function Table(props) {
         <AddTable
           openAddTableDialog={openAddTableDialog}
           handleCloseAddTableDialog={handleCloseAddTableDialog}
+          setReload={() => setReload(!reload)}
         />
       )}
+      <LoadingIndicator/>
       <TableWrapper
         pagingState={{ ...pagingState, total_rows: totalRows }}
         setPagingState={setPagingState}
@@ -126,7 +135,7 @@ function Table(props) {
               <FBTableRow
                 key={row.uuid}
                 row={row}
-                // setReload={() => setReload(!reload)}
+                setReload={() => setReload(!reload)}
                 openRow={openRow}
                 handleOpenRow={handleOpenRow}
                 isManageInventory={false}
