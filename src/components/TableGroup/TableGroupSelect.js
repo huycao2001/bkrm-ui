@@ -37,6 +37,14 @@ import fbTableGroupApi from "../../api/fbTableGroup";
 
 
 const TableGroupSelect = (props) => {
+    const {
+        tableFormik,
+        handleOpenAddTableGroupDialog,
+        reloadTableGroup
+    } = props
+
+
+    //const [reload, setReload] = useState('false');
     const info = useSelector((state) => state.info);
     const store_uuid = info.store.uuid;
     const branch_uuid = info.branch.uuid;
@@ -66,7 +74,7 @@ const TableGroupSelect = (props) => {
         } 
         loadTableGroups();
 
-    },[])
+    },[reloadTableGroup, branch_uuid])
 
     return (
         <Grid
@@ -80,12 +88,16 @@ const TableGroupSelect = (props) => {
             defaultValue="Nhóm bàn chung"
             style={{ width: '50%'}}  
             dropdownStyle={{ maxHeight: 400, overflow: 'auto',zIndex:100000000  }}
-            
+            onChange = {(value) => {
+                tableFormik.values.table_group_name = value;
+            } }
             options={tableGroups}
         />
 
         <Tooltip title ='Thêm nhóm mới'>
-            <IconButton>
+            <IconButton
+            onClick={handleOpenAddTableGroupDialog}
+            >
                 <AddIcon/>
             </IconButton>
         </Tooltip>

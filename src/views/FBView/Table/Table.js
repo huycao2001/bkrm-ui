@@ -32,12 +32,18 @@ function Table(props) {
   const theme = useTheme();
   const classes = useStyles(theme);
   const [openAddTableDialog, setOpenAddTableDialog] = useState(false);
+  
+
   const handleCloseAddTableDialog = () => {
     setOpenAddTableDialog(false);
   };
-  const handleClickOpen = () => {
+  const handleOpenAddTableDialog = () => {
     setOpenAddTableDialog(true);
   };
+
+
+
+
   const [totalRows, setTotalRows] = useState(0);
   const [openRow, setRowOpen] = React.useState(null);
   const [reload, setReload] = useState(true);
@@ -95,13 +101,24 @@ function Table(props) {
           Phòng bàn
         </Typography>
 
-        <Grid className={classes.btngroup} sx={{ padding: "10px" }}>
-          <Tooltip title="Thêm hàng hóa mới">
+        <Grid className={classes.btngroup} style={{ padding: "20px" }} spacing = {100} >
+          <Tooltip title="Nhóm bàn">
             <Button
               variant="outlined"
               color="primary"
               startIcon={<AddIcon />}
-              onClick={handleClickOpen}
+              onClick={handleOpenAddTableDialog}
+            >
+              Nhóm
+            </Button>
+          </Tooltip>
+
+          <Tooltip title="Thêm bàn mới">
+            <Button
+              variant="outlined"
+              color="primary"
+              startIcon={<AddIcon />}
+              onClick={handleOpenAddTableDialog}
             >
               Thêm
             </Button>

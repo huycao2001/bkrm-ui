@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useTheme } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
 //import library
-
+import AddTableGroup from "../../../../components/TableGroup/AddTableGroup";
 
 import TableGroupSelect from "../../../../components/TableGroup/TableGroupSelect";
 
@@ -43,6 +43,21 @@ import { Icon } from "@mui/material";
 const AddTable = (props) => {
   const { openAddTableDialog, handleCloseAddTableDialog, setReload } = props;
 
+  const [reloadTableGroup, setReloadTableGroup] = useState('false');
+  const [openAddTableGroupDialog, setOpenAddTableGroupDialog] = useState(false);
+
+
+  const handleSetReloadTableGroup = () => {
+    setReloadTableGroup(!reloadTableGroup);
+  }
+
+  const handleCloseAddTableGroupDialog = () => {
+    setOpenAddTableGroupDialog(false);
+  };
+  const handleOpenAddTableGroupDialog = () => {
+    setOpenAddTableGroupDialog(true);
+  };
+
   const info = useSelector((state) => state.info);
   const store_uuid = info.store.uuid;
   const branch_uuid = info.branch.uuid;
@@ -51,44 +66,14 @@ const AddTable = (props) => {
       name: "",
       seats: 0,
       description: "",
+      table_group_name : "Nhóm bàn chung"
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Nhập tên bàn"),
       seats: Yup.number().required("Nhập số ghế"),
     }),
   });
-  const treeData = [
-    {
-      value: 'parent 1',
-      title: 'parent 1',
-      children: [
-        {
-          value: 'parent 1-0',
-          title: 'parent 1-0',
-          children: [
-            {
-              value: 'leaf1',
-              title: 'leaf1',
-            },
-            {
-              value: 'leaf2',
-              title: 'leaf2',
-            },
-          ],
-        },
-        {
-          value: 'parent 1-1',
-          title: 'parent 1-1',
-          children: [
-            {
-              value: 'leaf3',
-              title: <b style={{ color: '#08c' }}>leaf3</b>,
-            },
-          ],
-        },
-      ],
-    },
-  ];
+
   const dispatch = useDispatch();
   const handleAddTable = async () => {
     handleCloseAndResetTableDialog();
@@ -162,10 +147,11 @@ const AddTable = (props) => {
 
 
 
-      <TableGroupSelect/>
-
-
-
+      <TableGroupSelect
+        tableFormik = {tableFormik}
+        handleOpenAddTableGroupDialog = {handleOpenAddTableGroupDialog}
+        reloadTableGroup = {reloadTableGroup}
+      />
 
       </DialogContent>
       <DialogActions>
@@ -187,6 +173,13 @@ const AddTable = (props) => {
           Thêm
         </Button>
       </DialogActions>
+
+      <AddTableGroup
+        openAddTableGroupDialog = {openAddTableGroupDialog}
+        handleCloseAddTableGroupDialog = {handleCloseAddTableGroupDialog}
+        handleSetReloadTableGroup = {handleSetReloadTableGroup}
+        
+      />
     </Dialog>
   );
 };

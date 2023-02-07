@@ -90,7 +90,7 @@ const FBTableRow = (props) => {
           {row.description ? row.description : 'Trống'}
         </TableCell>
         <TableCell className={classes.cell} align="left" style={{ color: colorText }}>
-          Chưa có
+          {row.table_group_name}
         </TableCell>
         <TableCell className={classes.cell} align="left" style={{ color: colorText }}>
           {row.seats}
