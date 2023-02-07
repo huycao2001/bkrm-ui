@@ -18,7 +18,7 @@ import * as Yup from "yup";
 import Image from "../../assets/img/background.gif";
 // import { authActions } from "../../store/slice/authSlice";
 import { authActions } from "../../store/slice/authSlice";
-import {statusAction} from '../../store/slice/statusSlice';
+import { statusAction } from '../../store/slice/statusSlice';
 
 const styles = {
   paperContainer: {
@@ -71,7 +71,7 @@ export default function SignUp() {
       district: "",
       city: "",
       phone: "",
-      store_type : 'grocery'
+      store_type: 'grocery'
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Nhập tên cửa hàng"),
@@ -127,7 +127,8 @@ export default function SignUp() {
       default_branch: true,
       lat: lat ? lat.toString() : "",
       lng: lng ? lng.toString() : "",
-      store_type : store_formik.values.store_type
+      store_type: store_formik.values.store_type,
+      timezone: "Asia/Ho_Chi_Minh"
     };
     try {
       const response = await userApi.ownerRegister(body);
@@ -158,7 +159,7 @@ export default function SignUp() {
 
   useEffect(() => {
     console.log('store_type ' + store_formik.values.store_type);
-  } , [store_formik.values.store_type])
+  }, [store_formik.values.store_type])
 
   useEffect(() => {
     const loadCity = async () => {

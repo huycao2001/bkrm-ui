@@ -131,7 +131,6 @@ const AddTable = (props) => {
           onChange={tableFormik.handleChange}
         />
         <TextField
-          autoFocus
           margin="dense"
           id="seats"
           label="Số ghế"
@@ -142,7 +141,6 @@ const AddTable = (props) => {
           onChange={tableFormik.handleChange}
         />
         <TextField
-          autoFocus
           margin="dense"
           id="description"
           label="Mô tả"

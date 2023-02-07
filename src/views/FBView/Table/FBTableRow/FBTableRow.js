@@ -83,19 +83,19 @@ const FBTableRow = (props) => {
         key={row.uuid}
         style={{ color: colorText }}
       >
-        <TableCell align="left" style={{ color: colorText }}>
+        <TableCell className={classes.cell} align="left" style={{ color: colorText }}>
           {row.name}
         </TableCell>
-        <TableCell align="left" style={{ color: colorText }}>
+        <TableCell className={classes.cell} align="left" style={{ color: colorText }}>
           {row.description ? row.description : 'Trống'}
         </TableCell>
-        <TableCell align="left" style={{ color: colorText }}>
+        <TableCell className={classes.cell} align="left" style={{ color: colorText }}>
           Chưa có
         </TableCell>
-        <TableCell align="left" style={{ color: colorText }}>
+        <TableCell className={classes.cell} align="left" style={{ color: colorText }}>
           {row.seats}
         </TableCell>
-        <TableCell align="left" style={{ color: colorText }}>
+        <TableCell className={classes.cell} align="left" style={{ color: colorText }}>
           {row.status === 'empty' ? 'Trống' : row.status}
         </TableCell>
         {/* <TableCell
