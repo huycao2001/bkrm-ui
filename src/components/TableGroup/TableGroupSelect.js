@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 
 import { useDispatch, useSelector } from "react-redux";
+import { statusAction } from "../../store/slice/statusSlice";
 import {
     Button,
     TextField,
@@ -55,10 +56,10 @@ const TableGroupSelect = (props) => {
                             label : group.name
                         }
                     });
-                    console.log('Table groups ' + JSON.stringify(groups));
+                    //console.log('Table groups ' + JSON.stringify(groups));
                     setTableGroups(groups);
                 }
-                console.log('Table groups' +  JSON.stringify(response.data));
+                //console.log('Table groups' +  JSON.stringify(response.data));
             }catch(e){
                 console.log(e);
             }

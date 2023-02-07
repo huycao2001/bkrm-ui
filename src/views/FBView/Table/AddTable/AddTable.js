@@ -98,12 +98,18 @@ const AddTable = (props) => {
         branch_uuid,
         tableFormik.values
       );
-      console.log(response);
+      if(response.message === 'Success'){
+        dispatch(statusAction.successfulStatus("Tạo bàn thành công"));
+      }else{
+        dispatch(statusAction.failedStatus("Tạo bàn thất bại"));
+      }
+
+      //console.log(response);
       setReload();
-      dispatch(statusAction.successfulStatus("Tạo sản phẩm thành công"));
+      //dispatch(statusAction.successfulStatus("Tạo bàn thành công"));
     } catch (error) {
       console.log(error);
-      dispatch(statusAction.failedStatus("Tạo sản phẩm thất bại"));
+      dispatch(statusAction.failedStatus("Tạo bàn thất bại"));
     }
   };
 
