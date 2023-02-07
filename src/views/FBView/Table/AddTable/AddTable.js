@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 //import library
 
 
+import TableGroupSelect from "../../../../components/TableGroup/TableGroupSelect";
+
 import {
   Button,
   TextField,
@@ -131,6 +133,7 @@ const AddTable = (props) => {
           onChange={tableFormik.handleChange}
         />
         <TextField
+          autoFocus
           margin="dense"
           id="seats"
           label="Số ghế"
@@ -141,6 +144,7 @@ const AddTable = (props) => {
           onChange={tableFormik.handleChange}
         />
         <TextField
+          autoFocus
           margin="dense"
           id="description"
           label="Mô tả"
@@ -152,34 +156,7 @@ const AddTable = (props) => {
 
 
 
-      <Grid
-          container
-          direction="row"
-          justifyContent="flex-start"
-          alignItems="center"
-          style = {{marginTop : '20px'}}
-      >
-            <Select
-              defaultValue="Nhóm"
-              style={{ width: '50%'}}  
-              dropdownStyle={{ maxHeight: 400, overflow: 'auto',zIndex:100000000  }}
-              
-              options={[
-                {value : '', label : 'Chọn nhóm'},
-                { value: '39b7f811-f62f-45a3-9bbe-926ca1e4d48f', label: 'Tầng 1' },
-                { value: '39b7f811-f62f-45a3-9bbe-926ca1e4d48d', label: 'Tầng 2' },
-                { value: '39b7f811-f62f-45a3-9bbe-926ca1e4d48q', label: 'Tầng 3' },
-      
-              ]}
-            />
-
-            <Tooltip title ='Thêm nhóm mới'>
-              <IconButton>
-                  <AddIcon/>
-              </IconButton>
-            </Tooltip>
-      </Grid>
-
+      <TableGroupSelect/>
 
 
 
