@@ -411,7 +411,7 @@ export const CashbookHeadCells = [
 export const FBTableHeadCells = [
   // { id: "stt", align: "left", disablePadding: true, label: "Stt" },
   { id: "id", align: "left", disablePadding: true, label: "Tên phòng/bàn" },
-  { id: "description", align: "left", disablePadding: false, label: "Mô tả" },
+  // { id: "description", align: "left", disablePadding: false, label: "Mô tả" },
   { id: "group", align: "left", disablePadding: false, label: "Nhóm" },
   {
     id: "numberOfChairs",

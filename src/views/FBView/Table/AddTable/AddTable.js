@@ -43,7 +43,7 @@ import { Icon } from "@mui/material";
 const AddTable = (props) => {
   const { openAddTableDialog, handleCloseAddTableDialog, setReload } = props;
 
-  const [reloadTableGroup, setReloadTableGroup] = useState('false');
+  const [reloadTableGroup, setReloadTableGroup] = useState(false); // reloadTableGroup sẽ load lại TableGroupSelect, setReload khi add 1 tablegroup
   const [openAddTableGroupDialog, setOpenAddTableGroupDialog] = useState(false);
 
 

@@ -32,6 +32,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { ProductMiniTableRow } from "../../../../components/MiniTableRow/MiniTableRow";
+import FBTableDetail from "./FBTableDetail/FBTableDetail";
 import defaultProduct from "../../../../assets/img/product/default-product.png";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -59,6 +60,7 @@ const FBTableRow = (props) => {
     row,
     handleOpenRow,
     openRow,
+    setReload,
     isManageInventory,
     hidenCollumn,
     colorText,
@@ -86,9 +88,9 @@ const FBTableRow = (props) => {
         <TableCell className={classes.cell} align="left" style={{ color: colorText }}>
           {row.name}
         </TableCell>
-        <TableCell className={classes.cell} align="left" style={{ color: colorText }}>
+        {/* <TableCell className={classes.cell} align="left" style={{ color: colorText }}>
           {row.description ? row.description : 'Trống'}
-        </TableCell>
+        </TableCell> */}
         <TableCell className={classes.cell} align="left" style={{ color: colorText }}>
           {row.table_group_name}
         </TableCell>
@@ -98,66 +100,22 @@ const FBTableRow = (props) => {
         <TableCell className={classes.cell} align="left" style={{ color: colorText }}>
           {row.status === 'empty' ? 'Trống' : row.status}
         </TableCell>
-        {/* <TableCell
-          align="right"
-          style={{
-            minWidth: hidenCollumn?.includes("image") ? 50 : 200,
-            color: colorText,
-          }}
-        >
-          <ListItem
-            style={{ marginLeft: -30, marginTop: -10, marginBottom: -10 }}
-          >
-            {hidenCollumn?.includes("image") ? null : (
-              <Box
-                component="img"
-                sx={{
-                  height: 50,
-                  width: 50,
-                  borderRadius: 10,
-                  marginRight: 15,
-                }}
-                src={imageList?.at(0) || defaultProduct}
-              />
-            )}
-            <Typography
-              className={colorText ? null : classes.fontName}
-              style={{ color: colorText }}
-            >
-              {row.name}
-            </Typography>
-          </ListItem>
-        </TableCell> */}
-        {/* <TableCell align="left">{row.bar_code}</TableCell> */}
+      
+      
+      </TableRow>
 
-        {/* <TableCell align="left" style={{ color: colorText }}>
-          {row.category?.name}
-        </TableCell>
-        <TableCell align="right" style={{ color: colorText }}>
-          <VNDFormat value={row.list_price} />
-        </TableCell>
-        <TableCell align="right" style={{ color: colorText }}>
-          <VNDFormat value={row.standard_price} />
-        </TableCell>
-        {isManageInventory ? (
-          <>
-            {hidenCollumn?.includes("quantity") ? null : (
-              <TableCell align="center">
-                <FormatedProductStatus
-                  quantity={row.branch_quantity}
-                  lowStock={row.min_reorder_quantity}
-                />
-              </TableCell>
-            )}
-            <TableCell
-              align="center"
-              className={classes.fontName}
-              style={{ fontWeight: 500, color: "#000" }}
-            >
-              {row.branch_quantity}
-            </TableCell>
-          </>
-        ) : null} */}
+      <TableRow>
+          <TableCell
+            style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}
+          >
+              <FBTableDetail
+                row={row}
+                openRow = {openRow}
+                setReload ={setReload}
+                
+              
+              />
+          </TableCell>
       </TableRow>
     </>
   );

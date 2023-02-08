@@ -85,7 +85,7 @@ const TableGroupSelect = (props) => {
         style = {{marginTop : '20px'}}
     >
         <Select
-            defaultValue="Nhóm bàn chung"
+            defaultValue={tableFormik.values.table_group_name}
             style={{ width: '50%'}}  
             dropdownStyle={{ maxHeight: 400, overflow: 'auto',zIndex:100000000  }}
             onChange = {(value) => {

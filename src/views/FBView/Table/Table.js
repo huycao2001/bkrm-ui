@@ -28,17 +28,26 @@ import * as HeadCells from "../../../assets/constant/tableHead";
 import TableWrapper from "../../../components/TableCommon/TableWrapper/TableWrapper";
 import TableHeader from "../../../components/TableCommon/TableHeader/TableHeader";
 import FBTableRow from "./FBTableRow/FBTableRow";
+import TableGroupEditor from "../../../components/TableGroup/TableGroupEditor.js";
+
 function Table(props) {
   const theme = useTheme();
   const classes = useStyles(theme);
   const [openAddTableDialog, setOpenAddTableDialog] = useState(false);
-  
-
   const handleCloseAddTableDialog = () => {
     setOpenAddTableDialog(false);
   };
   const handleOpenAddTableDialog = () => {
     setOpenAddTableDialog(true);
+  };
+
+
+  const [openTableGroupEditor, setOpenTableGroupEditor] = useState(false);
+  const handleCloseTableGroupEditor = () => {
+    setOpenTableGroupEditor(false);
+  };
+  const handleOpenTableGroupEditor = () => {
+    setOpenTableGroupEditor(true);
   };
 
 
@@ -102,12 +111,12 @@ function Table(props) {
         </Typography>
 
         <Grid className={classes.btngroup} style={{ padding: "20px" }} spacing = {100} >
-          <Tooltip title="Nhóm bàn">
+          <Tooltip title="Thiết lập nhóm bàn">
             <Button
               variant="outlined"
               color="primary"
               startIcon={<AddIcon />}
-              onClick={handleOpenAddTableDialog}
+              onClick={handleOpenTableGroupEditor}
             >
               Nhóm
             </Button>
@@ -123,6 +132,12 @@ function Table(props) {
               Thêm
             </Button>
           </Tooltip>
+
+          <TableGroupEditor
+            openTableGroupEditor = {openTableGroupEditor}
+            handleCloseTableGroupEditor = {handleCloseTableGroupEditor}
+            setReload={() => setReload(!reload)}
+          />
         </Grid>
       </Grid>
       {openAddTableDialog && (
