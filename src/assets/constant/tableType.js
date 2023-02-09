@@ -28,3 +28,7 @@ export const IMPORT = "Nhập hàng";
 export const CART_RETURN = "Trả_hàng";
 export const IMPORT_RETURN = "Trả_hàng_nhập";
 
+
+//FB
+export const FBTable = "Phòng_Bàn";
+

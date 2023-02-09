@@ -18,6 +18,8 @@ import {
 
 import LoadingIndicator from '../../../components/LoadingIndicator/LoadingIndicator';
 
+import * as TableType from "../../../assets/constant/tableType.js"
+
 //styling
 import { useTheme } from "@mui/material/styles";
 import useStyles from "../../../components/TableCommon/style/mainViewStyle";
@@ -29,6 +31,7 @@ import TableWrapper from "../../../components/TableCommon/TableWrapper/TableWrap
 import TableHeader from "../../../components/TableCommon/TableHeader/TableHeader";
 import FBTableRow from "./FBTableRow/FBTableRow";
 import TableGroupEditor from "../../../components/TableGroup/TableGroupEditor.js";
+import ToolBar from "../../../components/TableCommon/ToolBar/ToolBar";
 
 function Table(props) {
   const theme = useTheme();
@@ -66,10 +69,20 @@ function Table(props) {
   const infoDetail = useSelector((state) => state.info);
   const store_uuid = infoDetail.store.uuid;
   const branch_uuid = infoDetail.branch.uuid;
+
+
+
+  const initQuery = {
+    searchKey : ''
+  }
   const [pagingState, setPagingState] = useState({
     page: 0,
     limit: 10,
   });
+
+  const [query, setQuery] = useState(initQuery);
+
+
   const [tableList, setTableList] = useState([]);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("id");
@@ -86,7 +99,7 @@ function Table(props) {
           fbTableApi.getTablesOfBranch(
             store_uuid,
             branch_uuid,
-            {}
+            query
           )
         );
         //setTotalRows(response.total_rows);
@@ -100,7 +113,7 @@ function Table(props) {
     if (store_uuid && branch_uuid) {
       loadData();
     }
-  }, [branch_uuid, reload]);
+  }, [branch_uuid, reload, query]);
   return (
     <Card className={classes.root}>
 
@@ -110,7 +123,7 @@ function Table(props) {
           Phòng bàn
         </Typography>
 
-        <Grid className={classes.btngroup} style={{ padding: "20px" }} spacing = {100} >
+        <Grid className={classes.btngroup}  >
           <Tooltip title="Thiết lập nhóm bàn">
             <Button
               variant="outlined"
@@ -148,6 +161,18 @@ function Table(props) {
         />
       )}
       <LoadingIndicator/>
+
+      <ToolBar
+        dataTable = {tableList}
+        tableType = {TableType.FBTable}
+        textSearch={"#, Tên bàn... "}
+        isOnlySearch = {true}
+        searchKey={query.searchKey} setSearchKey={(value) => setQuery({...query, searchKey: value})}
+
+
+      
+      />
+      
       <TableWrapper
         pagingState={{ ...pagingState, total_rows: totalRows }}
         setPagingState={setPagingState}
