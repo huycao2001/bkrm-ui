@@ -119,6 +119,9 @@ const ToolBar = (props) => {
     customizable,
     handleDeleteAll,
     extra,
+    tableGroupOptions,
+    tableGroup,
+    setTableGroup
   } = props;
   const theme = useTheme();
   const classes = useStyles(theme);
@@ -329,6 +332,33 @@ const ToolBar = (props) => {
                     <MenuItem value="desc">Giảm dần</MenuItem>
                   </Select>
                 </FormControl>
+
+
+                { tableGroupOptions &&
+                  <FormControl>
+                  <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                    Nhóm bàn
+                  </InputLabel>
+                  <Select
+                    autoWidth={true}
+                    labelId="tabel_group"
+                    value={tableGroup === '' ? 'all' : tableGroup}
+                    label="Chọn theo nhóm bàn"
+                    onChange={(e) => {
+                      
+                      setTableGroup(e.target.value);
+                      //console.log('Table group is now ' + tableGroup);
+                    }}
+                  >
+                    {tableGroupOptions?.map(o => <MenuItem value={o.value}>{o.label}</MenuItem>)}
+                  </Select>
+                </FormControl>
+
+                }
+
+
+
+
                 <Button onClick={handleRemoveFilter}>
                   Bỏ lọc
                 </Button>

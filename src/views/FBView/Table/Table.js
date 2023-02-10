@@ -26,6 +26,7 @@ import useStyles from "../../../components/TableCommon/style/mainViewStyle";
 import AddTable from "./AddTable/AddTable";
 import AddAttribute from "../../InventoryView/Inventory/AddInventory/AddAttribute";
 import fbTableApi from "../../../api/fbTableApi";
+import fbTableGroupApi from "../../../api/fbTableGroup";
 import * as HeadCells from "../../../assets/constant/tableHead";
 import TableWrapper from "../../../components/TableCommon/TableWrapper/TableWrapper";
 import TableHeader from "../../../components/TableCommon/TableHeader/TableHeader";
@@ -73,7 +74,10 @@ function Table(props) {
 
 
   const initQuery = {
-    searchKey : ''
+    searchKey : '',
+    orderBy : "tables.created_at",
+    sort : "desc",
+    tableGroup : ''
   }
   const [pagingState, setPagingState] = useState({
     page: 0,
@@ -84,6 +88,7 @@ function Table(props) {
 
 
   const [tableList, setTableList] = useState([]);
+  const [tableGroupList, setTableGroupList] = useState([]);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("id");
   const handleRequestSort = (event, property) => {
@@ -99,11 +104,15 @@ function Table(props) {
           fbTableApi.getTablesOfBranch(
             store_uuid,
             branch_uuid,
-            query
+            {
+              ...query,
+              ...pagingState
+            }
           )
         );
         //setTotalRows(response.total_rows);
         setTableList(response.data.tables);
+        setTotalRows(response.data.total_rows);
         console.log("zzzzzzzz");
         console.log(response.data.tables);
       } catch (error) {
@@ -113,7 +122,24 @@ function Table(props) {
     if (store_uuid && branch_uuid) {
       loadData();
     }
-  }, [branch_uuid, reload, query]);
+  }, [branch_uuid, reload, query, pagingState.page, pagingState.limit]);
+
+
+  useEffect(() =>{
+    const loadTableGroups = async () => {
+      const response = await fbTableGroupApi.getTableGroupsOfBranch(store_uuid,branch_uuid); 
+      if(response.message === 'Success'){
+        setTableGroupList(response.data.table_groups.map(tableGroup => {
+          return {
+            label : tableGroup.name,
+            value : tableGroup.name
+          }
+        })); 
+      }
+    }
+    loadTableGroups()
+  }, [branch_uuid, reloadTableGroupEditor])
+
   return (
     <Card className={classes.root}>
 
@@ -171,10 +197,25 @@ function Table(props) {
         dataTable = {tableList}
         tableType = {TableType.FBTable}
         textSearch={"#, Tên bàn... "}
-        isOnlySearch = {true}
+        isOnlySearch = {false}
         searchKey={query.searchKey} setSearchKey={(value) => setQuery({...query, searchKey: value})}
+        orderByOptions = {
+          [
+            {value : 'tables.created_at', label : "Ngày tạo"},
+            {value : 'tables.name', label : "Tên bàn"},
+            {value : 'tables.seats', label : "Số ghế"},
+            {value : 'table_groups.name', label : 'Tên nhóm bàn'}
+          ]
+        }
+        orderBy = {query.orderBy}
+        setOrderBy={(value) => setQuery({ ...query, orderBy: value })}
+        sort={query.sort}
+        setSort={(value) => setQuery({ ...query, sort: value })}
+        tableGroup = {query.tableGroup}
+        tableGroupOptions = {tableGroupList}
 
-
+        setTableGroup = {(value) => setQuery({...query, tableGroup : value})}
+        handleRemoveFilter = {() => setQuery(initQuery)}
       
       />
       
