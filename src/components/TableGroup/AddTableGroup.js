@@ -36,7 +36,8 @@ function AddTableGroup(props) {
     const {
         openAddTableGroupDialog,
         handleCloseAddTableGroupDialog,
-        handleSetReloadTableGroup
+        handleSetReloadTableGroup,
+        handleSetReloadTableGroupEditor
     } = props;
 
     const dispatch = useDispatch();
@@ -53,20 +54,20 @@ function AddTableGroup(props) {
             
             if(response.message === 'Success'){
                 dispatch(statusAction.successfulStatus("Tạo nhóm bàn thành công"));
-                handleSetReloadTableGroup();
+                if(handleSetReloadTableGroup){handleSetReloadTableGroup()};
+                handleSetReloadTableGroupEditor();
                 
             }
             else if(response.error){
-                dispatch(statusAction.failedStatus("Tên nhóm bàn đã được sử dụng"));
+                dispatch(statusAction.failedStatus(response.error));
             }
-            else{
-                dispatch(statusAction.failedStatus("Tạo nhóm thất bại"));
-            }
+            
             handleCloseAddTableGroupDialog();
             console.log(response);
         }
         catch(e){
-            dispatch(statusAction.failedStatus("Tạo nhóm thất bại"));
+            dispatch(statusAction.failedStatus("Tạo nhóm thất bại, check console"));
+            console.log(e)
         }
 
 

@@ -64,6 +64,7 @@ const FBTableRow = (props) => {
     isManageInventory,
     hidenCollumn,
     colorText,
+    handleSetReloadTableGroupEditor
   } = props;
 
   const classes = useRowStyles();
@@ -112,6 +113,7 @@ const FBTableRow = (props) => {
                 row={row}
                 openRow = {openRow}
                 setReload ={setReload}
+                handleSetReloadTableGroupEditor = {handleSetReloadTableGroupEditor}
                 
               
               />

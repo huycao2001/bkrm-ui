@@ -41,7 +41,13 @@ import fbTableApi from "../../../../api/fbTableApi";
 import { statusAction } from "../../../../store/slice/statusSlice";
 import { Icon } from "@mui/material";
 const AddTable = (props) => {
-  const { openAddTableDialog, handleCloseAddTableDialog, setReload } = props;
+  const { 
+    openAddTableDialog, 
+    handleCloseAddTableDialog,
+    setReload,
+    reloadTableGroupEditor,
+    setReloadTableGroupEditor
+   } = props;
 
   const [reloadTableGroup, setReloadTableGroup] = useState(false); // reloadTableGroup sẽ load lại TableGroupSelect, setReload khi add 1 tablegroup
   const [openAddTableGroupDialog, setOpenAddTableGroupDialog] = useState(false);
@@ -178,6 +184,7 @@ const AddTable = (props) => {
         openAddTableGroupDialog = {openAddTableGroupDialog}
         handleCloseAddTableGroupDialog = {handleCloseAddTableGroupDialog}
         handleSetReloadTableGroup = {handleSetReloadTableGroup}
+        handleSetReloadTableGroupEditor = {() => setReloadTableGroupEditor(!reloadTableGroupEditor)}
         
       />
     </Dialog>

@@ -41,7 +41,8 @@ const FBTableDetail = (props) => {
     const {
         row,
         openRow,
-        setReload
+        setReload,
+        handleSetReloadTableGroupEditor
     } = props;
 
     const dispatch = useDispatch(); 
@@ -86,6 +87,7 @@ const FBTableDetail = (props) => {
                 openTableUpdate = {openTableUpdate}
                 handleCloseTableUpdate = {handleCloseTableUpdate}
                 setReload={setReload}
+                handleSetReloadTableGroupEditor = {handleSetReloadTableGroupEditor}
             />}
 
             {openDeleteTableConfirm && <ConfirmPopUp

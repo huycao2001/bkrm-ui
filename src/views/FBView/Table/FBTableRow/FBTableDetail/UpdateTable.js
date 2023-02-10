@@ -47,7 +47,8 @@ const UpdateTable = (props) => {
         table,
         openTableUpdate, 
         handleCloseTableUpdate,
-        setReload
+        setReload,
+        handleSetReloadTableGroupEditor
     } = props;
 
     const info = useSelector((state) => state.info);
@@ -183,6 +184,7 @@ const UpdateTable = (props) => {
         openAddTableGroupDialog = {openAddTableGroupDialog}
         handleCloseAddTableGroupDialog = {handleCloseAddTableGroupDialog}
         handleSetReloadTableGroup = {handleSetReloadTableGroup}
+        handleSetReloadTableGroupEditor = {handleSetReloadTableGroupEditor}
         
       />
     </Dialog>

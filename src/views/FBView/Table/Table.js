@@ -53,7 +53,7 @@ function Table(props) {
     setOpenTableGroupEditor(true);
   };
 
-
+  const [reloadTableGroupEditor, setReloadTableGroupEditor] = useState(false); 
 
 
   const [totalRows, setTotalRows] = useState(0);
@@ -130,6 +130,7 @@ function Table(props) {
               color="primary"
               startIcon={<AddIcon />}
               onClick={handleOpenTableGroupEditor}
+              style = {{marginRight : "10px"}}
             >
               Nhóm
             </Button>
@@ -150,6 +151,8 @@ function Table(props) {
             openTableGroupEditor = {openTableGroupEditor}
             handleCloseTableGroupEditor = {handleCloseTableGroupEditor}
             setReload={() => setReload(!reload)}
+            reloadTableGroupEditor = {reloadTableGroupEditor}
+            setReloadTableGroupEditor = {setReloadTableGroupEditor}
           />
         </Grid>
       </Grid>
@@ -158,6 +161,8 @@ function Table(props) {
           openAddTableDialog={openAddTableDialog}
           handleCloseAddTableDialog={handleCloseAddTableDialog}
           setReload={() => setReload(!reload)}
+          reloadTableGroupEditor = {reloadTableGroupEditor}
+          setReloadTableGroupEditor = {setReloadTableGroupEditor}
         />
       )}
       <LoadingIndicator/>
@@ -196,6 +201,7 @@ function Table(props) {
                 openRow={openRow}
                 handleOpenRow={handleOpenRow}
                 isManageInventory={false}
+                handleSetReloadTableGroupEditor = {() => setReloadTableGroupEditor(!reloadTableGroupEditor)}
               />
             );
           })}

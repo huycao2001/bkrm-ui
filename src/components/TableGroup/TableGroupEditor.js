@@ -3,7 +3,8 @@ import { useTheme } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
 //import library
 import { trackPromise } from "react-promise-tracker";
-
+import AddIcon from '@material-ui/icons/Add';
+import AddTableGroup from "./AddTableGroup";
 import {
   Button,
   TextField,
@@ -41,11 +42,25 @@ const TableGroupEditor = (props) => {
     const {
         openTableGroupEditor,
         handleCloseTableGroupEditor,
-        setReload
+        setReload,
+        reloadTableGroupEditor,
+        setReloadTableGroupEditor
     } = props; 
 
+    const [openAddTableGroupDialog, setOpenAddTableGroupDialog] = useState(false);
+
+    const handleCloseAddTableGroupDialog = () =>{
+      setOpenAddTableGroupDialog(false);
+    }
+
+    const handleOpenAddTableGroupDialog = () =>{
+      setOpenAddTableGroupDialog(true);
+    }
+
+
+
     const [tableGroups, setTableGroups] = useState([]);
-    const [reloadTableGroupEditor, setReloadTableGroupEditor] = useState(false);
+    //const [reloadTableGroupEditor, setReloadTableGroupEditor] = useState(false);
     const dispatch = useDispatch();
     const info = useSelector((state) => state.info);
     const store_uuid = info.store.uuid;
@@ -58,11 +73,11 @@ const TableGroupEditor = (props) => {
                 const response = await trackPromise(
                     fbTableGroupApi.getTableGroupsOfBranch(store_uuid, branch_uuid)
                 );
-                console.log(JSON.stringify(response));
+                //console.log(JSON.stringify(response));
                 if(response.message === 'Success'){
                     setTableGroups(response.data.table_groups);
                 }else{
-                    dispatch(statusAction.failedStatus("Vui lòng thử lại sau"));
+                    dispatch(statusAction.failedStatus("Có lỗi khi render nhóm bàn"));
                 }
             }
             catch(e){
@@ -80,11 +95,35 @@ const TableGroupEditor = (props) => {
   return (
     <Dialog open={openTableGroupEditor} onClose = {handleCloseTableGroupEditor}>
       <DialogTitle id="alert-dialog-title">
-        <Typography variant="h3">Thiết lập nhóm bàn</Typography>
+        <Grid
+          container
+          direction="row"
+          justifyContent="space-between"
+        >
+          <Typography variant="h3">Thiết lập nhóm bàn</Typography>
+          <Tooltip
+            title = 'Thêm nhóm bàn'
+          >
+            <IconButton
+              onClick = {handleOpenAddTableGroupDialog}
+              size = "small"
+            >
+                <AddIcon/>
+            </IconButton>
+
+          </Tooltip>
+        </Grid>
       </DialogTitle>
       <DialogContent
         style={{ width: "50vh", maxHeight: '50vh', overflowY: 'auto'}}
       >
+        { openAddTableGroupDialog && <AddTableGroup
+          openAddTableGroupDialog = {openAddTableGroupDialog}
+          handleCloseAddTableGroupDialog = {handleCloseAddTableGroupDialog}
+          handleSetReloadTableGroupEditor = {() => setReloadTableGroupEditor(!reloadTableGroupEditor)}
+
+
+        />}
         <LoadingIndicator/>
         {tableGroups.map(tableGroup => (
             <TableGroupEditorItem

@@ -274,6 +274,9 @@ const ToolBar = (props) => {
                   }
                 }
                 }
+                // onChange={(e) =>{
+                //   setSearchKey(e.target.value);
+                // }}
                 placeholder={textSearch} /*placeholder='Tìm kiếm ...'*/
                 InputProps={{
                   startAdornment: (
