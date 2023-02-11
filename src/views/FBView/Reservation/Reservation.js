@@ -1,171 +1,100 @@
-
-
-// function Reservation(props) {
-//     return (
-//         <Card></Card>
-//     );
-// }
-
-// export default Reservation;
-
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import {
-    ViewState, GroupingState, IntegratedGrouping, IntegratedEditing, EditingState,
+    ViewState, EditingState, GroupingState, IntegratedGrouping, IntegratedEditing,
 } from '@devexpress/dx-react-scheduler';
 import {
     Scheduler,
     Resources,
-    Appointments,
-    AppointmentTooltip,
-    GroupingPanel,
     DayView,
     WeekView,
     MonthView,
-    DragDropProvider,
+    Appointments,
+    AppointmentTooltip,
     AppointmentForm,
-    ViewSwitcher,
+    GroupingPanel,
     Toolbar,
+    ViewSwitcher,
+    DragDropProvider,
+    CurrentTimeIndicator,
 } from '@devexpress/dx-react-scheduler-material-ui';
-import {
-    teal, indigo,
-} from '@mui/material/colors';
+import { blue, orange } from '@mui/material/colors';
 
-const appointments = [{
-    id: 0,
-    title: 'Watercolor Landscape',
-    members: [1, 2],
-    roomId: 1,
-    startDate: new Date(2017, 4, 28, 9, 30),
-    endDate: new Date(2017, 4, 28, 12, 0),
-}, {
-    id: 1,
-    title: 'Oil Painting for Beginners',
-    members: [1],
-    roomId: 2,
-    startDate: new Date(2017, 4, 28, 12, 30),
-    endDate: new Date(2017, 4, 28, 14, 30),
-}, {
-    id: 2,
-    title: 'Testing',
-    members: [1, 2],
-    roomId: 1,
-    startDate: new Date(2017, 4, 29, 12, 30),
-    endDate: new Date(2017, 4, 29, 14, 30),
-}, {
-    id: 3,
-    title: 'Final exams',
-    members: [1, 2],
-    roomId: 2,
-    startDate: new Date(2017, 4, 29, 9, 30),
-    endDate: new Date(2017, 4, 29, 12, 0),
+import { data as appointments } from './demo-data/grouping';
+
+const resources = [{
+    fieldName: 'priorityId',
+    title: 'Priority',
+    instances: [
+        { text: 'Low Priority', id: 1, color: blue },
+        { text: 'High Priority', id: 2, color: orange },
+    ],
+}];
+const grouping = [{
+    resourceName: 'priorityId',
 }];
 
-const owners = [{
-    text: 'Andrew Glover',
-    id: 1,
-    color: indigo,
-}, {
-    text: 'Arnie Schwartz',
-    id: 2,
-    color: teal,
-}];
+export default () => {
+    const [data, setData] = React.useState(appointments);
+    const onCommitChanges = React.useCallback(({ added, changed, deleted }) => {
+        if (added) {
+            const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
+            setData([...data, { id: startingAddedId, ...added }]);
+        }
+        if (changed) {
+            setData(data.map(appointment => (
+                changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment)));
+        }
+        if (deleted !== undefined) {
+            setData(data.filter(appointment => appointment.id !== deleted));
+        }
+    }, [setData, data]);
 
-const locations = [
-    { text: 'Room 1', id: 1 },
-    { text: 'Room 2', id: 2 },
-    { text: 'Room 3', id: 3 },
-    { text: 'Room 4', id: 4 },
-    { text: 'Room 5', id: 5 },
-    { text: 'Room 6', id: 6 },
-    { text: 'Room 7', id: 7 },
-    { text: 'Room 8', id: 8 },
-    { text: 'Room 9', id: 9 },
-    { text: 'Room 10', id: 10 },
-];
+    return (
+        <Paper>
+            <Scheduler
+                data={data}
+                height={660}
+            >
+                <ViewState
+                />
+                <EditingState
+                    onCommitChanges={onCommitChanges}
+                />
+                <GroupingState
+                    grouping={grouping}
+                />
+                <DayView
+                    startDayHour={9}
+                    endDayHour={17}
+                />
+                <WeekView
+                    startDayHour={9}
+                    endDayHour={17}
+                    name="Week"
+                />
+                <MonthView />
+                <Appointments />
+                <Resources
+                    data={resources}
+                    mainResourceName="priorityId"
+                />
 
-export default class Demo extends React.PureComponent {
-    constructor(props) {
-        super(props);
-        this.state = {
-            data: appointments,
-            resources: [{
-                fieldName: 'roomId',
-                title: 'Location',
-                instances: locations,
-            }],
-            grouping: [{
-                resourceName: 'roomId',
-            },
-                // {
-                //     resourceName: 'members',
-                // }
-            ],
-        };
+                <IntegratedGrouping />
+                <IntegratedEditing />
+                <AppointmentTooltip />
+                <AppointmentForm />
 
-        this.commitChanges = this.commitChanges.bind(this);
-    }
-
-    commitChanges({ added, changed, deleted }) {
-        this.setState((state) => {
-            let { data } = state;
-            if (added) {
-                const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
-                data = [...data, { id: startingAddedId, ...added }];
-            }
-            if (changed) {
-                data = data.map(appointment => (
-                    changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment));
-            }
-            if (deleted !== undefined) {
-                data = data.filter(appointment => appointment.id !== deleted);
-            }
-            return { data };
-        });
-    }
-
-    render() {
-        const { data, resources, grouping } = this.state;
-
-        return (
-            <Paper>
-                <Scheduler
-                    data={data}
-                >
-                    <ViewState
-                        defaultCurrentDate="2017-05-28"
-                    />
-                    <EditingState
-                        onCommitChanges={this.commitChanges}
-                    />
-                    <GroupingState
-                        grouping={grouping}
-                    />
-
-                    <DayView
-                        startDayHour={9}
-                        endDayHour={15}
-                        intervalCount={2}
-                    />
-                    <WeekView startDayHour={9} endDayHour={19} />
-                    <MonthView />
-                    <Toolbar />
-                    <ViewSwitcher />
-                    <Appointments />
-                    <Resources
-                        data={resources}
-                    //mainResourceName="members"
-                    />
-
-                    <IntegratedGrouping />
-                    <IntegratedEditing />
-
-                    <AppointmentTooltip showOpenButton />
-                    <AppointmentForm />
-                    <GroupingPanel />
-                    <DragDropProvider />
-                </Scheduler>
-            </Paper>
-        );
-    }
-}
+                <GroupingPanel />
+                <Toolbar />
+                <ViewSwitcher />
+                <DragDropProvider />
+                <CurrentTimeIndicator
+                //   shadePreviousCells={shadePreviousCells}
+                //   shadePreviousAppointments={shadePreviousAppointments}
+                //   updateInterval={updateInterval}
+                />
+            </Scheduler>
+        </Paper>
+    );
+};
