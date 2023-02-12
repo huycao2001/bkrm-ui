@@ -81,7 +81,7 @@ const TableGroupEditor = (props) => {
                 }
             }
             catch(e){
-                dispatch(statusAction.failedStatus("Lỗi : Check console"));
+                dispatch(statusAction.failedStatus("Có lỗi khi render nhóm bàn : Check console"));
                 console.log(e);
             }
 
