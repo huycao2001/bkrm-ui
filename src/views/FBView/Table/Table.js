@@ -98,7 +98,7 @@ function Table(props) {
     // setOrderBy(property);
   };
   useEffect(() => {
-    const loadData = async () => {
+    const loadTables = async () => {
       try {
         const response = await trackPromise(
           fbTableApi.getTablesOfBranch(
@@ -120,7 +120,7 @@ function Table(props) {
       }
     };
     if (store_uuid && branch_uuid) {
-      loadData();
+      loadTables();
     }
   }, [branch_uuid, reload, query, pagingState.page, pagingState.limit]);
 
