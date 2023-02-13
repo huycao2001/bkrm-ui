@@ -54,7 +54,7 @@ function Table(props) {
     setOpenTableGroupEditor(true);
   };
 
-  const [reloadTableGroupEditor, setReloadTableGroupEditor] = useState(false); 
+  const [reloadTableGroupEditor, setReloadTableGroupEditor] = useState(false);
 
 
   const [totalRows, setTotalRows] = useState(0);
@@ -74,10 +74,10 @@ function Table(props) {
 
 
   const initQuery = {
-    searchKey : '',
-    orderBy : "tables.created_at",
-    sort : "desc",
-    tableGroup : ''
+    searchKey: '',
+    orderBy: "tables.created_at",
+    sort: "desc",
+    tableGroup: ''
   }
   const [pagingState, setPagingState] = useState({
     page: 0,
@@ -125,25 +125,27 @@ function Table(props) {
   }, [branch_uuid, reload, query, pagingState.page, pagingState.limit]);
 
 
-  useEffect(() =>{
+  useEffect(() => {
     const loadTableGroups = async () => {
-      const response = await fbTableGroupApi.getTableGroupsOfBranch(store_uuid,branch_uuid); 
-      if(response.message === 'Success'){
+      const response = await fbTableGroupApi.getTableGroupsOfBranch(store_uuid, branch_uuid);
+      if (response.message === 'Success') {
         setTableGroupList(response.data.table_groups.map(tableGroup => {
           return {
-            label : tableGroup.name,
-            value : tableGroup.name
+            label: tableGroup.name,
+            value: tableGroup.name
           }
-        })); 
+        }));
       }
     }
-    loadTableGroups()
+    if (store_uuid) {
+      loadTableGroups()
+    }
   }, [branch_uuid, reloadTableGroupEditor])
 
   return (
     <Card className={classes.root}>
 
-      
+
       <Grid container direction="row" justifyContent="space-between">
         <Typography className={classes.headerTitle} variant="h5">
           Phòng bàn
@@ -156,7 +158,7 @@ function Table(props) {
               color="primary"
               startIcon={<AddIcon />}
               onClick={handleOpenTableGroupEditor}
-              style = {{marginRight : "10px"}}
+              style={{ marginRight: "10px" }}
             >
               Nhóm
             </Button>
@@ -174,11 +176,11 @@ function Table(props) {
           </Tooltip>
 
           <TableGroupEditor
-            openTableGroupEditor = {openTableGroupEditor}
-            handleCloseTableGroupEditor = {handleCloseTableGroupEditor}
+            openTableGroupEditor={openTableGroupEditor}
+            handleCloseTableGroupEditor={handleCloseTableGroupEditor}
             setReload={() => setReload(!reload)}
-            reloadTableGroupEditor = {reloadTableGroupEditor}
-            setReloadTableGroupEditor = {setReloadTableGroupEditor}
+            reloadTableGroupEditor={reloadTableGroupEditor}
+            setReloadTableGroupEditor={setReloadTableGroupEditor}
           />
         </Grid>
       </Grid>
@@ -187,38 +189,38 @@ function Table(props) {
           openAddTableDialog={openAddTableDialog}
           handleCloseAddTableDialog={handleCloseAddTableDialog}
           setReload={() => setReload(!reload)}
-          reloadTableGroupEditor = {reloadTableGroupEditor}
-          setReloadTableGroupEditor = {setReloadTableGroupEditor}
+          reloadTableGroupEditor={reloadTableGroupEditor}
+          setReloadTableGroupEditor={setReloadTableGroupEditor}
         />
       )}
-      <LoadingIndicator/>
+      <LoadingIndicator />
 
       <ToolBar
-        dataTable = {tableList}
-        tableType = {TableType.FBTable}
+        dataTable={tableList}
+        tableType={TableType.FBTable}
         textSearch={"#, Tên bàn... "}
-        isOnlySearch = {false}
-        searchKey={query.searchKey} setSearchKey={(value) => setQuery({...query, searchKey: value})}
-        orderByOptions = {
+        isOnlySearch={false}
+        searchKey={query.searchKey} setSearchKey={(value) => setQuery({ ...query, searchKey: value })}
+        orderByOptions={
           [
-            {value : 'tables.created_at', label : "Ngày tạo"},
-            {value : 'tables.name', label : "Tên bàn"},
-            {value : 'tables.seats', label : "Số ghế"},
-            {value : 'table_groups.name', label : 'Tên nhóm bàn'}
+            { value: 'tables.created_at', label: "Ngày tạo" },
+            { value: 'tables.name', label: "Tên bàn" },
+            { value: 'tables.seats', label: "Số ghế" },
+            { value: 'table_groups.name', label: 'Tên nhóm bàn' }
           ]
         }
-        orderBy = {query.orderBy}
+        orderBy={query.orderBy}
         setOrderBy={(value) => setQuery({ ...query, orderBy: value })}
         sort={query.sort}
         setSort={(value) => setQuery({ ...query, sort: value })}
-        tableGroup = {query.tableGroup}
-        tableGroupOptions = {tableGroupList}
+        tableGroup={query.tableGroup}
+        tableGroupOptions={tableGroupList}
 
-        setTableGroup = {(value) => setQuery({...query, tableGroup : value})}
-        handleRemoveFilter = {() => setQuery(initQuery)}
-      
+        setTableGroup={(value) => setQuery({ ...query, tableGroup: value })}
+        handleRemoveFilter={() => setQuery(initQuery)}
+
       />
-      
+
       <TableWrapper
         pagingState={{ ...pagingState, total_rows: totalRows }}
         setPagingState={setPagingState}
@@ -242,7 +244,7 @@ function Table(props) {
                 openRow={openRow}
                 handleOpenRow={handleOpenRow}
                 isManageInventory={false}
-                handleSetReloadTableGroupEditor = {() => setReloadTableGroupEditor(!reloadTableGroupEditor)}
+                handleSetReloadTableGroupEditor={() => setReloadTableGroupEditor(!reloadTableGroupEditor)}
               />
             );
           })}

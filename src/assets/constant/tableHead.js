@@ -421,3 +421,21 @@ export const FBTableHeadCells = [
   },
   { id: "status", align: "left", disablePadding: false, label: "Trạng thái" },
 ];
+
+export const FBOrderHeadCells = [
+  { id: "id", align: "left", disablePadding: true, label: "Tên phòng/bàn" },
+  { id: "wait_time", align: "left", disablePadding: false, label: "Thời gian chờ" },
+  {
+    id: "complexity",
+    align: "left",
+    disablePadding: false,
+    label: "Khẩu phần",
+  },
+  {
+    id: "priority",
+    align: "left",
+    disablePadding: false,
+    label: "Ưu tiên",
+  },
+  { id: "status", align: "left", disablePadding: false, label: "Trạng thái" },
+];
