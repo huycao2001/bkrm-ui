@@ -68,8 +68,8 @@ const HomePage = (props) => {
     infoDetail.role === "owner"
       ? "Chủ cửa hàng"
       : infoDetail.role === "employee"
-      ? "Nhân viên"
-      : "Admin";
+        ? "Nhân viên"
+        : "Admin";
   const permissions = useSelector((state) => state.info.user.permissions);
   const store_type = useSelector((state) => state.info.store.store_type);
   console.log("home page called with path " + `${path}`);
@@ -119,7 +119,7 @@ const HomePage = (props) => {
               </Typography>
               <IconButton
                 aria-label="open drawer"
-                onClick={() => {}}
+                onClick={() => { }}
                 edge="start"
               >
                 <MenuIcon />
@@ -167,9 +167,6 @@ const HomePage = (props) => {
                   {store_type == "fb" && <BasicMenu section="FB" />}
                 </Box>
               )}
-              <Button variant="outlined" to={"/home/table"} component={Link}>
-                Phòng\Bàn
-              </Button>
               <Box
                 display="flex"
                 flexDirection="row"

@@ -18,7 +18,7 @@ import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import Image from "../../assets/img/background.gif";
+import Image from "../../assets/img/background.jpg";
 import { logInHandler } from "../../store/actionCreator";
 import userAPi from "../../api/userApi";
 import LoadingIndicator from "../../components/LoadingIndicator/LoadingIndicator";
@@ -163,7 +163,14 @@ const LoginPage = (props) => {
       password: Yup.string().required("Nhập mật khẩu"),
     }),
   });
-
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    console.log({
+      email: data.get('email'),
+      password: data.get('password'),
+    });
+  };
   return (
     <Paper style={styles.paperContainer}>
       <Grid
@@ -174,7 +181,7 @@ const LoginPage = (props) => {
         justify="center"
         style={{ minHeight: "100vh" }}
       >
-        <Paper className={classes.container}>
+        <Paper className={classes.container} >
           <FormControl>
             <FormLabel
               sx={{ fontSize: 20 }}
@@ -188,7 +195,7 @@ const LoginPage = (props) => {
               aria-labelledby="demo-row-radio-buttons-group-label"
               name="row-radio-buttons-group"
               defaultValue={role}
-              //style={{ display: "flex" }}
+            //style={{ display: "flex" }}
             >
               <FormControlLabel
                 value="owner"
@@ -246,136 +253,73 @@ const LoginPage = (props) => {
               />
             </RadioGroup>
           </FormControl>
-          <Box className={classes.form}>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleToggle();
-                // Modify later when login for employee
-                dispatch(
-                  logInHandler(
-                    loginFormik.values.user_name,
-                    loginFormik.values.password,
-                    role
-                  )
-                );
-                //dispatch(authActions.logIn()); // Remove this
+          <Typography align="center" variant="h2">
+            こんにちは {role}-san ！！！
+          </Typography>
+          <Box className={classes.form} component="form" onSubmit={handleSubmit}>
+
+            <TextField
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <AccountCircle />
+                  </InputAdornment>
+                ),
               }}
-            >
-              <Typography align="center" variant="h2">
-                こんにちは {role}-san ！！！
-              </Typography>
-              <TextField
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <AccountCircle />
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{ marginRight: 5 }}
-                variant="standard"
-                margin="normal"
-                required
-                //fullWidth
-                label="Tên đăng nhập"
-                name="user_name"
-                autoFocus
-                value={loginFormik.values.user_name}
-                onChange={loginFormik.handleChange}
-                error={
-                  loginFormik.touched.user_name && loginFormik.errors.user_name
-                }
-                helperText={
-                  loginFormik.touched.user_name
-                    ? loginFormik.errors.user_name
-                    : null
-                }
-                onBlur={loginFormik.handleBlur}
-              />
+              sx={{ marginRight: 5, width: 300, marginTop: 3 }}
+              variant="standard"
+              margin="normal"
+              required
+              fullWidth
+              label="Tên đăng nhập"
+              name="user_name"
+              autoFocus
+              value={loginFormik.values.user_name}
+              onChange={loginFormik.handleChange}
+              error={
+                loginFormik.touched.user_name && loginFormik.errors.user_name
+              }
+              helperText={
+                loginFormik.touched.user_name
+                  ? loginFormik.errors.user_name
+                  : null
+              }
+              onBlur={loginFormik.handleBlur}
+            />
 
-              <TextField
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LockIcon />
-                    </InputAdornment>
-                  ),
-                }}
-                variant="standard"
-                margin="normal"
-                required
-                //fullWidth
-                name="password"
-                label="Mật khẩu"
-                type="password"
-                value={loginFormik.values.password}
-                onChange={loginFormik.handleChange}
-                error={
-                  loginFormik.touched.password && loginFormik.errors.password
-                }
-                helperText={
-                  loginFormik.touched.password
-                    ? loginFormik.errors.password
-                    : null
-                }
-                onBlur={loginFormik.handleBlur}
-              />
+            <TextField
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LockIcon />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{ marginRight: 5, width: 300 }}
+              variant="standard"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Mật khẩu"
+              type="password"
+              value={loginFormik.values.password}
+              onChange={loginFormik.handleChange}
+              error={
+                loginFormik.touched.password && loginFormik.errors.password
+              }
+              helperText={
+                loginFormik.touched.password
+                  ? loginFormik.errors.password
+                  : null
+              }
+              onBlur={loginFormik.handleBlur}
+            />
 
-            <button type="submit" style={{display : 'none'}}>Submit</button> {/*To help hit enter when submit the form */}
-            </form>
+            <button type="submit" style={{ display: 'none' }}>Submit</button> {/*To help hit enter when submit the form */}
           </Box>
-          <FormControl>
-            <FormLabel align="center" id="demo-row-radio-buttons-group-label">
-              Chọn loại cửa hàng
-            </FormLabel>
-            <RadioGroup
-              row
-              aria-labelledby="demo-row-radio-buttons-group-label"
-              name="row-radio-buttons-group"
-              defaultValue="F&B"
-            >
-              <FormControlLabel
-                value="F&B"
-                control={
-                  <Radio
-                    disableFocusRipple
-                    disableRipple
-                    color="default"
-                    checkedIcon={<FBRadioCheckedIcon />}
-                    icon={<FBRadioIcon />}
-                    {...props}
-                  />
-                }
-                label="F&B"
-                labelPlacement="bottom"
-                onClick={() => {
-                  setStoreType("fnb");
-                  //console.log("Store type : " + storeType);
-                }}
-              />
-              <FormControlLabel
-                value="Tạp hoá"
-                control={
-                  <Radio
-                    disableFocusRipple
-                    disableRipple
-                    color="default"
-                    checkedIcon={<GroceryRadioCheckedIcon />}
-                    icon={<GroceryRadioIcon />}
-                    {...props}
-                  />
-                }
-                label="Tạp hoá"
-                labelPlacement="bottom"
-                onClick={() => {
-                  setStoreType("grocery");
-                  //console.log("Store type : " + storeType);
-                }}
-              />
-            </RadioGroup>
-          </FormControl>
           <Button
+            sx={{ marginTop: 2, width: 300, borderRadius: 10 }}
             type="submit"
             fullWidth
             variant="contained"
@@ -419,7 +363,7 @@ const LoginPage = (props) => {
             </Typography>
           </Grid>
         </Paper>
-      </Grid>
+      </Grid >
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={open}
@@ -427,7 +371,7 @@ const LoginPage = (props) => {
       >
         <LoadingIndicator />
       </Backdrop>
-    </Paper>
+    </Paper >
   );
 };
 

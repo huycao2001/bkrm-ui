@@ -2,6 +2,7 @@ import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import React from "react";
 import { useSelector } from "react-redux";
 import FBTable from "./Table/Table";
+import Reservation from "./Reservation/Reservation";
 const FBView = (props) => {
   const { path } = useRouteMatch();
   const permissions = useSelector((state) => state.info.user.permissions);
@@ -17,6 +18,7 @@ const FBView = (props) => {
         />
       </Route>
       <Route exact path={`${path}/table`} component={FBTable} />
+      <Route exact path={`${path}/reservation`} component={Reservation} />
     </Switch>
   );
 };

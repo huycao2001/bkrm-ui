@@ -13,8 +13,8 @@ export default makeStyles((theme) => ({
         : theme.customization.primaryColor[theme.customization.colorLevel],
   },
   container: {
-    opacity: 0.9,
-    marginTop: 30,
+    //opacity: 0.9,
+    marginTop: 70,
     background: "theme.palette.background.default",
     //minHeight: "90vh",
     width: 600,
@@ -37,6 +37,10 @@ export default makeStyles((theme) => ({
   form: {
     //width: "100%", // Fix IE 11 issue.
     marginTop: theme.spacing(1),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
