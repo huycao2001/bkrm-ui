@@ -167,7 +167,7 @@ const LoginPage = (props) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
-      email: data.get('email'),
+      email: data.get('user_name'),
       password: data.get('password'),
     });
   };
@@ -256,7 +256,19 @@ const LoginPage = (props) => {
           <Typography align="center" variant="h2">
             こんにちは {role}-san ！！！
           </Typography>
-          <Box className={classes.form} component="form" onSubmit={handleSubmit}>
+          <Box className={classes.form} component="form" onSubmit={(e) => {
+              e.preventDefault();
+              handleToggle();
+              //if (role) {
+              dispatch(
+                logInHandler(
+                  loginFormik.values.user_name,
+                  loginFormik.values.password,
+                  role
+                )
+              );
+
+            }}>
 
             <TextField
               InputProps={{
@@ -337,14 +349,7 @@ const LoginPage = (props) => {
                   role
                 )
               );
-              // } else {
-              //   dispatch(
-              //     empLogInHandler(
-              //       loginFormik.values.user_name,
-              //       loginFormik.values.password
-              //     )
-              //   );
-              // }
+
             }}
           >
             Đăng nhập

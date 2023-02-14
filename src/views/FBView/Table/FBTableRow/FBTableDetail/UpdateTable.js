@@ -111,7 +111,7 @@ const UpdateTable = (props) => {
         onClose = { handleCloseTableUpdate}    
     >
         <DialogTitle>
-        <   Typography variant="h3">Cập nhật nhóm bàn</Typography>
+        <   Typography variant="h3">Cập nhật bàn</Typography>
         </DialogTitle>
 
         <DialogContent>
