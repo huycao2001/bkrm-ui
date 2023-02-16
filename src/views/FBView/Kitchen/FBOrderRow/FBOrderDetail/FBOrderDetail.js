@@ -128,13 +128,11 @@ const FBOrderDetail = (props) => {
         )
       );
       row = response.data.fb_order;
-      
+      dispatch(statusAction.successfulStatus("Cập nhật đơn FB thành công"));
     } catch (error) {
       console.log(error);
       dispatch(statusAction.successfulStatus("Cập nhật đơn FB thất bại"));
     }
-    // initGeneratePrepareList(row);
-    dispatch(statusAction.successfulStatus("Cập nhật đơn FB thành công"));
     refetch();
   }
 
