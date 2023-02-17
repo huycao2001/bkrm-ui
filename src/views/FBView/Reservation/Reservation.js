@@ -21,6 +21,7 @@ import {
     ViewSwitcher,
     DragDropProvider,
     CurrentTimeIndicator,
+    DateNavigator,
 } from '@devexpress/dx-react-scheduler-material-ui';
 import { blue, orange } from '@mui/material/colors';
 
@@ -196,6 +197,7 @@ export default () => {
                 <GroupingPanel />
 
                 <Toolbar />
+                <DateNavigator />
                 <ViewSwitcher />
                 <DragDropProvider />
                 <CurrentTimeIndicator
