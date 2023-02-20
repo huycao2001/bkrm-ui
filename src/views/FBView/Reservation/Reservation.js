@@ -114,12 +114,12 @@ export default () => {
             setData(data.filter(appointment => appointment.id !== deleted));
         }
     }, [setData, data]);
-    const [openAddTableDialog, setOpenAddTableDialog] = useState(false);
-    const handleCloseAddTableDialog = () => {
-        setOpenAddTableDialog(false);
+    const [openAddReservationDialog, setOpenAddReservationDialog] = useState(false);
+    const handleCloseAddReservationDialog = () => {
+        setOpenAddReservationDialog(false);
     };
-    const handleOpenAddTableDialog = () => {
-        setOpenAddTableDialog(true);
+    const handleOpenAddReservationDialog = () => {
+        setOpenAddReservationDialog(true);
     };
     const [reload, setReload] = useState(true);
     const [reloadTableGroupEditor, setReloadTableGroupEditor] = useState(false);
@@ -142,7 +142,7 @@ export default () => {
                 );
                 // setReservationList(response.data.reservations);
                 // console.log("zzzzzzzz");
-                // console.log(response.data.reservations);
+                console.log(response.data.reservations);
                 // console.log("this is reservation list: ");
                 if (response.data.reservations.length > 0) {
                     setData(response.data.reservations.map(function (item) {
@@ -181,21 +181,21 @@ export default () => {
 
     return (
         <Paper>
-
+            <LoadingIndicator></LoadingIndicator>
             <Tooltip title="Thêm bàn mới">
                 <Button
                     variant="outlined"
                     color="primary"
                     startIcon={<AddIcon />}
-                    onClick={handleOpenAddTableDialog}
+                    onClick={handleOpenAddReservationDialog}
                 >
                     Thêm
                 </Button>
             </Tooltip>
-            {openAddTableDialog && (
+            {openAddReservationDialog && (
                 <AddReservation
-                    openAddTableDialog={openAddTableDialog}
-                    handleCloseAddTableDialog={handleCloseAddTableDialog}
+                    openAddReservationDialog={openAddReservationDialog}
+                    handleCloseAddReservationDialog={handleCloseAddReservationDialog}
                     setReload={() => setReload(!reload)}
                     reloadTableGroupEditor={reloadTableGroupEditor}
                     setReloadTableGroupEditor={setReloadTableGroupEditor}
