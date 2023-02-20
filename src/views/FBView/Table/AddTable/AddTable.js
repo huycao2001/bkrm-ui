@@ -91,22 +91,22 @@ const AddTable = (props) => {
       );
       if(response.message === 'Success'){
         dispatch(statusAction.successfulStatus("Tạo bàn thành công"));
-      }else{
+        setReload();
+      }
+      else if(response.error === 'Duplicated table name in a group'){
+        dispatch(statusAction.failedStatus("Tên bàn bị trùng trong 1 nhóm bàn"));
+      }
+      else{
         dispatch(statusAction.failedStatus("Tạo bàn thất bại"));
       }
 
-      //console.log(response);
-      setReload();
-      //dispatch(statusAction.successfulStatus("Tạo bàn thành công"));
     } catch (error) {
       console.log(error);
-      dispatch(statusAction.failedStatus("Tạo bàn thất bại"));
+      dispatch(statusAction.failedStatus("Tạo bàn thất bại : check console"));
     }
   };
 
-  useEffect(() => {
-    console.log("table" + JSON.stringify(tableFormik.values));
-  }, [tableFormik.values]);
+
 
   const handleCloseAndResetTableDialog = () => {
     handleCloseAddTableDialog();
