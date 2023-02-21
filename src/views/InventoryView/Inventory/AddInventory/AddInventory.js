@@ -398,6 +398,15 @@ const AddInventory = (props) => {
   const handleExpandedIngredient = () => {
     setExpandedIngredient(!expandedIngredient);
   };
+
+
+  // Công thức cho món ăn chế biến 
+  const [expandedRecipe, setExpandedRecipe] = React.useState(false);
+  const handleExpandedRecipe = () => {
+    setExpandedRecipe(!expandedRecipe);
+  };
+
+
   //Lô, HSD
   const [hasBatches, setHasBatches] = useState(false);
 
@@ -1051,18 +1060,36 @@ const AddInventory = (props) => {
         {/* Định lượng*/}
         {isIngredient && 
         <Card className={classes.attrCard}>
-        <CardHeader
-          onClick={handleExpandedIngredient}
-          action={<IconButton size="small" className={clsx(classes.expand, { [classes.expandOpen]: expandedIngredient, })} onClick={handleExpandedIngredient} aria-expanded={expanded} >  <ExpandMoreIcon /> </IconButton>}
-          title="Định lượng"
-          className={classes.attrHead}
-        />
-        <Collapse in={expandedIngredient} timeout="auto" unmountOnExit style={{ padding: 0 }}>
-          sth in here
-        </Collapse>
+          <CardHeader
+            onClick={handleExpandedIngredient}
+            action={<IconButton size="small" className={clsx(classes.expand, { [classes.expandOpen]: expandedIngredient, })} onClick={handleExpandedIngredient} aria-expanded={expanded} >  <ExpandMoreIcon /> </IconButton>}
+            title="Định lượng"
+            className={classes.attrHead}
+          />
+          <Collapse in={expandedIngredient} timeout="auto" unmountOnExit style={{ padding: 0 }}>
+            Bảng định lượng cho nguyên liệu
+          </Collapse>
 
 
-      </Card>
+        </Card>
+        }
+
+
+        {/* Công thức*/}
+        {!isIngredient && 
+          <Card className={classes.attrCard}>
+          <CardHeader
+            onClick={handleExpandedRecipe}
+            action={<IconButton size="small" className={clsx(classes.expand, { [classes.expandOpen]: expandedRecipe, })} onClick={handleExpandedRecipe} aria-expanded={expanded} >  <ExpandMoreIcon /> </IconButton>}
+            title="Nguyên liệu thành phần"
+            className={classes.attrHead}
+          />
+          <Collapse in={expandedRecipe} timeout="auto" unmountOnExit style={{ padding: 0 }}>
+            Thêm nguyên liệu thành phần
+          </Collapse>
+
+
+        </Card>
         }
         {/* <div>
         <Tree />
