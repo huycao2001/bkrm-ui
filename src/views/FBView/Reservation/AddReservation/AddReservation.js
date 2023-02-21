@@ -34,6 +34,7 @@ import {
     MenuItem,
 } from "@material-ui/core";
 // import { Select, TreeSelect } from 'antd';
+import { makeStyles } from '@material-ui/core/styles';
 
 import AddIcon from "@material-ui/icons/Add";
 import { useFormik } from "formik";
@@ -50,13 +51,16 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 // import AdapterJalaali from '@date-io/jalaali';
 import dayjs from 'dayjs';
+import fbTableGroupApi from "../../../../api/fbTableGroup";
+
+const useStyles = makeStyles((theme) => ({
+    typography: {
+        marginTop: "10px",
+    },
+}));
 
 const AddReservation = (props) => {
-    var utc = require('dayjs/plugin/utc')
-    var timezone = require('dayjs/plugin/timezone') // dependent on utc plugin
-
-    dayjs.extend(utc)
-    dayjs.extend(timezone)
+    const classes = useStyles();
     const {
         openAddReservationDialog,
         handleCloseAddReservationDialog,
@@ -83,7 +87,7 @@ const AddReservation = (props) => {
     const info = useSelector((state) => state.info);
     const store_uuid = info.store.uuid;
     const branch_uuid = info.branch.uuid;
-    const tableFormik = useFormik({
+    const reservationFormik = useFormik({
         initialValues: {
             name: "",
             phone: 0,
@@ -110,7 +114,7 @@ const AddReservation = (props) => {
             const response = await fbTableApi.createTable(
                 store_uuid,
                 branch_uuid,
-                tableFormik.values
+                reservationFormik.values
             );
             if (response.message === 'Success') {
                 dispatch(statusAction.successfulStatus("Tạo bàn thành công"));
@@ -130,22 +134,15 @@ const AddReservation = (props) => {
     const handleAddReservation = async () => {
         handleCloseAndResetReservationDialog();
         try {
-            // const response = await fbTableApi.createTable(
-            //     store_uuid,
-            //     branch_uuid,
-            //     tableFormik.values
-            // );
-            console.log("KONICHIWA");
-            console.log(value.toISOString().slice(0, 19).replace('T', ' '));
             const response = await fbReservationApi.createReservation(
                 store_uuid,
                 branch_uuid,
                 {
-                    name: tableFormik.values.name,
-                    phone: tableFormik.values.phone,
-                    reservation_datetime: value.format().slice(0, 19).replace('T', ' '),
-                    reservation_duration: tableFormik.values.reservation_duration,
-                    number_of_guests: tableFormik.values.number_of_guests,
+                    name: reservationFormik.values.name,
+                    phone: reservationFormik.values.phone,
+                    reservation_datetime: reservation_datetime.format().slice(0, 19).replace('T', ' '),
+                    reservation_duration: reservationFormik.values.reservation_duration,
+                    number_of_guests: reservationFormik.values.number_of_guests,
                     timezone: "Asia/Ho_Chi_Minh"
                 },
                 tableID
@@ -167,27 +164,23 @@ const AddReservation = (props) => {
     }
 
     useEffect(() => {
-        console.log("table" + JSON.stringify(tableFormik.values));
-    }, [tableFormik.values]);
+        console.log("table" + JSON.stringify(reservationFormik.values));
+    }, [reservationFormik.values]);
 
     const [tables, setTables] = useState([]);
     useEffect(() => {
         const loadTables = async () => {
             try {
-                const response = await fbTableApi.getTablesOfBranch(
+                const response = await fbReservationApi.getTables(
                     store_uuid,
                     branch_uuid,
                     {
-                        //   ...query,
-                        //   ...pagingState
+                        seats: reservationFormik.values.number_of_guests,
                     }
                 );
-                //setTotalRows(response.total_rows);
-                // setTableList(response.data.tables);
-                // setTotalRows(response.data.total_rows);
-                setTables(response.data.tables);
-                console.log("zzzzzzzz");
                 console.log(response.data.tables);
+                setTables(response.data.tables);
+
             } catch (error) {
                 console.log(error);
             }
@@ -195,15 +188,14 @@ const AddReservation = (props) => {
         if (store_uuid && branch_uuid) {
             loadTables();
         }
-    }, [branch_uuid]);
+    }, [branch_uuid, reservationFormik.values.number_of_guests]);
     const handleCloseAndResetTableDialog = () => {
-        //handleCloseAddTableDialog();
-        tableFormik.resetForm();
+        reservationFormik.resetForm();
     };
 
     const handleCloseAndResetReservationDialog = () => {
         handleCloseAddReservationDialog();
-        tableFormik.resetForm();
+        reservationFormik.resetForm();
     };
 
     const [tableID, setTableID] = useState("");
@@ -211,24 +203,34 @@ const AddReservation = (props) => {
         setTableID(event.target.value);
     };
 
-    const [value, setValue] = React.useState(dayjs('2023-02-20T9:00:00'));
+    const [reservation_datetime, setReservation_datetime] = React.useState(dayjs('2023-02-20T9:00:00'));
 
-    const handleChange = (newValue) => {
-        // console.log(newValue.format().slice(0, 19).replace('T', ' '));
-        setValue(newValue);
+    const handleChangeReservation_datetime = (newReservation_datetime) => {
+        setReservation_datetime(newReservation_datetime);
     };
+    const [tableGroupList, setTableGroupList] = useState([]);
+    useEffect(() => {
+        const loadTableGroups = async () => {
+            const response = await fbTableGroupApi.getTableGroupsOfBranch(store_uuid, branch_uuid);
+            if (response.message === 'Success') {
+                console.log(response.data.table_groups);
+                setTableGroupList(response.data.table_groups.reverse());
+            }
+        }
+        loadTableGroups()
+    }, [branch_uuid])
     return (
         <Dialog open={openAddReservationDialog} onClose={handleCloseAddReservationDialog}>
             <DialogTitle id="alert-dialog-title">
-                <Typography variant="h3">Thêm bàn</Typography>
+                <Typography variant="h3">Đặt bàn</Typography>
             </DialogTitle>
             <DialogContent>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DateTimePicker
                         required
-                        label="Date&Time picker"
-                        value={value}
-                        onChange={handleChange}
+                        label="Chọn thời gian đặt"
+                        value={reservation_datetime}
+                        onChange={handleChangeReservation_datetime}
                         renderInput={(params) => <TextField {...params} />}
                     />
                 </LocalizationProvider>
@@ -237,12 +239,12 @@ const AddReservation = (props) => {
                     autoFocus
                     margin="dense"
                     id="name"
-                    label="Tên bàn"
+                    label="Reservation's name"
                     type="text"
                     fullWidth
                     required
-                    value={tableFormik.values.name}
-                    onChange={tableFormik.handleChange}
+                    value={reservationFormik.values.name}
+                    onChange={reservationFormik.handleChange}
                 />
                 <TextField
                     autoFocus
@@ -252,20 +254,9 @@ const AddReservation = (props) => {
                     // type="number"
                     fullWidth
                     required
-                    value={tableFormik.values.phone}
-                    onChange={tableFormik.handleChange}
+                    value={reservationFormik.values.phone}
+                    onChange={reservationFormik.handleChange}
                 />
-                {/* <TextField
-                    autoFocus
-                    margin="dense"
-                    id="reservation_datetime"
-                    label="Ngày đến"
-                    type="date"
-                    fullWidth
-                    required
-                    value={tableFormik.values.reservation_datetime}
-                    onChange={tableFormik.handleChange}
-                /> */}
                 <TextField
                     autoFocus
                     margin="dense"
@@ -274,8 +265,8 @@ const AddReservation = (props) => {
                     type="number"
                     fullWidth
                     required
-                    value={tableFormik.values.reservation_duration}
-                    onChange={tableFormik.handleChange}
+                    value={reservationFormik.values.reservation_duration}
+                    onChange={reservationFormik.handleChange}
                 />
                 <TextField
                     autoFocus
@@ -285,8 +276,8 @@ const AddReservation = (props) => {
                     type="number"
                     fullWidth
                     required
-                    value={tableFormik.values.number_of_guests}
-                    onChange={tableFormik.handleChange}
+                    value={reservationFormik.values.number_of_guests}
+                    onChange={reservationFormik.handleChange}
                 />
                 <TextField
                     autoFocus
@@ -295,12 +286,12 @@ const AddReservation = (props) => {
                     label="Mô tả"
                     type="text"
                     fullWidth
-                    value={tableFormik.values.description}
-                    onChange={tableFormik.handleChange}
+                    value={reservationFormik.values.description}
+                    onChange={reservationFormik.handleChange}
                 />
 
 
-                <FormControl variant="outlined" >
+                <FormControl variant="outlined" className={classes.typography}>
                     <InputLabel id="demo-simple-select-outlined-label">Bàn</InputLabel>
                     <Select
                         labelId="demo-simple-select-outlined-label"
@@ -310,9 +301,9 @@ const AddReservation = (props) => {
                         label="Table"
                         required
                     >
-                        {/* <MenuItem value="">
+                        <MenuItem value="">
                             <em>None</em>
-                        </MenuItem> */}
+                        </MenuItem>
                         {tables.map((table) => {
                             return (
                                 <MenuItem value={table.uuid}>{table.name}</MenuItem>
@@ -321,11 +312,8 @@ const AddReservation = (props) => {
                     </Select>
                 </FormControl>
 
-                {/* <TableGroupSelect
-        tableFormik = {tableFormik}
-        handleOpenAddTableGroupDialog = {handleOpenAddTableGroupDialog}
-        reloadTableGroup = {reloadTableGroup}
-      /> */}
+                {(tableID != "") ? <Typography className={classes.typography}>Số ghế của bàn: {tables.find(table => table.uuid == tableID).seats}</Typography> : <></>}
+                {(tableID != "") ? <Typography className={classes.typography}>Nhóm bàn: {tableGroupList[tables.find(table => table.uuid == tableID).table_group_id - 1].name}</Typography> : <></>}
 
             </DialogContent>
             <DialogActions>
@@ -342,19 +330,12 @@ const AddReservation = (props) => {
                     variant="contained"
                     size="small"
                     onClick={handleAddReservation}
-                    disabled={tableFormik.values.seats === 0 || tableFormik.values.name === ''}
+                    disabled={reservationFormik.values.seats === 0 || reservationFormik.values.name === ''}
                 >
                     Thêm
                 </Button>
             </DialogActions>
 
-            {/* <AddTableGroup
-        openAddTableGroupDialog = {openAddTableGroupDialog}
-        handleCloseAddTableGroupDialog = {handleCloseAddTableGroupDialog}
-        handleSetReloadTableGroup = {handleSetReloadTableGroup}
-        handleSetReloadTableGroupEditor = {() => setReloadTableGroupEditor(!reloadTableGroupEditor)}
-        
-      /> */}
         </Dialog>
     );
 };

@@ -3,6 +3,13 @@ import AddIcon from "@mui/icons-material/Add";
 import { trackPromise } from "react-promise-tracker";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Tooltip } from '@material-ui/core';
+import PropTypes from 'prop-types';
+import { makeStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
 import Paper from '@mui/material/Paper';
 import {
     ViewState, EditingState, GroupingState, IntegratedGrouping, IntegratedEditing,
@@ -70,7 +77,54 @@ Date.prototype.addHours = function (h) {
     return this;
 }
 
+
+function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            {...other}
+        >
+            {value === index && (
+                <Box p={3}>
+                    <Typography>{children}</Typography>
+                </Box>
+            )}
+        </div>
+    );
+}
+
+TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.any.isRequired,
+    value: PropTypes.any.isRequired,
+};
+
+function a11yProps(index) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    };
+}
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        flexGrow: 1,
+        backgroundColor: theme.palette.background.paper,
+    },
+}));
+
 export default () => {
+    const classes = useStyles();
+    const [index, setIndex] = React.useState(0);
+
+    const handleChangeIndex = (event, newIndex) => {
+        setIndex(newIndex);
+    };
     const [resources, setResources] = React.useState([{
         fieldName: 'tableId',
         title: 'Table',
@@ -180,73 +234,88 @@ export default () => {
 
 
     return (
-        <Paper>
-            <LoadingIndicator></LoadingIndicator>
-            <Tooltip title="Thêm bàn mới">
-                <Button
-                    variant="outlined"
-                    color="primary"
-                    startIcon={<AddIcon />}
-                    onClick={handleOpenAddReservationDialog}
+
+        <div className={classes.root}>
+            <AppBar position="static">
+                <Tabs value={index} onChange={handleChangeIndex} aria-label="simple tabs example">
+                    <Tab label="Item One" {...a11yProps(0)} />
+                    <Tab label="Item Two" {...a11yProps(1)} />
+                    <Tab label="Item Three" {...a11yProps(2)} />
+                </Tabs>
+            </AppBar>
+            <TabPanel value={index} index={0}>
+                <LoadingIndicator></LoadingIndicator>
+                <Tooltip title="Thêm bàn mới">
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        startIcon={<AddIcon />}
+                        onClick={handleOpenAddReservationDialog}
+                    >
+                        Thêm
+                    </Button>
+                </Tooltip>
+                {openAddReservationDialog && (
+                    <AddReservation
+                        openAddReservationDialog={openAddReservationDialog}
+                        handleCloseAddReservationDialog={handleCloseAddReservationDialog}
+                        setReload={() => setReload(!reload)}
+                        reloadTableGroupEditor={reloadTableGroupEditor}
+                        setReloadTableGroupEditor={setReloadTableGroupEditor}
+                    />
+                )}
+                <Scheduler
+                    data={data}
+                    height={660}
                 >
-                    Thêm
-                </Button>
-            </Tooltip>
-            {openAddReservationDialog && (
-                <AddReservation
-                    openAddReservationDialog={openAddReservationDialog}
-                    handleCloseAddReservationDialog={handleCloseAddReservationDialog}
-                    setReload={() => setReload(!reload)}
-                    reloadTableGroupEditor={reloadTableGroupEditor}
-                    setReloadTableGroupEditor={setReloadTableGroupEditor}
-                />
-            )}
-            <Scheduler
-                data={data}
-                height={660}
-            >
 
-                <ViewState
-                    onCurrentDateChange={(e) => {
-                        console.log("date" + JSON.stringify(e).slice(1, 11));
-                        setCurrentDate(JSON.stringify(e).slice(1, 11));
-                    }}
-                />
-                <EditingState
-                    onCommitChanges={onCommitChanges}
-                />
-                <GroupingState
-                    grouping={grouping}
-                />
-                <DayView
-                />
-                <WeekView
-                />
-                <MonthView />
-                <Appointments />
-                <Resources
-                    data={resources}
-                    mainResourceName="tableId"
-                />
+                    <ViewState
+                        onCurrentDateChange={(e) => {
+                            console.log("date" + JSON.stringify(e).slice(1, 11));
+                            setCurrentDate(JSON.stringify(e).slice(1, 11));
+                        }}
+                    />
+                    <EditingState
+                        onCommitChanges={onCommitChanges}
+                    />
+                    <GroupingState
+                        grouping={grouping}
+                    />
+                    <DayView
+                    />
+                    <WeekView
+                    />
+                    <MonthView />
+                    <Appointments />
+                    <Resources
+                        data={resources}
+                        mainResourceName="tableId"
+                    />
 
-                <IntegratedGrouping />
-                <IntegratedEditing />
-                <AppointmentTooltip />
-                <AppointmentForm />
+                    <IntegratedGrouping />
+                    <IntegratedEditing />
+                    <AppointmentTooltip />
+                    <AppointmentForm />
 
-                <GroupingPanel />
+                    <GroupingPanel />
 
-                <Toolbar />
-                <DateNavigator />
-                <ViewSwitcher />
-                <DragDropProvider />
-                <CurrentTimeIndicator
-                //   shadePreviousCells={shadePreviousCells}
-                //   shadePreviousAppointments={shadePreviousAppointments}
-                //   updateInterval={updateInterval}
-                />
-            </Scheduler>
-
-        </Paper>
+                    <Toolbar />
+                    <DateNavigator />
+                    <ViewSwitcher />
+                    <DragDropProvider />
+                    <CurrentTimeIndicator
+                    //   shadePreviousCells={shadePreviousCells}
+                    //   shadePreviousAppointments={shadePreviousAppointments}
+                    //   updateInterval={updateInterval}
+                    />
+                </Scheduler>
+            </TabPanel>
+            <TabPanel value={index} index={1}>
+                Item Two
+            </TabPanel>
+            <TabPanel value={index} index={2}>
+                Item Three
+            </TabPanel>
+        </div>
     );
 };
