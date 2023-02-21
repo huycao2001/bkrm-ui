@@ -156,6 +156,7 @@ export default () => {
 
     const [data, setData] = React.useState(testData);
     const onCommitChanges = React.useCallback(({ added, changed, deleted }) => {
+        console.log("HEY HEY");
         if (added) {
             const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
             setData([...data, { id: startingAddedId, ...added }]);
@@ -197,6 +198,8 @@ export default () => {
                 // setReservationList(response.data.reservations);
                 // console.log("zzzzzzzz");
                 console.log(response.data.reservations);
+
+                console.log(response.data);
                 // console.log("this is reservation list: ");
                 if (response.data.reservations.length > 0) {
                     setData(response.data.reservations.map(function (item) {
@@ -211,8 +214,8 @@ export default () => {
                     setResources([{
                         fieldName: 'tableId',
                         title: 'Table',
-                        instances: response.data.reservations.map(function (item) {
-                            return { text: 'Table ' + item.id.toString(), id: item.table.id, color: blue };
+                        instances: response.data.tables.map(function (item) {
+                            return { text: 'Table ' + item.id.toString(), id: item.id, color: blue };
                         }),
                     }]);
                 }
@@ -276,6 +279,10 @@ export default () => {
                         }}
                     />
                     <EditingState
+                        // onCommitChanges={(e) => {
+                        //     console.log("HEY HEY");
+                        //     console.log(e);
+                        // }}
                         onCommitChanges={onCommitChanges}
                     />
                     <GroupingState
