@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useTheme } from "@material-ui/core/styles";
 //import library
+import InfoIcon from '@material-ui/icons/Info';
 import {
   Button,
   TextField,
@@ -26,6 +27,7 @@ import {
   RadioGroup
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
+import InfoButton from "../../../../components/Button/InfoButton";
 //import project
 import VNDInput, {
   ThousandSeperatedInput,
@@ -50,6 +52,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import clsx from "clsx";
 import TagsInput from "../../../../components/TextField/TagsInput";
 import AddAttribute from "./AddAttribute";
+import AddUnit from "./AddUnit";
 import RelaltedItemList from "./RelaltedItemList";
 import SnackBarGeneral from "../../../../components/SnackBar/SnackBarGeneral";
 import CategorySelect from "../../../../components/Category/CategorySelect";
@@ -131,7 +134,7 @@ const AddInventory = (props) => {
       description: "",
       notification_period: 7,
       expiration_date: "",
-      product_type : "ingredient"
+      product_type: "ingredient"
 
     },
     validationSchema: Yup.object({
@@ -157,12 +160,12 @@ const AddInventory = (props) => {
 
 
 
-  useEffect(()=>{
+  useEffect(() => {
     //console.log('date :' + productFormik.values.expiration_date);
     console.log('product_type:' + productFormik.values.product_type + ' huycao');
     console.log('has batch:' + productFormik.values.has_batches + ' huycao');
     console.log('expire:' + productFormik.values.expiration_date + ' huycao');
-  },[productFormik.values.product_type, productFormik.values.has_batches, productFormik.values.expiration_date])
+  }, [productFormik.values.product_type, productFormik.values.has_batches, productFormik.values.expiration_date])
 
   const [openSnack, setOpenSnack] = React.useState(false);
   const [snackStatus, setSnackStatus] = React.useState({
@@ -413,6 +416,9 @@ const AddInventory = (props) => {
   // Attr
   const [datas, setDatas] = useState([{ key: "unset", items: [] }]);
 
+  //Unit
+  const [unitList, setUnitList] = useState([]);
+
   // {name:e,product_code:"", bar_code: "",standard_price:0, unit_price :0}
   const [relatedList, setRelatedList] = useState([]);
   // const [attrOfProduct, setAttrOfProduct] = useState([]);
@@ -636,7 +642,18 @@ const AddInventory = (props) => {
               name="unit"
               onChange={productFormik.handleChange}
               value={productFormik.values.unit}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <InfoButton title = "Đơn vị của nguyên liệu được lưu trong kho. Ví dụ : đĩa, chai, lon,..."/>
+                  </InputAdornment>
+                ),
+              }}
             />
+
+            {/* <InfoButton
+              title = "dddd"
+            /> */}
             <Box className={`${classes.box} ${classes.margin}`}>
 
               <FormControl required size="small" variant="outlined" fullWidth>
@@ -917,71 +934,71 @@ const AddInventory = (props) => {
 
             }
 
-            {((store_type ==='fb' && isIngredient) || 
-              store_type != 'fb' ) && 
+            {((store_type === 'fb' && isIngredient) ||
+              store_type != 'fb') &&
               <FormControlLabel
-              control={
-                <Checkbox
-                  //checked={outOfDate}
-                  //name="has_batches"
-                  checked={productFormik.values.has_batches === true}
-                  onChange={(event) => {
-                    setHasBatches(!hasBatches);                    
-                    productFormik.values.has_batches = !productFormik.values.has_batches;
-                  }}
-                //onChange={(event) => setOutOfDate(event.target.checked)}
-                />
-              }
-              label="Lô, hạn sử dụng"
-            />
-            
+                control={
+                  <Checkbox
+                    //checked={outOfDate}
+                    //name="has_batches"
+                    checked={productFormik.values.has_batches === true}
+                    onChange={(event) => {
+                      setHasBatches(!hasBatches);
+                      productFormik.values.has_batches = !productFormik.values.has_batches;
+                    }}
+                  //onChange={(event) => setOutOfDate(event.target.checked)}
+                  />
+                }
+                label="Lô, hạn sử dụng"
+              />
+
             }
 
 
 
-            {store_type === 'fb' && 
+            {store_type === 'fb' &&
               <RadioGroup
                 //defaultValue={productFormik.values.product_type}
-                row={true} 
+                row={true}
               >
 
-                <FormControlLabel 
-                  value="ingredient" 
+                <FormControlLabel
+                  value="ingredient"
                   control={
                     <Radio
                       //name = 'product_type' 
-                      checked = {productFormik.values.product_type === 'ingredient'}
+                      checked={productFormik.values.product_type === 'ingredient'}
                     />
-                  } 
-                  label="Nguyên liệu" 
-                  onChange={(e) =>{
+                  }
+                  label="Nguyên liệu"
+                  onChange={(e) => {
                     setIsIngredient(true);
                     productFormik.values.product_type = e.target.value
                   }}
                 />
 
-                <FormControlLabel 
+                <FormControlLabel
                   value="dish"
                   control={
-                    <Radio 
+                    <Radio
                       //name = 'product_type'
-                      checked = {productFormik.values.product_type !== 'ingredient'}
+                      checked={productFormik.values.product_type !== 'ingredient'}
                     />
-                  } 
+                  }
                   label="Món ăn chế biến sẵn"
-                  onChange={(e) =>{
+                  onChange={(e) => {
                     //console.log("handle ? ???");
                     setIsIngredient(false);
                     productFormik.values.product_type = e.target.value;
                     productFormik.values.has_batches = false;
                     setHasBatches(false);
                     productFormik.values.expiration_date = '';
-                  }} 
+                  }}
                 />
 
 
               </RadioGroup>
-            
+
             }
 
           </Grid>
@@ -1057,39 +1074,42 @@ const AddInventory = (props) => {
         </Card>
 
 
-        {/* Định lượng*/}
-        {isIngredient && 
-        <Card className={classes.attrCard}>
-          <CardHeader
-            onClick={handleExpandedIngredient}
-            action={<IconButton size="small" className={clsx(classes.expand, { [classes.expandOpen]: expandedIngredient, })} onClick={handleExpandedIngredient} aria-expanded={expanded} >  <ExpandMoreIcon /> </IconButton>}
-            title="Định lượng"
-            className={classes.attrHead}
-          />
-          <Collapse in={expandedIngredient} timeout="auto" unmountOnExit style={{ padding: 0 }}>
-            Bảng định lượng cho nguyên liệu
-          </Collapse>
+        {/* Đơn vị nguyên liệu*/}
+        {isIngredient &&
+          <Card className={classes.attrCard}>
+            <CardHeader
+              onClick={handleExpandedIngredient}
+              action={<IconButton size="small" className={clsx(classes.expand, { [classes.expandOpen]: expandedIngredient, })} onClick={handleExpandedIngredient} aria-expanded={expanded} >  <ExpandMoreIcon /> </IconButton>}
+              title="Đơn vị tính"
+              className={classes.attrHead}
+            />
+            <Collapse in={expandedIngredient} timeout="auto" unmountOnExit style={{ padding: 0 }}>
+              <AddUnit
+                unitList = {unitList}
+                setUnitList = {setUnitList}
+              />
+            </Collapse>
 
 
-        </Card>
+          </Card>
         }
 
 
         {/* Công thức*/}
-        {!isIngredient && 
+        {!isIngredient &&
           <Card className={classes.attrCard}>
-          <CardHeader
-            onClick={handleExpandedRecipe}
-            action={<IconButton size="small" className={clsx(classes.expand, { [classes.expandOpen]: expandedRecipe, })} onClick={handleExpandedRecipe} aria-expanded={expanded} >  <ExpandMoreIcon /> </IconButton>}
-            title="Nguyên liệu thành phần"
-            className={classes.attrHead}
-          />
-          <Collapse in={expandedRecipe} timeout="auto" unmountOnExit style={{ padding: 0 }}>
-            Thêm nguyên liệu thành phần
-          </Collapse>
+            <CardHeader
+              onClick={handleExpandedRecipe}
+              action={<IconButton size="small" className={clsx(classes.expand, { [classes.expandOpen]: expandedRecipe, })} onClick={handleExpandedRecipe} aria-expanded={expanded} >  <ExpandMoreIcon /> </IconButton>}
+              title="Nguyên liệu thành phần"
+              className={classes.attrHead}
+            />
+            <Collapse in={expandedRecipe} timeout="auto" unmountOnExit style={{ padding: 0 }}>
+              Thêm nguyên liệu thành phần
+            </Collapse>
 
 
-        </Card>
+          </Card>
         }
         {/* <div>
         <Tree />
