@@ -35,6 +35,7 @@ import { blue, orange } from '@mui/material/colors';
 import AddReservation from "./AddReservation/AddReservation";
 import fbReservationApi from "../../../api/fbReservationApi";
 import LoadingIndicator from "../../../components/LoadingIndicator/LoadingIndicator";
+import { statusAction } from "../../../store/slice/statusSlice";
 const sampleResources = [{
     fieldName: 'tableId',
     title: 'Table',
@@ -77,7 +78,76 @@ Date.prototype.addHours = function (h) {
     return this;
 }
 
+const TextEditor = (props) => {
+    console.log("mega man");
+    console.log(props);
+    // eslint-disable-next-line react/destructuring-assignment
+    if (props.type === 'multilineTextEditor') {
+        return null;
+    } return <AppointmentForm.TextEditor {...props} />;
+};
 
+// const DateEditor = (props) => {
+//     console.log("mega man x4");
+//     console.log(props);
+//     // eslint-disable-next-line react/destructuring-assignment
+//     // if (props.type === 'multilineTextEditor') {
+//     //     return null;
+//     // } return <AppointmentForm.TextEditor {...props} />;
+//     return <AppointmentForm.DateEditor {...props} onValueChange={nextValue => console.log(nextValue)} />;
+//     return null;
+// };
+
+const BooleanEditor = (props) => {
+    console.log("mega man x5");
+    console.log(props);
+    // eslint-disable-next-line react/destructuring-assignment
+    // if (props.type === 'multilineTextEditor') {
+    //     return null;
+    // } return <AppointmentForm.TextEditor {...props} />;
+    return null;
+};
+
+const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
+    console.log("mega man x8");
+    console.log(appointmentData);
+    const onCustomFieldChange = (nextValue) => {
+        onFieldChange({ customField: nextValue });
+    };
+
+    return (
+        <div>
+
+
+            <AppointmentForm.BasicLayout
+                appointmentData={appointmentData}
+                onFieldChange={onFieldChange}
+                {...restProps}
+            >
+                <AppointmentForm.Label
+                    text="Số điện thoại"
+                    type="title"
+                />
+                <AppointmentForm.TextEditor
+                    value={appointmentData.customField}
+                    onValueChange={onCustomFieldChange}
+                    type="numberEditor"
+                    placeholder="Số điện thoại"
+                />
+                <AppointmentForm.Label
+                    text="Số ghế"
+                    type="title"
+                />
+                <AppointmentForm.TextEditor
+                    value={appointmentData.customField}
+                    onValueChange={onCustomFieldChange}
+                    type="numberEditor"
+                    placeholder="Số ghế"
+                />
+            </AppointmentForm.BasicLayout>
+        </div>
+    );
+};
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -119,6 +189,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default () => {
+    const dispatch = useDispatch();
     const classes = useStyles();
     const [index, setIndex] = React.useState(0);
 
@@ -157,6 +228,7 @@ export default () => {
     const [data, setData] = React.useState(testData);
     const onCommitChanges = React.useCallback(({ added, changed, deleted }) => {
         console.log("HEY HEY");
+        console.log(changed);
         if (added) {
             const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
             setData([...data, { id: startingAddedId, ...added }]);
@@ -164,10 +236,26 @@ export default () => {
         if (changed) {
             setData(data.map(appointment => (
                 changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment)));
+            data.map(appointment => (
+                changed[appointment.id] ?
+                    (
+                        console.log("update reservation"), updateReservation({
+                            name: changed[appointment.id].name ? changed[appointment.id].name : appointment.title,
+                            phone: changed[appointment.id].phone ? changed[appointment.id].phone : appointment.phone,
+                            reservation_datetime: changed[appointment.id].startDate ? (new Date(changed[appointment.id].startDate - (new Date()).getTimezoneOffset() * 60000)).toISOString().slice(0, 19).replace('T', ' ') : appointment.startDate,
+                            reservation_duration: ((changed[appointment.id].endDate ? changed[appointment.id].endDate : appointment.endDate) - (changed[appointment.id].startDate ? changed[appointment.id].startDate : appointment.startDate)) / 1000 / 60 / 60,
+                            number_of_guests: changed[appointment.id].number_of_guests ? changed[appointment.id].number_of_guests : appointment.number_of_guests,
+                            table_uuid: appointment.table_uuid
+                        }, appointment.reservation_uuid)
+                        // console.log(((changed[appointment.id].endDate ? changed[appointment.id].endDate : appointment.endDate) - (changed[appointment.id].startDate ? changed[appointment.id].startDate : appointment.startDate)) / 1000 / 60 / 60)
+                        // console.log(JSON.stringify(changed[appointment.id].startDate).slice(1, 20).replace('T', ' ')), console.log("HELLO")
+                        // console.log((new Date(changed[appointment.id].startDate - (new Date()).getTimezoneOffset() * 60000)).toISOString().slice(0, 19).replace('T', ' '))
+                    ) : void (0)));
         }
         if (deleted !== undefined) {
             setData(data.filter(appointment => appointment.id !== deleted));
         }
+        console.log(data);
     }, [setData, data]);
     const [openAddReservationDialog, setOpenAddReservationDialog] = useState(false);
     const handleCloseAddReservationDialog = () => {
@@ -209,13 +297,17 @@ export default () => {
                             startDate: new Date(item.reservation_datetime),
                             endDate: new Date(item.reservation_endtime),
                             id: item.id,
+                            phone: item.phone,
+                            number_of_guests: item.number_of_guests,
+                            reservation_uuid: item.uuid,
+                            table_uuid: item.table.uuid
                         };
                     }));
                     setResources([{
                         fieldName: 'tableId',
                         title: 'Table',
                         instances: response.data.tables.map(function (item) {
-                            return { text: 'Table ' + item.id.toString(), id: item.id, color: blue };
+                            return { text: item.name, id: item.id, color: blue, uuid: item.uuid };
                         }),
                     }]);
                 }
@@ -235,7 +327,30 @@ export default () => {
         }
     }, [branch_uuid, reload, currentDate]);
 
+    const updateReservation = async (newReservation, reservation_uuid) => {
+        try {
+            const response = await trackPromise(
+                fbReservationApi.updateReservation(
+                    store_uuid,
+                    branch_uuid,
+                    reservation_uuid,
+                    newReservation
+                )
+            );
+            if (response.message === 'Success') {
+                console.log("YAY I DID IT");
+                dispatch(statusAction.successfulStatus("Cập nhật thành công"));
+            } else {
+                console.log("WAT DA FUCH");
+                dispatch(statusAction.failedStatus("Cập nhật thất bại"));
+            }
 
+        } catch (error) {
+            console.log(error);
+            console.log("FAILED");
+            dispatch(statusAction.failedStatus("Cập nhật thất bại"));
+        }
+    };
     return (
 
         <div className={classes.root}>
@@ -302,7 +417,12 @@ export default () => {
                     <IntegratedGrouping />
                     <IntegratedEditing />
                     <AppointmentTooltip />
-                    <AppointmentForm />
+                    <AppointmentForm
+                        basicLayoutComponent={BasicLayout}
+                        textEditorComponent={TextEditor}
+                        // dateEditorComponent={DateEditor}
+                        booleanEditorComponent={BooleanEditor}
+                    />
 
                     <GroupingPanel />
 
