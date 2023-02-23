@@ -99,14 +99,14 @@ export default function ChatWindow() {
   }
 
   useEffect(() => {
-    const channel = `messages.${store_uuid}.${branch_uuid}.default`;
+    const channel = `bkrm_ws.${store_uuid}.${branch_uuid}.fb_orders`;
     // if (!window.Echo.channel(channel)) {
     if (true) {
       window.Echo.channel(channel)
         .subscribed(() => {
           console.log('Now listening to events from channel: ' + channel);
         })
-        .listen('MessagePublished', (data) => {
+        .listen('FBOrderUpdated', (data) => {
           console.log("WS got: " + JSON.stringify(data));
           handleReceiveNewMessage(data);
         }
