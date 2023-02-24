@@ -167,6 +167,7 @@ const SearchProduct = (props) => {
           autoComplete
           getOptionLabel={getOptionLabel}
           onChange={(event, value) => {
+            //console.log("value is " + JSON.stringify(value))
             if (value?.name) {
               setSelectedOption(value);
               props.handleSearchBarSelect(value);

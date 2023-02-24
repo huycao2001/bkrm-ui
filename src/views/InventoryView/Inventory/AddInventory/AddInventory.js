@@ -53,6 +53,7 @@ import clsx from "clsx";
 import TagsInput from "../../../../components/TextField/TagsInput";
 import AddAttribute from "./AddAttribute";
 import AddUnit from "./AddUnit";
+import AddRecipe from "./AddRecipe";
 import RelaltedItemList from "./RelaltedItemList";
 import SnackBarGeneral from "../../../../components/SnackBar/SnackBarGeneral";
 import CategorySelect from "../../../../components/Category/CategorySelect";
@@ -98,6 +99,10 @@ const AddInventory = (props) => {
   const [images, setImages] = useState([]);
   const [display, setDisplay] = useState([]);
   const [imageURL, setImageURL] = useState("");
+
+  const [products, setProducts] = useState([]); 
+
+
   const addImageHandler = (e) => {
     try {
       console.log(e.target.files[0]);
@@ -260,6 +265,23 @@ const AddInventory = (props) => {
     }
   };
 
+
+
+  const loadProducts = async() => {
+    try{
+      const response = await productApi.searchBranchProduct(store_uuid, branch_uuid, "");
+      setProducts(response.data);
+      console.log("res : " + JSON.stringify(response.data));
+    }catch(e){
+      console.log("AddInventory.js load products failed")
+      console.log(e); 
+    }
+  }
+
+  const handleSelectSearchRecipe = (selectedItem) => {
+    console.log("search this " + JSON.stringify(selectedItem));
+  }
+
   const [reset, setReset] = useState(true);
   const onReset = () => {
     setReset((reset) => !reset);
@@ -270,7 +292,7 @@ const AddInventory = (props) => {
         const response = await productApi.getNestedCategory(store_uuid);
         setCategoryList(response.data);
         productFormik.setFieldValue("category", response.data[0].uuid);
-      } catch (error) {
+      } catch (error) {             
         console.log(error);
         return [];
       }
@@ -297,6 +319,10 @@ const AddInventory = (props) => {
   const searchSampleProductHandler = async (searchKey) => {
     return productApi.searchDefaultProducts(searchKey, 1);
   };
+
+
+
+
   const handleCloseAndReset = () => {
     handleClose();
     productFormik.resetForm();
@@ -987,12 +1013,27 @@ const AddInventory = (props) => {
                   }
                   label="Món ăn chế biến sẵn"
                   onChange={(e) => {
-                    //console.log("handle ? ???");
-                    setIsIngredient(false);
+                    // Change product type
                     productFormik.values.product_type = e.target.value;
+                    
+                    // Hide the ingredient unit input
+                    setIsIngredient(false);
+                    
+                    // No batches for dishes
                     productFormik.values.has_batches = false;
                     setHasBatches(false);
+
+                    // Remove the expiration date
                     productFormik.values.expiration_date = '';
+
+                    //Reset unit list
+                    setUnitList([]);
+
+                    //Get the list of products from the branch to add recipe
+                    if(products.length == 0){
+                      loadProducts();
+                    }
+
                   }}
                 />
 
@@ -1105,7 +1146,10 @@ const AddInventory = (props) => {
               className={classes.attrHead}
             />
             <Collapse in={expandedRecipe} timeout="auto" unmountOnExit style={{ padding: 0 }}>
-              Thêm nguyên liệu thành phần
+                <AddRecipe
+                  products = {products}
+                  handleSelectSearchRecipe = {handleSelectSearchRecipe}
+                />
             </Collapse>
 
 
