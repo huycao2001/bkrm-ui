@@ -12,7 +12,15 @@ const fbReservationApi = {
     deleteReservation: (storeUuid, branchUuid, reservationUuid) => {
         const url = `public/stores/${storeUuid}/branches/${branchUuid}/reservations/${reservationUuid}`;
         return axiosClient.delete(url);
-    }
+    },
+    updateReservation: (storeUuid, branchUuid, reservationUuid, params) => {
+        const url = `public/stores/${storeUuid}/branches/${branchUuid}/reservations/${reservationUuid}`;
+        return axiosClient.put(url, params);
+    },
+    getTables: (storeUuid, branchUuid, query) => {
+        const url = `public/stores/${storeUuid}/branches/${branchUuid}/tables`;
+        return axiosClient.get(url, { params: query });
+    },
 };
 
 export default fbReservationApi;
