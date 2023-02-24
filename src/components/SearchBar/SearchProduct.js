@@ -162,6 +162,7 @@ const SearchProduct = (props) => {
     <div style={{ width: 320, paddingLeft: 20 }}>
         {!isFilter ?
         <Autocomplete
+          freeSolo={true}
           filterOptions={filter}
           options={props.products}
           autoComplete

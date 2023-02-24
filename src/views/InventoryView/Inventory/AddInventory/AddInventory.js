@@ -100,7 +100,11 @@ const AddInventory = (props) => {
   const [display, setDisplay] = useState([]);
   const [imageURL, setImageURL] = useState("");
 
+  // Products for creaing recipe
   const [products, setProducts] = useState([]); 
+
+  // Recipe inputs 
+  const [ingredients , setIngredients] = useState([]); 
 
 
   const addImageHandler = (e) => {
@@ -171,6 +175,11 @@ const AddInventory = (props) => {
     console.log('has batch:' + productFormik.values.has_batches + ' huycao');
     console.log('expire:' + productFormik.values.expiration_date + ' huycao');
   }, [productFormik.values.product_type, productFormik.values.has_batches, productFormik.values.expiration_date])
+
+
+  useEffect(() => {
+    console.log("ingredients " + JSON.stringify(ingredients));
+  }, [ingredients])
 
   const [openSnack, setOpenSnack] = React.useState(false);
   const [snackStatus, setSnackStatus] = React.useState({
@@ -279,7 +288,31 @@ const AddInventory = (props) => {
   }
 
   const handleSelectSearchRecipe = (selectedItem) => {
-    console.log("search this " + JSON.stringify(selectedItem));
+    // find the item in the list 
+    const input = ingredients.find((recipeInput) => recipeInput.uuid === selectedItem.uuid);
+    if(input){
+      //input.quantity_required += 1;
+      setIngredients(prevIngredients => {
+        const updatedIngredients = prevIngredients.map(ingredient => {
+          if (ingredient.uuid === input.uuid) {
+            return {...ingredient, quantity_required: ingredient.quantity_required + 1};
+          }
+          return ingredient;
+        });
+        return updatedIngredients;
+      });
+    } else { // if not found -> add new
+      const newItem =  {
+        name : selectedItem.name,
+        product_code : selectedItem.product_code,
+        standard_price: selectedItem.standard_price,
+        list_price : selectedItem.list_price,
+        uuid : selectedItem.uuid, 
+        quantity_required : 1,
+        img_urls : selectedItem.img_urls
+      }
+      setIngredients(prevIngredients => [...prevIngredients, newItem]); 
+    }
   }
 
   const [reset, setReset] = useState(true);
@@ -1149,6 +1182,7 @@ const AddInventory = (props) => {
                 <AddRecipe
                   products = {products}
                   handleSelectSearchRecipe = {handleSelectSearchRecipe}
+                  ingredients = {ingredients}
                 />
             </Collapse>
 
