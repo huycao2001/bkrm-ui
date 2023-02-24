@@ -90,10 +90,10 @@ const AddReservation = (props) => {
     const reservationFormik = useFormik({
         initialValues: {
             name: "",
-            phone: 0,
-            reservation_datetime: dayjs('2023-02-20T10:00:00'),
-            reservation_duration: 3,
-            number_of_guests: 0,
+            phone: 1234567890,
+            reservation_datetime: dayjs(),
+            reservation_duration: 1,
+            number_of_guests: 1,
             //description: "",
         },
         validationSchema: Yup.object({
@@ -203,7 +203,7 @@ const AddReservation = (props) => {
         setTableID(event.target.value);
     };
 
-    const [reservation_datetime, setReservation_datetime] = React.useState(dayjs('2023-02-20T9:00:00'));
+    const [reservation_datetime, setReservation_datetime] = React.useState(dayjs());
 
     const handleChangeReservation_datetime = (newReservation_datetime) => {
         setReservation_datetime(newReservation_datetime);
@@ -247,7 +247,7 @@ const AddReservation = (props) => {
                     onChange={reservationFormik.handleChange}
                 />
                 <TextField
-                    autoFocus
+
                     margin="dense"
                     id="phone"
                     label="Số điện thoại"
@@ -258,7 +258,7 @@ const AddReservation = (props) => {
                     onChange={reservationFormik.handleChange}
                 />
                 <TextField
-                    autoFocus
+
                     margin="dense"
                     id="reservation_duration"
                     label="Thời lượng (giờ)"
@@ -269,7 +269,7 @@ const AddReservation = (props) => {
                     onChange={reservationFormik.handleChange}
                 />
                 <TextField
-                    autoFocus
+
                     margin="dense"
                     id="number_of_guests"
                     label="Số khách"
@@ -280,7 +280,7 @@ const AddReservation = (props) => {
                     onChange={reservationFormik.handleChange}
                 />
                 <TextField
-                    autoFocus
+
                     margin="dense"
                     id="description"
                     label="Mô tả"
@@ -330,7 +330,7 @@ const AddReservation = (props) => {
                     variant="contained"
                     size="small"
                     onClick={handleAddReservation}
-                    disabled={reservationFormik.values.seats === 0 || reservationFormik.values.name === ''}
+                    disabled={reservationFormik.values.seats === 0 || reservationFormik.values.name === '' || reservationFormik.values.phone.toString().length != 10 || reservationFormik.values.number_of_guests === 0}
                 >
                     Thêm
                 </Button>
