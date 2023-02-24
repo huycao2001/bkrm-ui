@@ -134,11 +134,11 @@ const  AddUnit = (props) =>  {
                                     />
                                 </TableCell>
 
-                                <TableCell align="center">
+                                {/* <TableCell align="center">
                                     <Typography>
                                         Cái
                                     </Typography>
-                                </TableCell>
+                                </TableCell> */}
 
                                 <TableCell align="center">
                                     <IconButton 
@@ -166,7 +166,7 @@ const UnitHeadCells = [
     { id: 'name', align: 'center', disablePadding: true, label: 'Tên đơn vị' },
     // { id: 'product_code', align: 'center', disablePadding: true, label: 'Mã hàng' }, 
     { id: 'conversion_number', align: 'center', disablePadding: true, label: 'Giá trị quy đổi' },
-    { id: 'quantity_per_unit', align: 'center', disablePadding: true, label: 'Đơn vị trong kho' }
+    //{ id: 'quantity_per_unit', align: 'center', disablePadding: true, label: 'Đơn vị trong kho' }
 ];
 
 
