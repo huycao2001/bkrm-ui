@@ -287,7 +287,7 @@ const AddInventory = (props) => {
     }
   }
 
-  const handleSelectSearchRecipe = (selectedItem) => {
+  const handleAddIngredient = (selectedItem) => {
     // find the item in the list 
     const input = ingredients.find((recipeInput) => recipeInput.uuid === selectedItem.uuid);
     if(input){
@@ -312,6 +312,32 @@ const AddInventory = (props) => {
         img_urls : selectedItem.img_urls
       }
       setIngredients(prevIngredients => [...prevIngredients, newItem]); 
+    }
+  }
+
+
+
+  const handleDeleteIngredient = (selectedItem) => {
+    const newIngredients = ingredients.filter((item) => {
+      return item.uuid !== selectedItem.uuid
+    });
+
+    setIngredients(newIngredients);
+  }
+
+
+  const handleUpdateIngredientQuantity = (selectedItem, newQuantity) => {
+    const input = ingredients.find((recipeInput) => recipeInput.uuid === selectedItem.uuid);
+    if(input){
+      setIngredients(prevIngredients => {
+        const updatedIngredients = prevIngredients.map(ingredient => {
+          if (ingredient.uuid === input.uuid) {
+            return {...ingredient, quantity_required: newQuantity};
+          }
+          return ingredient;
+        });
+        return updatedIngredients;
+      });
     }
   }
 
@@ -1181,7 +1207,9 @@ const AddInventory = (props) => {
             <Collapse in={expandedRecipe} timeout="auto" unmountOnExit style={{ padding: 0 }}>
                 <AddRecipe
                   products = {products}
-                  handleSelectSearchRecipe = {handleSelectSearchRecipe}
+                  handleAddIngredient = {handleAddIngredient}
+                  handleDeleteIngredient = {handleDeleteIngredient}
+                  handleUpdateIngredientQuantity = {handleUpdateIngredientQuantity}
                   ingredients = {ingredients}
                 />
             </Collapse>

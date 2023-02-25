@@ -12,12 +12,14 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import TextField from '@mui/material/TextField';
+// import TextField from '@mui/material/TextField';
+import DeleteForeverOutlinedIcon from '@material-ui/icons/DeleteForeverOutlined';
 
 import { ThousandSeperatedInput } from '../../../../components/TextField/NumberFormatCustom';
 import {
     Grid,
     Card,
+    IconButton,
     Box,
     TableContainer,
     FormControlLabel,
@@ -110,7 +112,9 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 const AddRecipe = (props) => {
     const {
         products,
-        handleSelectSearchRecipe,
+        handleAddIngredient,
+        handleDeleteIngredient,
+        handleUpdateIngredientQuantity,
         ingredients
     } = props;
 
@@ -120,18 +124,18 @@ const AddRecipe = (props) => {
 
 
     useEffect(() => {
-        console.log(" ????" + JSON.stringify(ingredients));
+        console.log("????" + JSON.stringify(ingredients));
     }, [ingredients])
 
   return (
     <Grid container direction='column' justifyContent="center" alignItems="center" style = {{margin : "10px", padding : '10px'}}>
         <SearchProduct
             products = {products}
-            handleSearchBarSelect = {handleSelectSearchRecipe}
+            handleSearchBarSelect = {handleAddIngredient}
         />
 
         { ingredients?.length > 0 &&
-        <Table size="small" aria-label="purchases" sx={{ borderBottom: 0, marginTop : "20px", marginRight : "10px" }}>
+        <Table size="small" aria-label="purchases" sx={{ borderBottom: 0, marginTop : "20px", marginRight : "10px", marginLeft : "0px" }}>
             <TableHead sx={{ borderBottom: 0 }}>
                 <TableRow sx={{ borderBottom: 0 }}>
                 <StyledTableCell>Mã SP</StyledTableCell>
@@ -140,6 +144,8 @@ const AddRecipe = (props) => {
                 <StyledTableCell >Đơn vị</StyledTableCell>
                 <StyledTableCell >Giá nhập</StyledTableCell>
                 <StyledTableCell >Thành tiền</StyledTableCell>
+                <StyledTableCell ></StyledTableCell>
+                
                 </TableRow>
             </TableHead>
 
@@ -151,7 +157,9 @@ const AddRecipe = (props) => {
                         </StyledTableCell>
 
                         <StyledTableCell component="th" scope="row">
+                        
                             {ingredient.name}
+                            
                         </StyledTableCell>
 
                         <StyledTableCell component="th" scope="row">
@@ -159,7 +167,7 @@ const AddRecipe = (props) => {
                                 value = {ingredient.quantity_required}
                                 style = {{maxWidth : '50px'}}
                                 onChange = {(e) => {
-                                    console.log("new price : " + e.target.value)
+                                    handleUpdateIngredientQuantity(ingredient, Number(e.target.value));
                                 }}
                             
                             />
@@ -176,6 +184,17 @@ const AddRecipe = (props) => {
 
                         <StyledTableCell component="th" scope="row">
                             {ingredient.standard_price * ingredient.quantity_required}
+                        </StyledTableCell>
+
+                        <StyledTableCell component="th" scope="row">
+                            <IconButton 
+                              size = 'small'
+                              onClick={() => {
+                                handleDeleteIngredient(ingredient);
+                              } }
+                              >
+                                  <DeleteForeverOutlinedIcon/>
+                            </IconButton>
                         </StyledTableCell>
 
 
