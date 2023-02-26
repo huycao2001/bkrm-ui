@@ -265,6 +265,36 @@ const AddInventory = (props) => {
 
       images.forEach((image) => bodyFormData.append("images[]", image));
 
+
+      // Add recipe 
+      //if(ingredients.length){
+        var recipe = {
+          quantity_produced: 0
+        }
+        var ingredients_list = ingredients.map((item) => {
+          return {
+            product_uuid : item.uuid,
+            quantity_required : item.quantity_required
+          }
+        });
+  
+        if(ingredients_list.length > 0){
+          recipe = {
+            quantity_produced: 1, 
+            ingredients : ingredients_list
+          }
+        }else{
+          recipe = {
+            quantity_produced: 0,
+            ingredients : ingredients_list
+          }
+        }
+        bodyFormData.append("recipe", JSON.stringify(recipe));
+      //}
+
+
+
+
       await productApi.createProduct(store_uuid, bodyFormData);
       dispatch(statusAction.successfulStatus("Tạo sản phẩm thành công"));
       props.setReload();
@@ -1058,7 +1088,9 @@ const AddInventory = (props) => {
                   label="Nguyên liệu"
                   onChange={(e) => {
                     setIsIngredient(true);
-                    productFormik.values.product_type = e.target.value
+                    productFormik.values.product_type = e.target.value;
+                    // Clear ingredient list if this product is an ingredient.
+                    setIngredients([])
                   }}
                 />
 

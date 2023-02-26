@@ -134,7 +134,7 @@ const AddRecipe = (props) => {
             handleSearchBarSelect = {handleAddIngredient}
         />
 
-        { ingredients?.length > 0 &&
+        { ingredients?.length  > 0 ?  
         <Table size="small" aria-label="purchases" sx={{ borderBottom: 0, marginTop : "20px", marginRight : "10px", marginLeft : "0px" }}>
             <TableHead sx={{ borderBottom: 0 }}>
                 <TableRow sx={{ borderBottom: 0 }}>
@@ -204,6 +204,11 @@ const AddRecipe = (props) => {
                 ))}
             </TableBody>
         </Table>
+
+        : 
+        <div>
+          Vui lòng nhập nguyên liệu thành phần
+        </div>
     }
 
 
