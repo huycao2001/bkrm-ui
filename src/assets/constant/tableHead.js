@@ -421,3 +421,13 @@ export const FBTableHeadCells = [
   },
   { id: "status", align: "left", disablePadding: false, label: "Trạng thái" },
 ];
+
+export const ReservationHeadCells = [
+  { id: "id", align: "left", disablePadding: true, label: "Mã đặt bàn" },
+  { id: "reservation_datetime", align: "left", disablePadding: false, label: "Giờ đến" },
+  { id: "name", align: "left", disablePadding: false, label: "Khách hàng" },
+  { id: "phone", align: "left", disablePadding: false, label: "Điện thoại" },
+  { id: "number_of_guests", align: "left", disablePadding: false, label: "Số khách" },
+  { id: "table", align: "left", disablePadding: false, label: "Bàn" },
+  { id: "status", align: "left", disablePadding: false, label: "Trạng thái" },
+];
