@@ -169,17 +169,15 @@ const AddInventory = (props) => {
 
 
 
-  useEffect(() => {
-    //console.log('date :' + productFormik.values.expiration_date);
-    console.log('product_type:' + productFormik.values.product_type + ' huycao');
-    console.log('has batch:' + productFormik.values.has_batches + ' huycao');
-    console.log('expire:' + productFormik.values.expiration_date + ' huycao');
-  }, [productFormik.values.product_type, productFormik.values.has_batches, productFormik.values.expiration_date])
+  // useEffect(() => {
+  //   //console.log('date :' + productFormik.values.expiration_date);
+  //   console.log('product_type:' + productFormik.values.product_type + ' huycao');
+  //   console.log('has batch:' + productFormik.values.has_batches + ' huycao');
+  //   console.log('expire:' + productFormik.values.expiration_date + ' huycao');
+  // }, [productFormik.values.product_type, productFormik.values.has_batches, productFormik.values.expiration_date])
 
 
-  useEffect(() => {
-    console.log("ingredients " + JSON.stringify(ingredients));
-  }, [ingredients])
+
 
   const [openSnack, setOpenSnack] = React.useState(false);
   const [snackStatus, setSnackStatus] = React.useState({
@@ -206,10 +204,23 @@ const AddInventory = (props) => {
         "list_price",
         productFormik.values.salesPrice.toString()
       );
-      bodyFormData.append(
-        "standard_price",
-        productFormik.values.importedPrice.toString()
-      );
+
+      if(ingredients.length > 0){
+        var total_standard_price = ingredients.reduce(
+          (accumulator, currentValue) => accumulator + currentValue.quantity_required * currentValue.standard_price,
+          0
+        );
+        bodyFormData.append(
+          "standard_price",
+          total_standard_price
+        );
+      }
+      else{
+        bodyFormData.append(
+          "standard_price",
+          productFormik.values.importedPrice.toString()
+        );
+      }
       bodyFormData.append("bar_code", productFormik.values.barcode.toString());
       bodyFormData.append(
         "product_code",
@@ -310,7 +321,7 @@ const AddInventory = (props) => {
     try{
       const response = await productApi.searchBranchProduct(store_uuid, branch_uuid, "");
       setProducts(response.data);
-      console.log("res : " + JSON.stringify(response.data));
+      //console.log("res : " + JSON.stringify(response.data));
     }catch(e){
       console.log("AddInventory.js load products failed")
       console.log(e); 
@@ -865,6 +876,16 @@ const AddInventory = (props) => {
                   // list = relatedList.map(e =>({name:e,product_code:"", bar_code: "",standard_price:productFormik.values.importedPrice, list_price :value}))
                   // setRelatedList(list)
                 }
+
+                // if(!isIngredient){
+                //   // Dish
+                //   var total_standard_price = ingredients.reduce(
+                //     (accumulator, currentValue) => accumulator + currentValue.quantity_required * currentValue.standard_price,
+                //     0
+                //   );
+                //   productFormik.setFieldValue("importedPrice", total_standard_price);
+                  
+                // }
               }}
               error={
                 productFormik.touched.importedPrice &&
@@ -1243,6 +1264,7 @@ const AddInventory = (props) => {
                   handleDeleteIngredient = {handleDeleteIngredient}
                   handleUpdateIngredientQuantity = {handleUpdateIngredientQuantity}
                   ingredients = {ingredients}
+                  productFormik = {productFormik}
                 />
             </Collapse>
 
