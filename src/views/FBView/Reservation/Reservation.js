@@ -12,6 +12,9 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Paper from "@mui/material/Paper";
 import {
+  TableBody
+} from "@material-ui/core";
+import {
   ViewState,
   EditingState,
   GroupingState,
@@ -40,6 +43,13 @@ import AddReservation from "./AddReservation/AddReservation";
 import fbReservationApi from "../../../api/fbReservationApi";
 import LoadingIndicator from "../../../components/LoadingIndicator/LoadingIndicator";
 import { statusAction } from "../../../store/slice/statusSlice";
+import TableWrapper from "../../../components/TableCommon/TableWrapper/TableWrapper";
+import TableHeader from "../../../components/TableCommon/TableHeader/TableHeader";
+import * as HeadCells from "../../../assets/constant/tableHead";
+import ReservationTableRow from "./ReservationTableRow/ReservationTableRow";
+import ToolBar from "../../../components/TableCommon/ToolBar/ToolBar";
+import * as TableType from "../../../assets/constant/tableType.js"
+
 const sampleResources = [
   {
     fieldName: "tableId",
@@ -109,6 +119,11 @@ const TextEditor = (props) => {
 //     return null;
 // };
 
+const Select = (props) => {
+  console.log("megaman 10");
+  return null;
+  return <AppointmentForm.Select {...props} />;
+}
 const BooleanEditor = (props) => {
   console.log("mega man x5");
   console.log(props);
@@ -121,11 +136,13 @@ const BooleanEditor = (props) => {
 
 const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
   console.log("mega man x8");
-  console.log(appointmentData);
-  const onCustomFieldChange = (nextValue) => {
-    onFieldChange({ customField: nextValue });
+  console.log(restProps.select);
+  const onPhoneChange = (nextValue) => {
+    onFieldChange({ phone: nextValue });
   };
-
+  const onNumberOfGuestsChange = (nextValue) => {
+    onFieldChange({ number_of_guests: nextValue });
+  };
   return (
     <div>
       <AppointmentForm.BasicLayout
@@ -135,15 +152,15 @@ const BasicLayout = ({ onFieldChange, appointmentData, ...restProps }) => {
       >
         <AppointmentForm.Label text="Số điện thoại" type="title" />
         <AppointmentForm.TextEditor
-          value={appointmentData.customField}
-          onValueChange={onCustomFieldChange}
+          value={appointmentData.phone}
+          onValueChange={onPhoneChange}
           type="numberEditor"
           placeholder="Số điện thoại"
         />
         <AppointmentForm.Label text="Số ghế" type="title" />
         <AppointmentForm.TextEditor
-          value={appointmentData.customField}
-          onValueChange={onCustomFieldChange}
+          value={appointmentData.number_of_guests}
+          onValueChange={onNumberOfGuestsChange}
           type="numberEditor"
           placeholder="Số ghế"
         />
@@ -195,7 +212,11 @@ export default () => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const [index, setIndex] = React.useState(0);
-
+  const [pagingState, setPagingState] = useState({
+    page: 0,
+    limit: 10,
+  });
+  const [totalRows, setTotalRows] = useState(3);
   const handleChangeIndex = (event, newIndex) => {
     setIndex(newIndex);
   };
@@ -227,8 +248,15 @@ export default () => {
       ],
     },
   ]);
-  // const [reservationList, setReservationList] = useState([]);
-
+  const [reservationList, setReservationList] = useState([]);
+  const [order, setOrder] = React.useState("asc");
+  const [orderBy, setOrderBy] = React.useState("id");
+  const handleRequestSort = (event, property) => {
+    //// (gửi order vs orderBy lên api) -> fetch lại data để sort
+    // const isAsc = orderBy === property && order === 'asc';
+    // setOrder(isAsc ? 'desc' : 'asc');
+    // setOrderBy(property);
+  };
   const [data, setData] = React.useState(testData);
   const onCommitChanges = React.useCallback(
     ({ added, changed, deleted }) => {
@@ -249,23 +277,24 @@ export default () => {
         );
         data.map((appointment) =>
           changed[appointment.id]
-            ? (console.log("update reservation"),
+            ? (console.log("light theme"),
+              console.log(changed),
               updateReservation(
                 {
-                  name: changed[appointment.id].name
-                    ? changed[appointment.id].name
+                  name: changed[appointment.id].title
+                    ? changed[appointment.id].title
                     : appointment.title,
                   phone: changed[appointment.id].phone
                     ? changed[appointment.id].phone
                     : appointment.phone,
                   reservation_datetime: changed[appointment.id].startDate
                     ? new Date(
-                        changed[appointment.id].startDate -
-                          new Date().getTimezoneOffset() * 60000
-                      )
-                        .toISOString()
-                        .slice(0, 19)
-                        .replace("T", " ")
+                      changed[appointment.id].startDate -
+                      new Date().getTimezoneOffset() * 60000
+                    )
+                      .toISOString()
+                      .slice(0, 19)
+                      .replace("T", " ")
                     : appointment.startDate,
                   reservation_duration:
                     ((changed[appointment.id].endDate
@@ -285,13 +314,18 @@ export default () => {
                 appointment.reservation_uuid
               ))
             : // console.log(((changed[appointment.id].endDate ? changed[appointment.id].endDate : appointment.endDate) - (changed[appointment.id].startDate ? changed[appointment.id].startDate : appointment.startDate)) / 1000 / 60 / 60)
-              // console.log(JSON.stringify(changed[appointment.id].startDate).slice(1, 20).replace('T', ' ')), console.log("HELLO")
-              // console.log((new Date(changed[appointment.id].startDate - (new Date()).getTimezoneOffset() * 60000)).toISOString().slice(0, 19).replace('T', ' '))
-              void 0
+            // console.log(JSON.stringify(changed[appointment.id].startDate).slice(1, 20).replace('T', ' ')), console.log("HELLO")
+            // console.log((new Date(changed[appointment.id].startDate - (new Date()).getTimezoneOffset() * 60000)).toISOString().slice(0, 19).replace('T', ' '))
+            void 0
         );
       }
       if (deleted !== undefined) {
+        console.log("erased");
         setData(data.filter((appointment) => appointment.id !== deleted));
+        data.map((appointment) => {
+          appointment.id === deleted ? deleteReservation(appointment.reservation_uuid) : void (0);
+        });
+
       }
       console.log(data);
     },
@@ -318,7 +352,7 @@ export default () => {
     return mysqlDateTime.slice(0, 11);
   });
   useEffect(() => {
-    const loadReservations = async () => {
+    const loadReservationsWithTime = async () => {
       try {
         const response = await trackPromise(
           fbReservationApi.getReservations(store_uuid, branch_uuid, {
@@ -326,10 +360,10 @@ export default () => {
           })
         );
         // setReservationList(response.data.reservations);
-        // console.log("zzzzzzzz");
+        // console.log("this is wat I l00k1ng for");
         console.log(response.data.reservations);
 
-        console.log(response.data);
+        // console.log(response.data);
         // console.log("this is reservation list: ");
         if (response.data.reservations.length > 0) {
           setData(
@@ -372,9 +406,32 @@ export default () => {
       }
     };
     if (store_uuid && branch_uuid) {
-      loadReservations();
+      loadReservationsWithTime();
     }
   }, [branch_uuid, reload, currentDate]);
+
+  useEffect(() => {
+    const loadAllReservations = async () => {
+      try {
+        const response = await trackPromise(
+          fbReservationApi.getReservations(store_uuid, branch_uuid, {
+          })
+        );
+        setReservationList(response.data.reservations);
+        console.log("this is wat I l00k1ng for");
+        console.log(response.data.reservations);
+
+        // console.log(response.data);
+        // console.log("this is reservation list: ");
+      } catch (error) {
+        console.log(error);
+        console.log("FAILED");
+      }
+    };
+    if (store_uuid && branch_uuid) {
+      loadAllReservations();
+    }
+  }, [branch_uuid, reload]);
 
   const updateReservation = async (newReservation, reservation_uuid) => {
     try {
@@ -399,6 +456,25 @@ export default () => {
       dispatch(statusAction.failedStatus("Cập nhật thất bại"));
     }
   };
+
+  const deleteReservation = async (reservation_uuid) => {
+    try {
+      const response = await trackPromise(
+        fbReservationApi.deleteReservation(
+          store_uuid,
+          branch_uuid,
+          reservation_uuid,
+        )
+      );
+      if (response.message === "Success") {
+        dispatch(statusAction.successfulStatus("Xóa thành công"));
+      } else {
+        dispatch(statusAction.failedStatus("Xóa thất bại"));
+      }
+    } catch (error) {
+      dispatch(statusAction.failedStatus("Xóa thất bại"));
+    }
+  };
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -407,9 +483,8 @@ export default () => {
           onChange={handleChangeIndex}
           aria-label="simple tabs example"
         >
-          <Tab label="Item One" {...a11yProps(0)} />
-          <Tab label="Item Two" {...a11yProps(1)} />
-          <Tab label="Item Three" {...a11yProps(2)} />
+          <Tab label="Theo lịch" {...a11yProps(0)} />
+          <Tab label="Theo danh sách" {...a11yProps(1)} />
         </Tabs>
       </AppBar>
       <TabPanel value={index} index={0}>
@@ -467,6 +542,7 @@ export default () => {
             textEditorComponent={TextEditor}
             // dateEditorComponent={DateEditor}
             booleanEditorComponent={BooleanEditor}
+            selectComponent={Select}
           />
 
           <GroupingPanel />
@@ -483,10 +559,60 @@ export default () => {
         </Scheduler>
       </TabPanel>
       <TabPanel value={index} index={1}>
-        Item Two
-      </TabPanel>
-      <TabPanel value={index} index={2}>
-        Item Three
+        {/* <ToolBar
+          dataTable={tableList}
+          tableType={TableType.FBTable}
+          textSearch={"#, Tên bàn... "}
+          isOnlySearch={false}
+          searchKey={query.searchKey} setSearchKey={(value) => setQuery({ ...query, searchKey: value })}
+          orderByOptions={
+            [
+              { value: 'tables.created_at', label: "Ngày tạo" },
+              { value: 'tables.name', label: "Tên bàn" },
+              { value: 'tables.seats', label: "Số ghế" },
+              { value: 'table_groups.name', label: 'Tên nhóm bàn' }
+            ]
+          }
+          orderBy={query.orderBy}
+          setOrderBy={(value) => setQuery({ ...query, orderBy: value })}
+          sort={query.sort}
+          setSort={(value) => setQuery({ ...query, sort: value })}
+          tableGroup={query.tableGroup}
+          tableGroupOptions={tableGroupList}
+
+          setTableGroup={(value) => setQuery({ ...query, tableGroup: value })}
+          handleRemoveFilter={() => setQuery(initQuery)}
+
+        /> */}
+        <TableWrapper
+          pagingState={{ ...pagingState, total_rows: totalRows }}
+          setPagingState={setPagingState}
+          list={reservationList}
+          tableRef={null}
+        >
+          <TableHeader
+            classes={classes}
+            order={order}
+            orderBy={orderBy}
+            onRequestSort={handleRequestSort}
+            headerData={HeadCells.ReservationHeadCells}
+          />
+          <TableBody>
+            {reservationList.map((row, index) => {
+              return (
+                <ReservationTableRow
+                  key={row.uuid}
+                  row={row}
+                  setReload={() => setReload(!reload)}
+                  // openRow={openRow}
+                  // handleOpenRow={handleOpenRow}
+                  isManageInventory={false}
+                  handleSetReloadTableGroupEditor={() => setReloadTableGroupEditor(!reloadTableGroupEditor)}
+                />
+              );
+            })}
+          </TableBody>
+        </TableWrapper>
       </TabPanel>
     </div>
   );

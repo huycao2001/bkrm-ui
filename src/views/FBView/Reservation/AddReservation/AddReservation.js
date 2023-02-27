@@ -90,7 +90,7 @@ const AddReservation = (props) => {
     const reservationFormik = useFormik({
         initialValues: {
             name: "",
-            phone: 1234567890,
+            phone: "1234567890",
             reservation_datetime: dayjs(),
             reservation_duration: 1,
             number_of_guests: 1,

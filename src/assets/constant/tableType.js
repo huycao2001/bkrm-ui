@@ -31,4 +31,4 @@ export const IMPORT_RETURN = "Trả_hàng_nhập";
 
 //FB
 export const FBTable = "Phòng_Bàn";
-
+export const Reservation ="Đặt_Bàn";
