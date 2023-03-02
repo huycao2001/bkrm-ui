@@ -45,12 +45,12 @@ const ReservationFilter = (props) => {
         },
     });
 
-    const [minReservation_datetime, setMinReservation_datetime] = React.useState(dayjs());
+    const [minReservation_datetime, setMinReservation_datetime] = React.useState('');
 
     const handleChangeMinReservation_datetime = (newReservation_datetime) => {
         setMinReservation_datetime(newReservation_datetime);
     }
-    const [maxReservation_datetime, setMaxReservation_datetime] = React.useState(dayjs());
+    const [maxReservation_datetime, setMaxReservation_datetime] = React.useState('');
 
     const handleChangeMaxReservation_datetime = (newReservation_datetime) => {
         setMaxReservation_datetime(newReservation_datetime);
@@ -67,7 +67,9 @@ const ReservationFilter = (props) => {
         >
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DateTimePicker
-                    required
+                    format = "DD/MM/YYYY HH:mm:ss A"
+                    inputFormat="DD/MM/YYYY HH:mm:ss A"
+                    //required
                     label="Từ"
                     value={minReservation_datetime}
                     onChange={handleChangeMinReservation_datetime}
@@ -77,7 +79,9 @@ const ReservationFilter = (props) => {
 
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DateTimePicker
-                    required
+                    format = "DD/MM/YYYY HH:mm:ss A"
+                    inputFormat="DD/MM/YYYY HH:mm:ss A"
+                    //required
                     label="Đến"
                     value={maxReservation_datetime}
                     onChange={handleChangeMaxReservation_datetime}
@@ -88,7 +92,7 @@ const ReservationFilter = (props) => {
             <TextField
 
                 margin="dense"
-                id="number_of_guests"
+                id="minNumber_of_guests"
                 label="Số khách ít nhất"
                 type="number"
                 fullWidth
@@ -100,7 +104,7 @@ const ReservationFilter = (props) => {
             <TextField
 
                 margin="dense"
-                id="number_of_guests"
+                id="maxNumber_of_guests"
                 label="Số khách nhiều nhất"
                 type="number"
                 fullWidth
