@@ -49,7 +49,8 @@ import * as HeadCells from "../../../assets/constant/tableHead";
 import ReservationTableRow from "./ReservationTableRow/ReservationTableRow";
 import ToolBar from "../../../components/TableCommon/ToolBar/ToolBar";
 import * as TableType from "../../../assets/constant/tableType.js"
-
+import ReservationFilter from "./ReservationTool/ReservationFilter";
+import dayjs from "dayjs";
 const sampleResources = [
   {
     fieldName: "tableId",
@@ -211,6 +212,10 @@ const useStyles = makeStyles((theme) => ({
 export default () => {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const [openFilter, setOpenFilter] = React.useState(false);
+  const handleToggleFilter = () => {
+    setOpenFilter(!openFilter);
+  };
   const [index, setIndex] = React.useState(0);
   const [pagingState, setPagingState] = useState({
     page: 0,
@@ -248,6 +253,19 @@ export default () => {
       ],
     },
   ]);
+
+  const initQuery = {
+    searchKey: '',
+    orderBy: "reservations.created_at",
+    sort: "desc",
+    minReservation_datetime: "",
+    maxReservation_datetime: "",
+    minNumber_of_guests: 0,
+    maxNumber_of_guests: 10,
+    status: "active",
+  }
+  const [query, setQuery] = useState(initQuery);
+
   const [reservationList, setReservationList] = useState([]);
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("id");
@@ -415,6 +433,8 @@ export default () => {
       try {
         const response = await trackPromise(
           fbReservationApi.getReservations(store_uuid, branch_uuid, {
+            ...pagingState,
+            ...query
           })
         );
         setReservationList(response.data.reservations);
@@ -431,7 +451,9 @@ export default () => {
     if (store_uuid && branch_uuid) {
       loadAllReservations();
     }
-  }, [branch_uuid, reload]);
+    console.log("question");
+    console.log(query);
+  }, [branch_uuid, reload, pagingState.page, pagingState.limit, query]);
 
   const updateReservation = async (newReservation, reservation_uuid) => {
     try {
@@ -542,7 +564,7 @@ export default () => {
             textEditorComponent={TextEditor}
             // dateEditorComponent={DateEditor}
             booleanEditorComponent={BooleanEditor}
-            selectComponent={Select}
+            resourceEditorComponent={Select}
           />
 
           <GroupingPanel />
@@ -559,31 +581,35 @@ export default () => {
         </Scheduler>
       </TabPanel>
       <TabPanel value={index} index={1}>
-        {/* <ToolBar
-          dataTable={tableList}
-          tableType={TableType.FBTable}
+        <ToolBar
+          dataTable={reservationList}
+          tableType={TableType.Reservation}
+          handleToggleFilter={handleToggleFilter}
           textSearch={"#, Tên bàn... "}
           isOnlySearch={false}
           searchKey={query.searchKey} setSearchKey={(value) => setQuery({ ...query, searchKey: value })}
           orderByOptions={
             [
-              { value: 'tables.created_at', label: "Ngày tạo" },
-              { value: 'tables.name', label: "Tên bàn" },
-              { value: 'tables.seats', label: "Số ghế" },
-              { value: 'table_groups.name', label: 'Tên nhóm bàn' }
+              { value: 'reservations.id', label: "Mã đặt bàn" },
+              { value: 'reservations.name', label: "Tên bàn" },
+              { value: 'reservations.number_of_guests', label: "Số ghế" },
+              { value: 'reservations.reservation_datetime', label: "Giờ đến" },
             ]
           }
           orderBy={query.orderBy}
           setOrderBy={(value) => setQuery({ ...query, orderBy: value })}
           sort={query.sort}
           setSort={(value) => setQuery({ ...query, sort: value })}
-          tableGroup={query.tableGroup}
-          tableGroupOptions={tableGroupList}
-
-          setTableGroup={(value) => setQuery({ ...query, tableGroup: value })}
           handleRemoveFilter={() => setQuery(initQuery)}
 
-        /> */}
+        />
+
+        <ReservationFilter
+          openFilter={openFilter}
+          setQuery={setQuery}
+          query={query}
+          handleToggleFilter={handleToggleFilter}
+        />
         <TableWrapper
           pagingState={{ ...pagingState, total_rows: totalRows }}
           setPagingState={setPagingState}
