@@ -16,6 +16,8 @@ import {
   Dialog,
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
+
+import AddRecipe from "../../../AddInventory/AddRecipe";
 //import project
 import VNDInput , { ThousandSeperatedInput }from "../../../../../../components/TextField/NumberFormatCustom";
 // import img
@@ -51,11 +53,38 @@ const UpdateInventory = (props) => {
   const handleCloseCategory = () => setOpenAddCategory(false);
   const [categoryList, setCategoryList] = useState([]);
   const [images, setImages] = useState([]);
+
+  // list of products for recipe 
+  const [products, setProducts] = useState([]);
+  // Ingredients list 
+  const [ingredients , setIngredients] = useState(prev => {
+    if(props.productInfo.recipe_data.ingredients){
+      var ingredient_list =  props.productInfo.recipe_data.ingredients.map(item => {
+        return {
+          uuid : item.product_uuid,
+          product_code : item.product_code,
+          name : item.product_name,
+          quantity_required : item.quantity_required,
+          standard_price : item.standard_price
+        }
+      });
+
+      return ingredient_list;
+    }
+    return [];
+  }); 
+
   const [display, setDisplay] = useState([]);
   useEffect(()=>{
     const displayList = JSON.parse(props.productInfo.img_urls ? props.productInfo.img_urls : "[]").map((img) => ({link:img,isUrl: true}))
     setDisplay(displayList)
   },[props.productInfo.images])
+
+
+
+  useEffect(()=>{
+    console.log("ingredient list" + JSON.stringify(ingredients));
+  }, [])
   const addImageHandler = (e) => {
     console.log(e.target.files[0]);
     console.log(URL.createObjectURL(e.target.files[0]));
@@ -92,6 +121,7 @@ const UpdateInventory = (props) => {
   })
   const info = useSelector((state) => state.info);
   const store_uuid = info.store.uuid;
+  const branch_uuid = info.branch.uuid;
 
   const theme = useTheme();
   const classes = useStyles(theme);
@@ -123,6 +153,23 @@ const UpdateInventory = (props) => {
       bodyFormData.append("img_urls", img_url);
 
       images.forEach((image) => bodyFormData.append("images[]", image));
+
+
+      // Ingredients 
+      if(ingredients.length){
+        var ingredients_list = ingredients.map((item) => {
+          return {
+            product_uuid : item.uuid,
+            quantity_required : item.quantity_required
+          }
+        });
+
+        var recipe = {
+          quantity_produced: 1, 
+          ingredients : ingredients_list
+        }
+        bodyFormData.append("recipe", JSON.stringify(recipe));
+      }
       const response = await productApi.updateProduct(
         store_uuid,
         props.productInfo.uuid,
@@ -135,6 +182,8 @@ const UpdateInventory = (props) => {
       dispatch(statusAction.failedStatus("Sửa thất bại"));
     }
   };
+
+  // Fetch categories
   useEffect(() => {
     const fetchCategoryList = async () => {
       try {
@@ -147,6 +196,23 @@ const UpdateInventory = (props) => {
     };
     fetchCategoryList();
   }, [store_uuid, props.productInfo]);
+
+
+  // Fetch products for recipes
+  useEffect(() => {
+    const loadProducts = async() => {
+      try{
+        const response = await productApi.searchBranchProduct(store_uuid, branch_uuid, "");
+        setProducts(response.data);
+      }catch(e){
+        console.log("UpdateInventory loads products failed")
+        console.log(e); 
+      }
+    }
+
+
+    loadProducts();
+  }, [branch_uuid, store_uuid])
   
   const handleCloseAndReset = () => {
     handleClose();
@@ -167,6 +233,9 @@ const UpdateInventory = (props) => {
     <Dialog
       open={open}
       onClose={handleClose}
+      sx={{
+        width : "10px"
+      }}
       aria-labelledby="form-dialog-title"
     >
       <AddCategory open={openAddCategory} handleClose={handleCloseCategory} />
@@ -177,7 +246,7 @@ const UpdateInventory = (props) => {
           gutterBottom
           style={{ marginBottom: 20 }}
         >
-          Chỉnh sửa sản phẩm
+          Cập nhật sản phẩm
         </Typography>
         <Grid
           container
@@ -350,6 +419,13 @@ const UpdateInventory = (props) => {
 
             </>:null}
           </Grid>
+
+          <AddRecipe
+            ingredients = {ingredients}
+            setIngredients = {setIngredients}
+            products = {products}
+          
+          />
         </Grid>
         <Grid container spacing={2}>          <Grid item xs>
             <Box

@@ -108,10 +108,11 @@ const useStyles = makeStyles((theme) =>
 const AddRecipe = (props) => {
   const {
     products,
-    handleAddIngredient,
-    handleDeleteIngredient,
-    handleUpdateIngredientQuantity,
+    // handleAddIngredient,
+    // handleDeleteIngredient,
+    // handleUpdateIngredientQuantity,
     ingredients,
+    setIngredients
   } = props;
 
   const theme = useTheme();
@@ -122,6 +123,60 @@ const AddRecipe = (props) => {
     total_standard_price+= item.quantity_required*item.standard_price;
   } 
 
+
+  const handleAddIngredient = (selectedItem) => {
+    // find the item in the list 
+    const input = ingredients.find((recipeInput) => recipeInput.uuid === selectedItem.uuid);
+    if(input){
+      //input.quantity_required += 1;
+      setIngredients(prevIngredients => {
+        const updatedIngredients = prevIngredients.map(ingredient => {
+          if (ingredient.uuid === input.uuid) {
+            return {...ingredient, quantity_required: ingredient.quantity_required + 1};
+          }
+          return ingredient;
+        });
+        return updatedIngredients;
+      });
+    } else { // if not found -> add new
+      const newItem =  {
+        name : selectedItem.name,
+        product_code : selectedItem.product_code,
+        standard_price: selectedItem.standard_price,
+        list_price : selectedItem.list_price,
+        uuid : selectedItem.uuid, 
+        quantity_required : 1,
+        img_urls : selectedItem.img_urls
+      }
+      setIngredients(prevIngredients => [...prevIngredients, newItem]); 
+    }
+  }
+
+
+
+  const handleDeleteIngredient = (selectedItem) => {
+    const newIngredients = ingredients.filter((item) => {
+      return item.uuid !== selectedItem.uuid
+    });
+
+    setIngredients(newIngredients);
+  }
+
+
+  const handleUpdateIngredientQuantity = (selectedItem, newQuantity) => {
+    const input = ingredients.find((recipeInput) => recipeInput.uuid === selectedItem.uuid);
+    if(input){
+      setIngredients(prevIngredients => {
+        const updatedIngredients = prevIngredients.map(ingredient => {
+          if (ingredient.uuid === input.uuid) {
+            return {...ingredient, quantity_required: newQuantity};
+          }
+          return ingredient;
+        });
+        return updatedIngredients;
+      });
+    }
+  }
 
    
   useEffect(() => {

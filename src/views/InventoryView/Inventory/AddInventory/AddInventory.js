@@ -328,7 +328,10 @@ const AddInventory = (props) => {
   const loadProducts = async() => {
     try{
       const response = await productApi.searchBranchProduct(store_uuid, branch_uuid, "");
+
+      // Set the products for making dishes
       setProducts(response.data);
+
       //console.log("res : " + JSON.stringify(response.data));
     }catch(e){
       console.log("AddInventory.js load products failed")
@@ -336,59 +339,6 @@ const AddInventory = (props) => {
     }
   }
 
-  const handleAddIngredient = (selectedItem) => {
-    // find the item in the list 
-    const input = ingredients.find((recipeInput) => recipeInput.uuid === selectedItem.uuid);
-    if(input){
-      //input.quantity_required += 1;
-      setIngredients(prevIngredients => {
-        const updatedIngredients = prevIngredients.map(ingredient => {
-          if (ingredient.uuid === input.uuid) {
-            return {...ingredient, quantity_required: ingredient.quantity_required + 1};
-          }
-          return ingredient;
-        });
-        return updatedIngredients;
-      });
-    } else { // if not found -> add new
-      const newItem =  {
-        name : selectedItem.name,
-        product_code : selectedItem.product_code,
-        standard_price: selectedItem.standard_price,
-        list_price : selectedItem.list_price,
-        uuid : selectedItem.uuid, 
-        quantity_required : 1,
-        img_urls : selectedItem.img_urls
-      }
-      setIngredients(prevIngredients => [...prevIngredients, newItem]); 
-    }
-  }
-
-
-
-  const handleDeleteIngredient = (selectedItem) => {
-    const newIngredients = ingredients.filter((item) => {
-      return item.uuid !== selectedItem.uuid
-    });
-
-    setIngredients(newIngredients);
-  }
-
-
-  const handleUpdateIngredientQuantity = (selectedItem, newQuantity) => {
-    const input = ingredients.find((recipeInput) => recipeInput.uuid === selectedItem.uuid);
-    if(input){
-      setIngredients(prevIngredients => {
-        const updatedIngredients = prevIngredients.map(ingredient => {
-          if (ingredient.uuid === input.uuid) {
-            return {...ingredient, quantity_required: newQuantity};
-          }
-          return ingredient;
-        });
-        return updatedIngredients;
-      });
-    }
-  }
 
   const [reset, setReset] = useState(true);
   const onReset = () => {
@@ -1268,10 +1218,11 @@ const AddInventory = (props) => {
             <Collapse in={expandedRecipe} timeout="auto" unmountOnExit style={{ padding: 0 }}>
                 <AddRecipe
                   products = {products}
-                  handleAddIngredient = {handleAddIngredient}
-                  handleDeleteIngredient = {handleDeleteIngredient}
-                  handleUpdateIngredientQuantity = {handleUpdateIngredientQuantity}
+                  // handleAddIngredient = {handleAddIngredient}
+                  // handleDeleteIngredient = {handleDeleteIngredient}
+                  // handleUpdateIngredientQuantity = {handleUpdateIngredientQuantity}
                   ingredients = {ingredients}
+                  setIngredients = {setIngredients}
                   productFormik = {productFormik}
                 />
             </Collapse>
