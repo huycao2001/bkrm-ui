@@ -56,7 +56,7 @@ const  AddUnit = (props) =>  {
         var newList = [...unitList];
         newList.push({
             name : '', 
-            conversion_number : 0
+            quantity : 0
 
         });
         setUnitList(newList);
@@ -71,7 +71,7 @@ const  AddUnit = (props) =>  {
         setUnitList(newList);
     }
 
-    const handleDeleUnit = (unitIndex) => {
+    const handleDeleteUnit = (unitIndex) => {
         var newList = unitList.filter((unit, index) => {
             return index !== unitIndex
         }); 
@@ -104,7 +104,7 @@ const  AddUnit = (props) =>  {
                 <TableBody>
                     {unitList.map((row,index) => {
                         return (
-                            <TableRow>
+                            <TableRow key = {index}>
                                 <TableCell align="center">
                                 <TextField
                                     value={row.name}
@@ -123,11 +123,11 @@ const  AddUnit = (props) =>  {
 
                                 <TableCell align="center">
                                     <ThousandSeperatedInput
-                                        value={row.conversion_number}
+                                        value={row.quantity}
                                         onChange={(e) =>{
                                             handleChangeUnit(
                                                 index,
-                                                "conversion_number",
+                                                "quantity",
                                                 Math.abs(e.target.value)
                                             )}
                                         }
@@ -144,7 +144,7 @@ const  AddUnit = (props) =>  {
                                     <IconButton 
                                         size = 'small' 
                                         onClick = {
-                                            () => handleDeleUnit(index)
+                                            () => handleDeleteUnit(index)
                                         }
                                         >
                                         <DeleteForeverTwoToneIcon/>
@@ -165,7 +165,7 @@ const  AddUnit = (props) =>  {
 const UnitHeadCells = [
     { id: 'name', align: 'center', disablePadding: true, label: 'Tên đơn vị' },
     // { id: 'product_code', align: 'center', disablePadding: true, label: 'Mã hàng' }, 
-    { id: 'conversion_number', align: 'center', disablePadding: true, label: 'Giá trị quy đổi' },
+    { id: 'quantity', align: 'center', disablePadding: true, label: 'Giá trị quy đổi' },
     //{ id: 'quantity_per_unit', align: 'center', disablePadding: true, label: 'Đơn vị trong kho' }
 ];
 

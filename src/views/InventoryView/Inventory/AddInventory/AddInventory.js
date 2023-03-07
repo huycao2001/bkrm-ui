@@ -107,6 +107,8 @@ const AddInventory = (props) => {
   const [ingredients , setIngredients] = useState([]); 
 
 
+
+
   const addImageHandler = (e) => {
     try {
       console.log(e.target.files[0]);
@@ -278,7 +280,6 @@ const AddInventory = (props) => {
 
 
       // Add recipe 
-      //if(ingredients.length){
         var recipe = {
           quantity_produced: 0
         }
@@ -304,7 +305,14 @@ const AddInventory = (props) => {
       //}
 
 
+      // Add UOM 
+      if(unitList.length){
+        var unit_of_measurement_categories = [{
+          unit_of_measurements : unitList
+        }];
 
+        bodyFormData.append("unit_of_measurement_categories", JSON.stringify(unit_of_measurement_categories));
+      }
 
       await productApi.createProduct(store_uuid, bodyFormData);
       dispatch(statusAction.successfulStatus("Tạo sản phẩm thành công"));
@@ -1158,7 +1166,7 @@ const AddInventory = (props) => {
           /* </div> */
         ) : null}
 
-        {store_setting?.variation.status ? (
+        {store_setting?.variation.status && store_type ==='grocery' ? (
           <>
             <Card className={classes.attrCard} >
               <CardHeader
@@ -1298,7 +1306,11 @@ const AddInventory = (props) => {
             onClick={() => {
               if (relatedList.length) {
                 handleAddProductWithVariation();
-              } else {
+              }
+              else if(isIngredient === false && ingredients.length == 0){
+                dispatch(statusAction.failedStatus("Vui lòng thêm nguyên liệu thành phần cho món ăn"));
+              }
+              else {
                 addProductHandler();
               }
             }}
