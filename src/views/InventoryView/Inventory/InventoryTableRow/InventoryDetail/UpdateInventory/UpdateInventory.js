@@ -131,7 +131,24 @@ const UpdateInventory = (props) => {
       var bodyFormData = new FormData();
       bodyFormData.append("name", productFormik.values.name.toString());
       bodyFormData.append("list_price", productFormik.values.salesPrice.toString());
-      bodyFormData.append("standard_price",productFormik.values.importedPrice.toString());
+
+      //
+      if(ingredients.length){
+        var total_standard_price = ingredients.reduce(
+          (accumulator, currentValue) => accumulator + currentValue.quantity_required * currentValue.standard_price,
+          0
+        );
+        bodyFormData.append(
+          "standard_price",
+          total_standard_price
+        );
+      }else{
+        bodyFormData.append("standard_price",productFormik.values.importedPrice.toString());
+      }
+      
+      
+      
+      
       bodyFormData.append("bar_code", productFormik.values.barcode.toString());
       bodyFormData.append("product_code", productFormik.values.product_code.toString());
       bodyFormData.append("quantity_per_unit", productFormik.values.unit.toString());
