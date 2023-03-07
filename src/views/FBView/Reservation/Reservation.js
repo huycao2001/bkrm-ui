@@ -369,6 +369,21 @@ export default () => {
     const mysqlDateTime = ictDate.toISOString().slice(0, 19).replace("T", " ");
     return mysqlDateTime.slice(0, 11);
   });
+  const [currentView, setCurrentView] = useState("Week");
+  const [range, setRange] = useState(getRange(new Date(), "Week"));
+  function getRange(date, view) {
+    if (view === "Day") {
+      return { startDate: date, endDate: date };
+    }
+    if (view === "Week") {
+      let firstDay = date.getDate() - date.getDay();
+      let lastDay = firstDay + 6;
+      return {
+        startDate: new Date(date.setDate(firstDay)),
+        endDate: new Date(date.setDate(lastDay))
+      };
+    }
+  };
   useEffect(() => {
     const loadReservationsWithTime = async () => {
       try {
@@ -532,6 +547,7 @@ export default () => {
         )}
         <Scheduler data={data} height={660}>
           <ViewState
+            currentView={currentView}
             onCurrentDateChange={(e) => {
               const utcDate = new Date(e);
               const ictDate = new Date(utcDate.getTime() + 7 * 60 * 60 * 1000);
@@ -540,6 +556,12 @@ export default () => {
                 .slice(0, 19)
                 .replace("T", " ");
               setCurrentDate(mysqlDateTime.slice(0, 11));
+              setRange(getRange(new Date(e), currentView));
+              console.log("interval");
+              console.log(getRange(new Date(e), currentView));
+            }}
+            onCurrentViewNameChange={(view) => {
+              setRange(getRange(new Date(currentDate), view));
             }}
           />
           <EditingState
