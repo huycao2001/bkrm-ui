@@ -420,12 +420,12 @@ const UpdateInventory = (props) => {
             </>:null}
           </Grid>
 
-          <AddRecipe
+          {props.productInfo.recipe_data.ingredients && <AddRecipe
             ingredients = {ingredients}
             setIngredients = {setIngredients}
             products = {products}
           
-          />
+          />}
         </Grid>
         <Grid container spacing={2}>          <Grid item xs>
             <Box

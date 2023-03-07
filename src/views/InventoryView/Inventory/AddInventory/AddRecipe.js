@@ -222,7 +222,7 @@ const AddRecipe = (props) => {
 
             <TableBody>
               {ingredients.map((ingredient) => (
-                <StyledTableRow>
+                <StyledTableRow key = {ingredient.uuid}>
                   <StyledTableCell component="th" scope="row">
                     {ingredient.product_code}
                   </StyledTableCell>
