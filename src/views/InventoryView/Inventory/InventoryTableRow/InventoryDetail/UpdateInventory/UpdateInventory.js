@@ -18,6 +18,8 @@ import {
 import AddIcon from "@material-ui/icons/Add";
 
 import AddRecipe from "../../../AddInventory/AddRecipe";
+
+import AddUnit from "../../../AddInventory/AddUnit";
 //import project
 import VNDInput , { ThousandSeperatedInput }from "../../../../../../components/TextField/NumberFormatCustom";
 // import img
@@ -48,7 +50,7 @@ const UploadImages = (img) => {
 };
 const UpdateInventory = (props) => {
   const dispatch = useDispatch();
-  const { handleClose, open,isManageInventory } = props;
+  const { handleClose, open,isManageInventory, productInfo } = props;
   const [openAddCategory, setOpenAddCategory] = useState(false);
   const handleCloseCategory = () => setOpenAddCategory(false);
   const [categoryList, setCategoryList] = useState([]);
@@ -58,8 +60,8 @@ const UpdateInventory = (props) => {
   const [products, setProducts] = useState([]);
   // Ingredients list 
   const [ingredients , setIngredients] = useState(prev => {
-    if(props.productInfo.recipe_data.ingredients){
-      var ingredient_list =  props.productInfo.recipe_data.ingredients.map(item => {
+    if(productInfo.recipe_data.ingredients){
+      var ingredient_list =  productInfo.recipe_data.ingredients.map(item => {
         return {
           uuid : item.product_uuid,
           product_code : item.product_code,
@@ -76,9 +78,9 @@ const UpdateInventory = (props) => {
 
   const [display, setDisplay] = useState([]);
   useEffect(()=>{
-    const displayList = JSON.parse(props.productInfo.img_urls ? props.productInfo.img_urls : "[]").map((img) => ({link:img,isUrl: true}))
+    const displayList = JSON.parse(productInfo.img_urls ? productInfo.img_urls : "[]").map((img) => ({link:img,isUrl: true}))
     setDisplay(displayList)
-  },[props.productInfo.images])
+  },[productInfo.images])
 
 
 
@@ -101,15 +103,15 @@ const UpdateInventory = (props) => {
   const productFormik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      name: props.productInfo.name,
-      barcode: props.productInfo.bar_code ? props.productInfo.bar_code : '',
-      importedPrice: props.productInfo.standard_price || 0,
-      salesPrice: props.productInfo.list_price || 0,
-      category: props.productInfo.category.uuid || "Mặc định",
-      unit: props.productInfo.quantity_per_unit || '',
-      re_order_point: props.productInfo.min_reorder_quantity || 0,
-      product_code: props.productInfo.product_code || '',
-      max_order:props.productInfo.max_order || '',
+      name: productInfo.name,
+      barcode: productInfo.bar_code ? productInfo.bar_code : '',
+      importedPrice: productInfo.standard_price || 0,
+      salesPrice: productInfo.list_price || 0,
+      category: productInfo.category.uuid || "Mặc định",
+      unit: productInfo.quantity_per_unit || '',
+      re_order_point: productInfo.min_reorder_quantity || 0,
+      product_code: productInfo.product_code || '',
+      max_order:productInfo.max_order || '',
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Nhập tên sản phẩm "),
@@ -189,7 +191,7 @@ const UpdateInventory = (props) => {
       }
       const response = await productApi.updateProduct(
         store_uuid,
-        props.productInfo.uuid,
+        productInfo.uuid,
         bodyFormData
       );
       dispatch(statusAction.successfulStatus("Sửa sản phẩm thành công"));
@@ -212,7 +214,7 @@ const UpdateInventory = (props) => {
       }
     };
     fetchCategoryList();
-  }, [store_uuid, props.productInfo]);
+  }, [store_uuid, productInfo]);
 
 
   // Fetch products for recipes
@@ -251,7 +253,7 @@ const UpdateInventory = (props) => {
       open={open}
       onClose={handleClose}
       sx={{
-        width : "10px"
+        minWidth : "200vh"
       }}
       aria-labelledby="form-dialog-title"
     >
@@ -437,7 +439,7 @@ const UpdateInventory = (props) => {
             </>:null}
           </Grid>
 
-          {props.productInfo.recipe_data.ingredients && <AddRecipe
+          {productInfo.recipe_data.ingredients && <AddRecipe
             ingredients = {ingredients}
             setIngredients = {setIngredients}
             products = {products}

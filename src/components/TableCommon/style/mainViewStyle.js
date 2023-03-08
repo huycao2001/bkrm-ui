@@ -93,7 +93,7 @@ media: {
 },
 appBar: {
   position: 'relative',
-  backgroundColor:theme.customization.primaryColor[500],
+  backgroundColor: 'grey',
   height:60
 },
 title: {
