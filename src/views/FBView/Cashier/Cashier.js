@@ -36,18 +36,18 @@ import {
 } from "@material-ui/core";
 import PropTypes from "prop-types";
 
+
+import CashierMenu from "./CashierMenu/CashierMenu";
 import SearchProductCashier from "../../../components/SearchBar/SearchProductCashier";
 
 // import Tabs from "@material-ui/core/Tabs";
 // import Tab from "@material-ui/core/Tab";
-
 
 // const myStyle = makeStyles((theme) => ({
 //     appBar : {
 //         backgroundColor : theme.palette.primary.light
 //     }
 // }));
-
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -86,7 +86,6 @@ const Cashier = (props) => {
   const theme = useTheme();
   const classes = useStyles(theme);
 
-
   const [index, setIndex] = useState(0); // Tab index
 
   const handleChangeIndex = (event, newIndex) => {
@@ -105,46 +104,48 @@ const Cashier = (props) => {
 
       <Grid item xs={12} sm={8}>
         <Card className={classes.root}>
-
-            <Box style={{minHeight: "82vh", paddingBottom: 0,}}  >
-            <AppBar className={classes.appBar} position="static" style = {{backgroundColor : "#ededed"}} >
-            <Toolbar>
-                <Tabs
-                value={index}
-                onChange={handleChangeIndex}
-                aria-label="simple tabs example"
+          <Box style={{ minHeight: "82vh", paddingBottom: 0 }}>
+            <AppBar
+              className={classes.appBar}
+              position="static"
+              style={{ backgroundColor: "#ededed" }}
             >
-                    <Tab label="Phòng bàn" style = {{color : "black"}} {...a11yProps(0)} />
-                    <Tab label="Thực đơn" style = {{color : "black"}} {...a11yProps(1)} />
+              <Toolbar>
+                <Tabs
+                  value={index}
+                  onChange={handleChangeIndex}
+                  aria-label="simple tabs example"
+                >
+                  <Tab
+                    label="Phòng bàn"
+                    style={{ color: "black" }}
+                    {...a11yProps(0)}
+                  />
+                  <Tab
+                    label="Thực đơn"
+                    style={{ color: "black" }}
+                    {...a11yProps(1)}
+                  />
                 </Tabs>
 
                 <SearchProductCashier />
-            </Toolbar>
-          
-          </AppBar>
-          <TabPanel value={index} index={0}>
-                Table view
-          </TabPanel>
+              </Toolbar>
+            </AppBar>
+            <TabPanel value={index} index={0}>
+              Table view
+            </TabPanel>
 
-          <TabPanel value={index} index={1}>
-                Menu view
-          </TabPanel>
-            </Box>
-          
-
-
+            <TabPanel value={index} index={1}>
+                <CashierMenu/>
+            </TabPanel>
+          </Box>
         </Card>
       </Grid>
 
-
       <Grid item xs={12} sm={4} className={classes.root}>
         <Card className={classes.root}>
-            <Box style={{ padding: 0, minHeight: "82vh" }}>
-                Summary 
-            </Box>
-
+          <Box style={{ padding: 0, minHeight: "82vh" }}>Summary</Box>
         </Card>
-
       </Grid>
     </Grid>
   );

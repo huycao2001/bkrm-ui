@@ -25,29 +25,33 @@ import Popper from '@material-ui/core/Popper';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import { useSelector } from "react-redux";
 
-import AddCustomer from "../../../../views/ManagerView/Customer/AddCustomer/AddCustomer";
+import AddCustomer from "../../../ManagerView/Customer/AddCustomer/AddCustomer"
+//import AddCustomer from "../../../../views/ManagerView/Customer/AddCustomer/AddCustomer";
 import giftBox from "../../../../assets/img/icon/giftbox.png";
 // import giftBox from "../../../../assets/img/icon/gift.png";
 // import giftBox from "../../../../assets/img/icon/gift2.png";
 
-import SearchCustomer from "../../../SearchBar/SearchCustomer";
+import SearchCustomer from "../../../../components/SearchBar/SearchCustomer";
 
 //import project
-import * as Input from "../../../TextField/NumberFormatCustom";
+// import * as Input from "../../../TextField/NumberFormatCustom";
 
 // import VNDInput from '../../../TextField/NumberFormatCustom';
 // import { VNDFormat,ThousandFormat } from '../../../TextField/NumberFormatCustom';
 import setting from "../../../../assets/constant/setting";
 
-import VNDInput from "../../../TextField/NumberFormatCustom";
+
+import VNDInput from "../../../../components/TextField/NumberFormatCustom";
 import {
   VNDFormat,
   ThousandFormat,
-} from "../../../TextField/NumberFormatCustom";
+} from "./../../../components/TextField/NumberFormatCustom";
 import { useDispatch } from "react-redux";
 import { statusAction } from "../../../../store/slice/statusSlice";
-import DiscountPopUp from "../../../../views/SalesView/Cart/DiscountPopup/DiscountPopup"
-import DiscountInputDetail from "../../../TextField/DiscountInputDetail";
+//import DiscountPopUp from "../../../../views/SalesView/Cart/DiscountPopup/DiscountPopup"
+import DiscountInputDetail from "../../../../components/TextField/DiscountInputDetail";
+
+
 import openNotification from "../../../../components/StatusPopup/StatusPopup";
 
 const useStyles = makeStyles((theme) =>
@@ -67,7 +71,7 @@ const useStyles = makeStyles((theme) =>
     popup: { borderColor: theme.customization.primaryColor[500], padding: 5, paddingLeft: 12, boxShadow: "0px 5px 10px 0px rgba(0, 0, 0, 0.5)" },
   })
 );
-const CartSummary = (props) => {
+const CashierCartSummary = (props) => {
   const {
     cartData,
     handleSelectCustomer,
@@ -219,14 +223,14 @@ const CartSummary = (props) => {
         </div>
 
         {/* <AddCustomer open={open} handleClose={handleClose} /> */}
-        
-        {open &&<AddCustomer 
+        {/* Implement later */}
+        {/* {open &&<AddCustomer 
         open={open} 
         handleClose={()=>{setOpen(false)}}  
         onReload={props.reloadCustomers} 
         setAddCustomer={setAddCustomer}
         isCart={true}
-        />}
+        />} */}
         {/* when change mode to menu product */}
         {props.children}
 
@@ -457,20 +461,7 @@ const CartSummary = (props) => {
           </FormControl>
         </Grid>
 
-        {/* <Grid
-              container
-              direction="row"
-              justifyContent="flex-end"
-              alignItems="center"
-            >
-              <FormControlLabel
-                labelPlacement="start"
-                control={
-                  <Checkbox checked={cartData.delivery} onChange={(e)=>handleCheckDelivery(e.target.checked)} />
-                }
-                label="Giao hàng"
-              />
-            </Grid> */}
+
         <Button
           variant="contained"
           fullWidth
@@ -486,105 +477,6 @@ const CartSummary = (props) => {
   );
 };
 
-export default CartSummary;
+export default CashierCartSummary;
 
-// const CheckoutPopUp = (props) => {
-//   const { onClose, handleChangePayment, payment } = props;
-//   const theme = useTheme();
-//   const classes = useStyles(theme);
-//   return (
-//     <>
-//       <Box style={{ marginTop: 20, marginLeft: 15, marginBottom: 10 }}>
-//         <Typography className={classes.headerTitle} variant="h5">
-//           Trả tiền NCC
-//         </Typography>
-//       </Box>
-//       <DialogContent>
-//         <Grid
-//           container
-//           direction="row"
-//           justifyContent="space-between"
-//           className={classes.marginRow}
-//         >
-//           <Typography variant="h5">Tổng tiền hàng</Typography>
-//           <Typography variant="body2">500.000</Typography>
-//         </Grid>
-//         <Grid
-//           container
-//           direction="row"
-//           justifyContent="space-between"
-//           alignItems="center"
-//           className={classes.marginRow}
-//         >
-//           <Typography variant="h5" style={{ paddingRight: 50 }}>
-//             Đã trả CNN
-//           </Typography>
-//           <Input.ThousandSeperatedInput
-//             id="standard-basic"
-//             style={{ width: 90 }}
-//             size="small"
-//             inputProps={{ style: { textAlign: "right" } }}
-//           />
-//         </Grid>
-//         <Grid
-//           container
-//           direction="row"
-//           justifyContent="space-between"
-//           alignItems="center"
-//           className={classes.marginRow}
-//         >
-//           <Typography variant="h5">Công nợ</Typography>
-//           <Input.ThousandSeperatedInput
-//             id="standard-basic"
-//             style={{ width: 90 }}
-//             size="small"
-//             inputProps={{ style: { textAlign: "right" } }}
-//           />
-//         </Grid>
-//         <Grid
-//           container
-//           direction="row"
-//           justifyContent="flex-end"
-//           alignItems="center"
-//           className={classes.marginRow}
-//         >
-//           <FormControl component="fieldset">
-//             <RadioGroup
-//               aria-label="gender"
-//               name="gender1"
-//               value={payment}
-//               onChange={handleChangePayment}
-//             >
-//               <Grid container direction="row">
-//                 <FormControlLabel
-//                   labelPlacement="start"
-//                   value="card"
-//                   control={<Radio />}
-//                   label="Thẻ"
-//                 />
-//                 <FormControlLabel
-//                   labelPlacement="start"
-//                   value="cash"
-//                   control={<Radio />}
-//                   label="Tiền mặt"
-//                 />
-//               </Grid>
-//             </RadioGroup>
-//           </FormControl>
-//         </Grid>
-//       </DialogContent>
-//       <DialogActions>
-//         <Button
-//           variant="contained"
-//           onClick={onClose}
-//           fullWidth
-//           color="primary"
-//           style={{ marginTop: 40 }}
-//         >
-//           Thanh toán ()
-//         </Button>
-//       </DialogActions>
-//     </>
-//   );
-// };
 
