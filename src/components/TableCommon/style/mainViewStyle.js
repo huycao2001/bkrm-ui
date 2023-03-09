@@ -80,9 +80,11 @@ export default  makeStyles((theme) =>({
   hoverCard:{
     // backgroundColor:'#fff',
     boxShadow:'0px 10px 20px rgba(0,0,0,0.1)',
+    border : 'solid black 0.5px',
     "&:hover": {
-      // backgroundColor: theme.customization.primaryColor[50],
-      boxShadow:'0px 10px 10px rgba(0,0,0,0.2)',
+      backgroundColor: theme.customization.primaryColor[50],
+      //color : theme.customization.primaryColor[50]
+      //boxShadow:'0px 10px 10px rgba(0,0,0,0.2)',
     }
 },
 cardRoot: {

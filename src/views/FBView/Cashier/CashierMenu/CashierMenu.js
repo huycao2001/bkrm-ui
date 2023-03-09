@@ -1,4 +1,3 @@
-
 import {
   Grid,
   Card,
@@ -28,8 +27,14 @@ import {
 } from "@material-ui/core";
 
 import React, { useRef, useEffect, useState } from "react";
+
+import { useDispatch, useSelector } from "react-redux";
 import { useTheme } from "@material-ui/core/styles";
 
+import AddIcon from "@material-ui/icons/Add";
+
+import AddInventory from "../../../InventoryView/Inventory/AddInventory/AddInventory";
+import MenuProduct from "../../../../components/MenuProduct/MenuProduct";
 
 //apis
 import productApi from "../../../../api/productApi";
@@ -37,14 +42,19 @@ import productApi from "../../../../api/productApi";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const CashierMenu = (props) => {
-    
-    const theme = useTheme();
+  const theme = useTheme();
 
-    const xsScreen = useMediaQuery(theme.breakpoints.down("xs"));
-    const [products, setProducts] = useState([]); // Get products from the store 
+  //redux
+  const info = useSelector((state) => state.info);
 
+  const { products, setProducts } = props;
 
+  const xsScreen = useMediaQuery(theme.breakpoints.down("xs"));
 
+  const [openAddInventory, setOpenAddInventory] = useState(false);
+
+  const [showImage, setShowImage] = React.useState(true);
+  const [typeShow, setTypeShow] = useState("list");
 
   return (
     <Box style={{ height: xsScreen ? null : "69vh" }}>
@@ -55,6 +65,17 @@ const CashierMenu = (props) => {
         alignItems="center"
         style={{ marginTop: -10, marginBottom: 30 }}
       >
+        {openAddInventory && (
+          <AddInventory
+            open={openAddInventory}
+            handleClose={() => {
+              setOpenAddInventory(false);
+            }}
+            // setReload={() => {
+            //   setReloadProduct(!reloadProduct);
+            // }}
+          />
+        )}
         <Grid>
           <ListItem>
             {/* 1.1.1 Title */}
@@ -80,9 +101,69 @@ const CashierMenu = (props) => {
               handleAdd={handleAdd}
               isCart={true}
             /> */}
+
+            {info.role === "owner" ? (
+              <Grid item>
+                <Tooltip title="Thêm sản phẩm">
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    startIcon={<AddIcon />}
+                    onClick={() => {
+                      setOpenAddInventory(true);
+                    }}
+                    style={{ marginLeft: 10 }}
+                  >
+                    Thêm
+                  </Button>
+                </Tooltip>
+              </Grid>
+            ) : null}
           </ListItem>
+          <Grid>
+            <Grid container alignItems="center">
+              {/* <SearchProduct
+                  products={products}
+                  setProducts={setProducts}
+                  isFilter={true}
+                /> */}
+
+              {/* {info.role === "owner" ? (
+                <Grid item>
+                  <Tooltip title="Thêm sản phẩm">
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      startIcon={<AddIcon />}
+                      onClick={() => {
+                        setOpenAddInventory(true);
+                      }}
+                      style={{ marginLeft: 10 }}
+                    >
+                      Thêm
+                    </Button>
+                  </Tooltip>
+                </Grid>
+              ) : null} */}
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
+
+      <MenuProduct
+        products={products}
+        setProducts = {setProducts}
+        typeShow = {typeShow}
+        setTypeShow={setTypeShow}
+        selectedItem={[]}
+        handleSearchBarSelect = {(item) => {
+          console.log("chosen item is " + item)
+        }}
+        isCart = {true}
+        showImage={showImage}
+        setShowImage={setShowImage}
+      
+      />
     </Box>
   );
 };

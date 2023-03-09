@@ -4,6 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { useTheme, makeStyles } from "@material-ui/core/styles";
 
+import { infoActions } from "../../../store/slice/infoSlice";
+import { statusAction } from "../../../store/slice/statusSlice";
+
 import useStyles from "../../../components/TableCommon/style/mainViewStyle";
 import {
   AppBar,
@@ -39,6 +42,8 @@ import PropTypes from "prop-types";
 
 import CashierMenu from "./CashierMenu/CashierMenu";
 import SearchProductCashier from "../../../components/SearchBar/SearchProductCashier";
+
+import productApi from "../../../api/productApi";
 
 // import Tabs from "@material-ui/core/Tabs";
 // import Tab from "@material-ui/core/Tab";
@@ -86,7 +91,81 @@ const Cashier = (props) => {
   const theme = useTheme();
   const classes = useStyles(theme);
 
+  //Redux
+    // redux
+    const dispatch = useDispatch();
+    const info = useSelector((state) => state.info);
+    const store_uuid = info.store.uuid;
+    const branch = info.branch;
+    const branch_uuid = info.branch.uuid;
+
+    const user_uuid = useSelector((state) => state.info.user.uuid);
+
+
+    const loadCartLocalStorage = () => {
+      if (window.localStorage.getItem("cashierCartListData")) {
+        const data = JSON.parse(window.localStorage.getItem("cashierCartListData"));
+        if (data.user_uuid === user_uuid) {
+          return data.cartList;
+        }
+      }
+      return [
+        {
+          customer: null,
+          cartItem: [],
+          total_amount: "0",
+          paid_amount: "0",
+          discount: "0",
+          payment_method: "cash",
+          delivery: false,
+          scores: "0",
+          discountDetail: { value: "0", type: "VND" },
+          selectedPromotion: null,
+          otherFee: 0,
+        },
+      ];
+    };
+
+
   const [index, setIndex] = useState(0); // Tab index
+
+  const [products, setProducts] = useState([]);
+
+
+  // Set the products to local storage
+  // useEffect(() => {
+  //   if (products.length) {
+  //     window.localStorage.setItem(
+  //       "products",
+  //       JSON.stringify({
+  //         store_uuid: store_uuid,
+  //         branch_uuid: branch_uuid,
+  //         data: products,
+  //       })
+  //     );
+  //   }
+  // }, [products]);
+
+
+  //Load products the initial products are empty
+  const loadProducts = async () => {
+    try {
+      const response = await productApi.searchBranchProduct(
+        store_uuid,
+        branch_uuid,
+        ""
+      );
+      setProducts(response.data);
+
+      console.log(" mmm " + JSON.stringify(response))
+    } catch (err) {
+      console.log("Load product fails in Cashier.js")
+      console.log(err);
+    }
+  };
+  useEffect(() => {
+    loadProducts();
+  }, [])
 
   const handleChangeIndex = (event, newIndex) => {
     setIndex(newIndex);
@@ -136,7 +215,10 @@ const Cashier = (props) => {
             </TabPanel>
 
             <TabPanel value={index} index={1}>
-                <CashierMenu/>
+                <CashierMenu
+                  products = {products}
+                  setProducts = {setProducts}
+                />
             </TabPanel>
           </Box>
         </Card>

@@ -316,7 +316,9 @@ const AddInventory = (props) => {
 
       await productApi.createProduct(store_uuid, bodyFormData);
       dispatch(statusAction.successfulStatus("Tạo sản phẩm thành công"));
-      props.setReload();
+      if(props.setReload){
+        props.setReload();
+      }
     } catch (error) {
       console.log(error);
       dispatch(statusAction.failedStatus("Tạo sản phẩm thất bại"));
@@ -605,7 +607,9 @@ const AddInventory = (props) => {
       await productApi.addProductWithVaration(store_uuid, bodyFormData);
       dispatch(statusAction.successfulStatus("Tạo sản phẩm thành công"));
       // handleClose();
-      props.setReload(true);
+      if(props.setReload){
+        props.setReload();
+      }
     } catch (error) {
       console.log(error);
       dispatch(statusAction.failedStatus("Tạo sản phẩm thất bại"));
