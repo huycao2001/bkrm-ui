@@ -131,6 +131,35 @@ const UserInfo = (props) => {
             variant="standard"
             required
             fullWidth
+            name="email"
+            label="Nhập email"
+            onChange={user_formik.handleChange}
+            value={user_formik.values.email}
+            error={
+              user_formik.errors.email
+            }
+            // helperText={
+            //   user_formik.touched.passwordConfirm
+            //     ? user_formik.errors.passwordConfirm
+            //     : null
+            // }
+            onBlur={user_formik.handleBlur}
+          />
+        </Grid>
+
+
+        <Grid item xs={12}>
+          <TextField
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LockIcon />
+                </InputAdornment>
+              ),
+            }}
+            variant="standard"
+            required
+            fullWidth
             name="passwordConfirm"
             label="Nhập lại mật khẩu"
             type="password"
