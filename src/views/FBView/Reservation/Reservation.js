@@ -225,6 +225,14 @@ export default () => {
   const handleChangeIndex = (event, newIndex) => {
     setIndex(newIndex);
   };
+  const [openRow, setRowOpen] = React.useState(null);
+  const handleOpenRow = (row) => {
+    if (row !== openRow) {
+      setRowOpen(row);
+    } else {
+      setRowOpen(null);
+    }
+  };
   const [resources, setResources] = React.useState([
     {
       fieldName: "tableId",
@@ -652,8 +660,8 @@ export default () => {
                   key={row.uuid}
                   row={row}
                   setReload={() => setReload(!reload)}
-                  // openRow={openRow}
-                  // handleOpenRow={handleOpenRow}
+                  openRow={openRow}
+                  handleOpenRow={handleOpenRow}
                   isManageInventory={false}
                   handleSetReloadTableGroupEditor={() => setReloadTableGroupEditor(!reloadTableGroupEditor)}
                 />

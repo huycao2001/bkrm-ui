@@ -33,7 +33,7 @@ import { useDispatch, useSelector } from "react-redux";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { ProductMiniTableRow } from "../../../../components/MiniTableRow/MiniTableRow";
 import defaultProduct from "../../../../assets/img/product/default-product.png";
-
+import ReservationDetail from "./ReservationDetail/ReservationDetail";
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
         backgroundColor: "#2196f3",
@@ -57,8 +57,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 const ReservationTableRow = (props) => {
     const {
         row,
-        // handleOpenRow,
-        // openRow,
+        handleOpenRow,
+        openRow,
         setReload,
         isManageInventory,
         hidenCollumn,
@@ -77,11 +77,11 @@ const ReservationTableRow = (props) => {
     return (
         <>
             <TableRow
-                // onClick={() => handleOpenRow(row.uuid)}
-                // className={clsx(
-                //     classes.row,
-                //     openRow === row.uuid ? classes.rowClicked : null
-                // )}
+                onClick={() => handleOpenRow(row.uuid)}
+                className={clsx(
+                    classes.row,
+                    openRow === row.uuid ? classes.rowClicked : null
+                )}
                 key={row.uuid}
                 style={{ color: colorText }}
             >
@@ -110,20 +110,20 @@ const ReservationTableRow = (props) => {
 
             </TableRow>
 
-            {/* <TableRow>
-          <TableCell
-            style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}
-          >
-              <FBTableDetail
-                row={row}
-                openRow = {openRow}
-                setReload ={setReload}
-                handleSetReloadTableGroupEditor = {handleSetReloadTableGroupEditor}
-                
-              
-              />
-          </TableCell>
-      </TableRow> */}
+            <TableRow>
+                <TableCell
+                    style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}
+                >
+                    <ReservationDetail
+                        row={row}
+                        openRow={openRow}
+                        setReload={setReload}
+                        handleSetReloadTableGroupEditor={handleSetReloadTableGroupEditor}
+
+
+                    />
+                </TableCell>
+            </TableRow>
         </>
     );
 };
