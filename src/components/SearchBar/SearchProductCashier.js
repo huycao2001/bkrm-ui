@@ -6,6 +6,9 @@ import { Box, Button, Grid, InputAdornment, Typography } from "@material-ui/core
 import productApi from "../../api/productApi";
 import { useEffect } from "react";
 import SearchIcon from "@material-ui/icons/Search";
+import defaultProduct from "../../assets/img/product/default-product.png"
+import { VNDFormat } from "../TextField/NumberFormatCustom";
+
 export default function SearchProductCashier(props) {
 //   const {
 //     //searchApiCall,
@@ -19,9 +22,17 @@ export default function SearchProductCashier(props) {
 //   } = props;
 
 
+const {
+  products,
+  setProducts
+} = props
+
+
 const FormatedImage = (props) => {
+
+
     return (
-      <Box component="img" sx={{height: 53, width: 53,  borderRadius: 10, marginRight: 15, }} src={props.url} />
+      <Box component="img" sx={{height: 53, width: 53,  borderRadius: 10, marginRight: 15, }} src={props.url ? props.url : defaultProduct} />
   
     );
   };
@@ -57,7 +68,8 @@ const renderNameInput = (params) => {
         </Grid>
         <Grid item xs={9} container direction="column">
           <Typography variant="h5">{option.name}</Typography>
-          {/* <Typography variant="body2">{option.bar_code}</Typography> */}
+          <Typography variant="body2"> Giá bán: {<VNDFormat value = {option.list_price}/>}</Typography>
+          <Typography variant="body2"> Tồn kho: {option.branch_quantity}</Typography>
         </Grid>
       </Grid>
     );
@@ -70,14 +82,14 @@ const renderNameInput = (params) => {
     }
     return option;
   };
-  const [options, setOptions] = useState([
-    {name : "do uong 1", img_url : "http://localhost:8000/storage/product-images/wBdzpgaRD9bHp4tMvOOq8MWl24e0ySzirxxCLYp5.jpg"}, 
-    {name : "do uong 2", img_url : "http://localhost:8000/storage/product-images/wBdzpgaRD9bHp4tMvOOq8MWl24e0ySzirxxCLYp5.jpg"},
-    {name : "do uong 3", img_url : "http://localhost:8000/storage/product-images/wBdzpgaRD9bHp4tMvOOq8MWl24e0ySzirxxCLYp5.jpg"}, 
+  // const [options, setOptions] = useState([
+  //   {name : "do uong 1", img_url : "http://localhost:8000/storage/product-images/wBdzpgaRD9bHp4tMvOOq8MWl24e0ySzirxxCLYp5.jpg"}, 
+  //   {name : "do uong 2", img_url : "http://localhost:8000/storage/product-images/wBdzpgaRD9bHp4tMvOOq8MWl24e0ySzirxxCLYp5.jpg"},
+  //   {name : "do uong 3", img_url : "http://localhost:8000/storage/product-images/wBdzpgaRD9bHp4tMvOOq8MWl24e0ySzirxxCLYp5.jpg"}, 
 
 
 
-  ]);
+  // ]);
   const [searchValue, setSearchValue] = useState("");
 
 //   const loadingData = async (e, searchKey) => {
@@ -103,7 +115,7 @@ const renderNameInput = (params) => {
 //   }, [searchValue]);
   return (
     <Autocomplete
-      options={options}
+      options={products}
       freeSolo
       fullWidth
       style = {{width : "300px", color : "black",

@@ -207,7 +207,10 @@ const Cashier = (props) => {
                   />
                 </Tabs>
 
-                <SearchProductCashier />
+                <SearchProductCashier
+                  products = {products}
+                  setProducts = {setProducts}
+                />
               </Toolbar>
             </AppBar>
             <TabPanel value={index} index={0}>
