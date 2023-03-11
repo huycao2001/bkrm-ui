@@ -95,30 +95,8 @@ const UserInfo = (props) => {
             onBlur={user_formik.handleBlur}
           />
         </Grid>
-        <Grid item xs={12}>
-          <TextField
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <LockIcon />
-                </InputAdornment>
-              ),
-            }}
-            variant="standard"
-            required
-            fullWidth
-            name="password"
-            label="Mật khẩu"
-            type="password"
-            onChange={user_formik.handleChange}
-            value={user_formik.values.password}
-            error={user_formik.touched.password && user_formik.errors.password}
-            helperText={
-              user_formik.touched.password ? user_formik.errors.password : null
-            }
-            onBlur={user_formik.handleBlur}
-          />
-        </Grid>
+
+
         <Grid item xs={12}>
           <TextField
             InputProps={{
@@ -146,6 +124,32 @@ const UserInfo = (props) => {
             onBlur={user_formik.handleBlur}
           />
         </Grid>
+        
+        <Grid item xs={12}>
+          <TextField
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LockIcon />
+                </InputAdornment>
+              ),
+            }}
+            variant="standard"
+            required
+            fullWidth
+            name="password"
+            label="Mật khẩu"
+            type="password"
+            onChange={user_formik.handleChange}
+            value={user_formik.values.password}
+            error={user_formik.touched.password && user_formik.errors.password}
+            helperText={
+              user_formik.touched.password ? user_formik.errors.password : null
+            }
+            onBlur={user_formik.handleBlur}
+          />
+        </Grid>
+
 
 
         <Grid item xs={12}>
