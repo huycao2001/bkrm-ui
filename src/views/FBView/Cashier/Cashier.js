@@ -43,7 +43,10 @@ import PropTypes from "prop-types";
 import CashierMenu from "./CashierMenu/CashierMenu";
 import SearchProductCashier from "../../../components/SearchBar/SearchProductCashier";
 
+import CashierTableView from "./CashierTableView/CashierTableView";
+
 import productApi from "../../../api/productApi";
+import fbTableApi from "../../../api/fbTableApi"; 
 
 // import Tabs from "@material-ui/core/Tabs";
 // import Tab from "@material-ui/core/Tab";
@@ -131,6 +134,30 @@ const Cashier = (props) => {
 
   const [products, setProducts] = useState([]);
 
+  const [tables, setTables] = useState([]);
+
+  const[cashierCartList, setCashierCartList] = useState([
+    {
+      table : null,
+      reservation : null,
+      customer: null,
+      cartItem: [],
+      total_amount: "0",
+      paid_amount: "0",
+      discount: "0",
+      payment_method: "cash",
+      delivery: false,
+      scores: "0",
+      discountDetail: { value: "0", type: "VND" },
+      selectedPromotion: null,
+      otherFee: 0,
+    },
+  ]);
+
+
+
+
+
 
   // Set the products to local storage
   // useEffect(() => {
@@ -156,8 +183,6 @@ const Cashier = (props) => {
         ""
       );
       setProducts(response.data);
-
-      console.log(" mmm " + JSON.stringify(response))
     } catch (err) {
       console.log("Load product fails in Cashier.js")
       console.log(err);
@@ -166,6 +191,38 @@ const Cashier = (props) => {
   useEffect(() => {
     loadProducts();
   }, [])
+
+  //Load tables;
+
+  useEffect(() => {
+    const loadTables = async () => {
+      try {
+        const response = 
+          await fbTableApi.getTablesOfBranch(
+            store_uuid,
+            branch_uuid,
+            {
+              orderBy : "tables.created_at",
+              sort : "desc",
+            }
+          );
+        //setTotalRows(response.total_rows);
+
+        if(response.message === "Successfully fetched tables"){
+          setTables(response.data.tables);
+        }
+        console.log("tables" + JSON.stringify(response.data.tables));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+
+    loadTables();
+  }, [branch_uuid, store_uuid])
+
+
+
 
   const handleChangeIndex = (event, newIndex) => {
     setIndex(newIndex);
@@ -181,7 +238,7 @@ const Cashier = (props) => {
     >
       {/* 1) Menu on the left */}
 
-      <Grid item xs={12} sm={8}>
+      <Grid item xs={12} sm={7}>
         <Card className={classes.root}>
           <Box style={{ minHeight: "82vh", paddingBottom: 0 }}>
             <AppBar
@@ -214,7 +271,7 @@ const Cashier = (props) => {
               </Toolbar>
             </AppBar>
             <TabPanel value={index} index={0}>
-              Table view
+              <CashierTableView/>
             </TabPanel>
 
             <TabPanel value={index} index={1}>
@@ -227,7 +284,7 @@ const Cashier = (props) => {
         </Card>
       </Grid>
 
-      <Grid item xs={12} sm={4} className={classes.root}>
+      <Grid item xs={12} sm={5} className={classes.root}>
         <Card className={classes.root}>
           <Box style={{ padding: 0, minHeight: "82vh" }}>Summary</Box>
         </Card>

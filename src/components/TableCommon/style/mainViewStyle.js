@@ -103,5 +103,16 @@ title: {
   flex: 1,
 },
 
+
+hoverTable:{
+  // backgroundColor:'#fff',
+  cursor: "pointer",
+  width: "100%",
+  "&:hover": {
+    backgroundColor: grey[100],
+    
+  },
+},
+
 }));
 

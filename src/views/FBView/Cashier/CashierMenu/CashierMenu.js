@@ -80,15 +80,7 @@ const CashierMenu = (props) => {
           <ListItem>
             {/* 1.1.1 Title */}
             <Typography variant="h3"> Bán hàng </Typography>
-            <Typography
-              variant="h3"
-              style={{
-                marginLeft: 10,
-                color: theme.customization.primaryColor[500],
-              }}
-            >
-              Giỏ 1
-            </Typography>
+            
             {/* 1.1.2. Btn Channge Cart */}
             {/* <ChangeCartBtn
               selectedIndex={selectedIndex}

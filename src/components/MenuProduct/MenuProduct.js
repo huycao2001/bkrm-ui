@@ -78,7 +78,7 @@ const MenuProduct = ({products, setProducts, handleSearchBarSelect, isCart, sele
                 {products.map((row, index) => {
                   let findedItem= findItem(row)
                   return (
-                  <TableRow key={row.uuid}  onClick={() => handleSearchBarSelect(row)} style={{color:color,backgroundColor:selectedItemUuid.includes(row.uuid) &&( theme.customization.mode === "Light"  ? theme.customization.primaryColor[50] : grey[700])}}>
+                  <TableRow className={classes.hoverTable} key={row.uuid}  onClick={() => handleSearchBarSelect(row)} >
                     <TableCell align="left" style={{color:color}}> {row.product_code} </TableCell>
                       <TableCell align="left"  >
                         <ListItem style={{ marginLeft: -30, marginTop: -10, marginBottom: -10, }}  >
