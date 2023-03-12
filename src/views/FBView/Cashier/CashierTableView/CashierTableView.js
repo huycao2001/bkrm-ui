@@ -22,7 +22,7 @@ function CashierTableView(props) {
     useEffect(() => {
         try {
           //const channel = pusher.subscribed('bkrm_ws.' + store_uuid + '.' + branch_uuid + '.fb_orders');
-          const ws = new Echo({
+          window.Echo = new Echo({
             broadcaster: 'pusher',
             key: 'apollo13',
             //host: 'http://localhost:6001', // set the host and port
@@ -36,15 +36,27 @@ function CashierTableView(props) {
             cluster: 'ap1',
             authEndpoint: 'http://localhost:8000/broadcasting/auth'
           });
-          ws.channel('bkrm_ws.' + store_uuid + '.' + branch_uuid + '.fb_orders').subscribed(() => {
-            console.log('You are subscribed');
-          }).listen('OrderEvent' , (data) => {
-            console.log("cao ba huy " + data)
-          })
-          
-          ;
 
-          const channel = ws.private('bkrm_ws.' + store_uuid + '.' + branch_uuid + '.fb_orders');
+
+          var channel = 'bkrm_ws.' + store_uuid + '.' + branch_uuid + '.fb_orders';
+          window.Echo.channel(channel)
+          .subscribed(() => {
+            console.log('Now listening to events from channel: ' + channel);
+          })
+          .listen('order.event', (data) => {
+            console.log("WS got: " + JSON.stringify(data));
+            //handleReceiveNewMessage(data);
+          }
+          );
+          // ws.channel('bkrm_ws.' + store_uuid + '.' + branch_uuid + '.fb_orders').subscribed(() => {
+          //  console.log('You are subscribed');
+          // }).listen('OrderEvent' , (data) => {
+          //   console.log("cao ba huy " + data)
+          // })
+          
+          // ;
+
+          //const channel = ws.private('bkrm_ws.' + store_uuid + '.' + branch_uuid + '.fb_orders');
 
 
           //const Pusher = require("pusher");
@@ -63,13 +75,13 @@ function CashierTableView(props) {
 
           // Send a whisper event to the private channel
           //const recipientId = 1;
-          const eventName = 'pusher:hello';
-          const eventData = { message: 'Hello from JavaScript!' };
+          //const eventName = 'pusher:hello';
+          //const eventData = { message: 'Hello from JavaScript!' };
 
           //Closing
 
-          const res = channel.whisper(eventName, eventData);
-          //console.log("Whisper result " + JSON.stringify(res, censor(res))  )
+          //const res = channel.whisper(eventName, eventData);
+          //console.log("Whisper result " + JSON.stringify(res, censor(res))  ) 
 
 
         } catch (e) {
