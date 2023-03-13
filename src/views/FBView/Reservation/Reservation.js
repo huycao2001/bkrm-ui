@@ -322,16 +322,25 @@ export default () => {
                       .slice(0, 19)
                       .replace("T", " ")
                     : appointment.startDate,
-                  reservation_duration:
-                    ((changed[appointment.id].endDate
-                      ? changed[appointment.id].endDate
-                      : appointment.endDate) -
-                      (changed[appointment.id].startDate
-                        ? changed[appointment.id].startDate
-                        : appointment.startDate)) /
-                    1000 /
-                    60 /
-                    60,
+                  // reservation_duration:
+                  //   ((changed[appointment.id].endDate
+                  //     ? changed[appointment.id].endDate
+                  //     : appointment.endDate) -
+                  //     (changed[appointment.id].startDate
+                  //       ? changed[appointment.id].startDate
+                  //       : appointment.startDate)) /
+                  //   1000 /
+                  //   60 /
+                  //   60,
+                  reservation_endtime: changed[appointment.id].endDate
+                    ? new Date(
+                      changed[appointment.id].endDate -
+                      new Date().getTimezoneOffset() * 60000
+                    )
+                      .toISOString()
+                      .slice(0, 19)
+                      .replace("T", " ")
+                    : appointment.endDate,
                   number_of_guests: changed[appointment.id].number_of_guests
                     ? changed[appointment.id].number_of_guests
                     : appointment.number_of_guests,
