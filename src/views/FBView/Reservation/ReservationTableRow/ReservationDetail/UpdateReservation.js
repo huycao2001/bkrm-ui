@@ -2,10 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { useTheme } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
 //import library
-import AddTableGroup from "../../../../components/TableGroup/AddTableGroup";
-
-import TableGroupSelect from "../../../../components/TableGroup/TableGroupSelect";
-
 import {
     Button,
     TextField,
@@ -39,9 +35,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import AddIcon from "@material-ui/icons/Add";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import fbTableApi from "../../../../api/fbTableApi";
-import fbReservationApi from "../../../../api/fbReservationApi";
-import { statusAction } from "../../../../store/slice/statusSlice";
+// import fbTableApi from "../../../../api/fbTableApi";
+import fbReservationApi from "../../../../../api/fbReservationApi";
+import { statusAction } from "../../../../../store/slice/statusSlice";
 import { Icon } from "@mui/material";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -49,8 +45,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs from 'dayjs';
-import fbTableGroupApi from "../../../../api/fbTableGroup";
-
+import fbTableGroupApi from "../../../../../api/fbTableGroup";
 const useStyles = makeStyles((theme) => ({
     typography: {
         marginTop: "10px",
@@ -60,42 +55,27 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const AddReservation = (props) => {
+const UpdateReservation = (props) => {
     const classes = useStyles();
     const {
+        reservation,
         openAddReservationDialog,
         handleCloseAddReservationDialog,
         setReload,
-        reloadTableGroupEditor,
-        setReloadTableGroupEditor
     } = props;
 
-    const [reloadTableGroup, setReloadTableGroup] = useState(false); // reloadTableGroup sẽ load lại TableGroupSelect, setReload khi add 1 tablegroup
-    const [openAddTableGroupDialog, setOpenAddTableGroupDialog] = useState(false);
-
-
-    const handleSetReloadTableGroup = () => {
-        setReloadTableGroup(!reloadTableGroup);
-    }
-
-    const handleCloseAddTableGroupDialog = () => {
-        setOpenAddTableGroupDialog(false);
-    };
-    const handleOpenAddTableGroupDialog = () => {
-        setOpenAddTableGroupDialog(true);
-    };
 
     const info = useSelector((state) => state.info);
     const store_uuid = info.store.uuid;
     const branch_uuid = info.branch.uuid;
     const reservationFormik = useFormik({
         initialValues: {
-            name: "",
-            phone: "1234567890",
-            reservation_datetime: dayjs(),
-            reservation_endtime: dayjs(),
+            name: reservation.name,
+            phone: reservation.phone,
+            reservation_datetime: reservation.reservation_datetime,
+            reservation_endtime: reservation.reservation_endtime,
             // reservation_duration: 1,
-            number_of_guests: 1,
+            number_of_guests: reservation.number_of_guests,
             //description: "",
         },
         validationSchema: Yup.object({
@@ -110,28 +90,6 @@ const AddReservation = (props) => {
     });
 
     const dispatch = useDispatch();
-    const handleAddTable = async () => {
-        //handleCloseAndResetTableDialog();
-        try {
-            const response = await fbTableApi.createTable(
-                store_uuid,
-                branch_uuid,
-                reservationFormik.values
-            );
-            if (response.message === 'Success') {
-                dispatch(statusAction.successfulStatus("Tạo bàn thành công"));
-            } else {
-                dispatch(statusAction.failedStatus("Tạo bàn thất bại"));
-            }
-
-            //console.log(response);
-            setReload();
-            //dispatch(statusAction.successfulStatus("Tạo bàn thành công"));
-        } catch (error) {
-            console.log(error);
-            dispatch(statusAction.failedStatus("Tạo bàn thất bại"));
-        }
-    };
 
     const handleAddReservation = async () => {
         handleCloseAndResetReservationDialog();
@@ -166,6 +124,40 @@ const AddReservation = (props) => {
         }
     }
 
+    const handleUpdateReservation = async () => {
+        handleCloseAndResetReservationDialog();
+        try {
+            const response = await fbReservationApi.updateReservation(
+                store_uuid,
+                branch_uuid,
+                reservation.uuid,
+                {
+                    name: reservationFormik.values.name,
+                    phone: reservationFormik.values.phone,
+                    reservation_datetime: reservation_datetime.format().slice(0, 19).replace('T', ' '),
+                    reservation_endtime: reservation_endtime.format().slice(0, 19).replace('T', ' '),
+                    // reservation_duration: reservationFormik.values.reservation_duration,
+                    number_of_guests: reservationFormik.values.number_of_guests,
+                    timezone: "Asia/Ho_Chi_Minh",
+                    table_uuid: tableID,
+                },
+            );
+            if (response.message === 'Reservation created successfully') {
+                dispatch(statusAction.successfulStatus("Đặt bàn thành công"));
+            } else {
+                dispatch(statusAction.failedStatus(response.error));
+            }
+
+            //console.log(response);
+            setReload();
+            //dispatch(statusAction.successfulStatus("Tạo bàn thành công"));
+        } catch (error) {
+            console.log(error);
+            console.log("FAILED");
+            dispatch(statusAction.failedStatus("FAILED"));
+        }
+    }
+
     useEffect(() => {
         console.log("table" + JSON.stringify(reservationFormik.values));
     }, [reservationFormik.values]);
@@ -181,8 +173,10 @@ const AddReservation = (props) => {
                         seats: reservationFormik.values.number_of_guests,
                     }
                 );
+                console.log("table");
                 console.log(response.data.tables);
                 setTables(response.data.tables);
+
 
             } catch (error) {
                 console.log(error);
@@ -201,18 +195,18 @@ const AddReservation = (props) => {
         reservationFormik.resetForm();
     };
 
-    const [tableID, setTableID] = useState("");
+    const [tableID, setTableID] = useState(reservation.table.uuid);
     const handleChangeTableID = (event) => {
         setTableID(event.target.value);
     };
 
-    const [reservation_datetime, setReservation_datetime] = React.useState(dayjs());
+    const [reservation_datetime, setReservation_datetime] = React.useState(dayjs(reservation.reservation_datetime));
 
     const handleChangeReservation_datetime = (newReservation_datetime) => {
         setReservation_datetime(newReservation_datetime);
     };
 
-    const [reservation_endtime, setReservation_endtime] = React.useState(dayjs());
+    const [reservation_endtime, setReservation_endtime] = React.useState(dayjs(reservation.reservation_endtime));
 
     const handleChangeReservation_endtime = (newReservation_endtime) => {
         setReservation_endtime(newReservation_endtime);
@@ -340,8 +334,8 @@ const AddReservation = (props) => {
                     </Select>
                 </FormControl>
 
-                {(tableID != "") ? <Typography className={classes.typography}>Số ghế của bàn: {tables.find(table => table.uuid == tableID).seats}</Typography> : <></>}
-                {(tableID != "") ? <Typography className={classes.typography}>Nhóm bàn: {tableGroupList[tables.find(table => table.uuid == tableID).table_group_id - 1].name}</Typography> : <></>}
+                {/* {(tableID != "") ? <Typography className={classes.typography}>Số ghế của bàn: {tables.find(table => table.uuid == tableID).seats}</Typography> : <></>}
+                {(tableID != "") ? <Typography className={classes.typography}>Nhóm bàn: {tableGroupList[tables.find(table => table.uuid == tableID).table_group_id - 1].name}</Typography> : <></>} */}
 
             </DialogContent>
             <DialogActions>
@@ -357,10 +351,10 @@ const AddReservation = (props) => {
                     color="primary"
                     variant="contained"
                     size="small"
-                    onClick={handleAddReservation}
+                    onClick={handleUpdateReservation}
                     disabled={reservationFormik.values.seats === 0 || reservationFormik.values.name === '' || reservationFormik.values.phone.toString().length != 10 || reservationFormik.values.number_of_guests === 0}
                 >
-                    Thêm
+                    Cập nhật
                 </Button>
             </DialogActions>
 
@@ -368,4 +362,4 @@ const AddReservation = (props) => {
     );
 };
 
-export default AddReservation;
+export default UpdateReservation;
