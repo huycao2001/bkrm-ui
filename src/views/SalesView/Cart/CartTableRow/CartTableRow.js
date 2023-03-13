@@ -76,13 +76,18 @@ export const CartRow = (props) => {
   }, []);
 
   useEffect(() => {
+
+    if(!handleUpdateBatches) return;
     let total = 0;
     selectedBatches.forEach((batch) => {
       total += Number(batch.additional_quantity);
     });
 
     updateQuantity(total);
-    handleUpdateBatches(row.uuid, selectedBatches);
+    if(handleUpdateBatches){
+      handleUpdateBatches(row.uuid, selectedBatches);
+    }
+    
   }, [selectedBatches]);
 
   const handleSelectBatches = (batches) => {
@@ -166,7 +171,7 @@ export const CartRow = (props) => {
             />:null}
             <Grid style={{paddingTop:12, paddingBottom:12,marginBottom:imageType?3:0}}>
                 <Typography style={!mini?{}:{fontWeight:imageType?600:null,color:color}}>{row.name}</Typography>
-                {imageType ?
+                {/* {imageType ?
                  canFixPriceSell.status && canFixPriceSell.cart || info?.role === 'owner'? (
                   <Input.ThousandSeperatedInput
                     id="standard-basic"
@@ -185,7 +190,7 @@ export const CartRow = (props) => {
                   <Input.ThousandFormat value={row.unit_price}>
                     {" "}
                   </Input.ThousandFormat>
-                ):null}
+                ):null} */}
             </Grid>
             {show && store_setting?.inventory.status && !mini? (
               <MoreInfo>
@@ -269,7 +274,7 @@ export const CartRow = (props) => {
         )}
 
       {imageType?null:
-      <TableCell align="right" padding={mini ? "none" : "normal"}>
+      <TableCell align="left" padding={mini ? "none" : "normal"}>
           {canFixPriceSell.status && canFixPriceSell.cart ? (
             <Input.ThousandSeperatedInput
               id="standard-basic"

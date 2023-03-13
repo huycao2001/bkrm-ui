@@ -47,7 +47,12 @@ const CashierMenu = (props) => {
   //redux
   const info = useSelector((state) => state.info);
 
-  const { products, setProducts } = props;
+  const { products,
+    setProducts,
+    handleSearchBarSelect,
+    selectedCart
+  
+  } = props;
 
   const xsScreen = useMediaQuery(theme.breakpoints.down("xs"));
 
@@ -147,10 +152,8 @@ const CashierMenu = (props) => {
         setProducts = {setProducts}
         typeShow = {typeShow}
         setTypeShow={setTypeShow}
-        selectedItem={[]}
-        handleSearchBarSelect = {(item) => {
-          console.log("chosen item is " + item)
-        }}
+        selectedItem={selectedCart}
+        handleSearchBarSelect = {handleSearchBarSelect}
         isCart = {true}
         showImage={showImage}
         setShowImage={setShowImage}

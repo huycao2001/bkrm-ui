@@ -24,7 +24,8 @@ export default function SearchProductCashier(props) {
 
 const {
   products,
-  setProducts
+  setProducts,
+  handleSearchBarSelect
 } = props
 
 
@@ -90,7 +91,7 @@ const renderNameInput = (params) => {
 
 
   // ]);
-  const [searchValue, setSearchValue] = useState("");
+  const [selectedValue, setSelectedValue] = useState("");
 
 //   const loadingData = async (e, searchKey) => {
 //     setSearchValue(searchKey);
@@ -114,31 +115,76 @@ const renderNameInput = (params) => {
 //     return () => clearTimeout(timer);
 //   }, [searchValue]);
   return (
-    <Autocomplete
-      options={products}
-      freeSolo
-      fullWidth
-      style = {{width : "300px", color : "black",
-      marginLeft : "20px",
-      "& label.Mui-focused": {
-        color: "black"
-      },
-      "& .MuiOutlinedInput-root": {
-        "&.Mui-focused fieldset": {
-          borderColor: "black"
-        }
-      }}}
-      getOptionLabel={getOptionLabel}
-      renderOption={renderOptionTest}
-      //onInputChange={loadingData}
-      autoSelect
-      getOptionSelected={(option, value) => option.name === value.name}
-      onChange={(e, value) => {
-        console.log("value " + value)
-      }}
-      size="small"
-      renderInput={renderNameInput}
+    // <Autocomplete
+    //   options={products}
+    //   freeSolo
+    //   fullWidth
+    //   style = {{width : "300px", color : "black",
+    //   marginLeft : "20px",
+    //   "& label.Mui-focused": {
+    //     color: "black"
+    //   },
+    //   "& .MuiOutlinedInput-root": {
+    //     "&.Mui-focused fieldset": {
+    //       borderColor: "black"
+    //     }
+    //   }}}
+    //   getOptionLabel={getOptionLabel}
+    //   renderOption={renderOptionTest}
+    //   clearOnEscape={true}
+    //   //onInputChange={loadingData}
+    //   autoSelect
+    //   getOptionSelected={(option, value) => option.name === value.name}
+    //   onChange={(e, value) => {
+    //     handleSearchBarSelect(value);
+    //   }}
+    //   size="small"
+    //   renderInput={renderNameInput}
 
-    />
+    // />
+
+
+
+
+
+    <Autocomplete
+          freeSolo={true}
+          // filterOptions={filter}
+          options={products}
+          autoComplete
+          getOptionLabel={getOptionLabel}
+          style = {{
+            width : "300px",
+            color : "black"
+          }}
+          onChange={(event, value) => {
+            //console.log("value is " + JSON.stringify(value))
+            if (value?.name) {
+              setSelectedValue(value);
+              handleSearchBarSelect(value);
+            }
+          }}
+          renderInput={renderNameInput}
+          renderOption={renderOptionTest}
+          value={selectedValue}
+          clearOnEscape={true}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              // increase if selected
+              if (selectedValue.name) {
+                handleSearchBarSelect(selectedValue);
+              }
+            } else if (e.key === "Backspace") {
+              if (selectedValue?.name) {
+                // console.log("reset");
+                e.preventDefault();
+                e.stopPropagation();
+                setSelectedValue({});
+              }
+            }
+          }}
+          blurOnSelect={false}
+          autoHighlight
+        />
   );
 }

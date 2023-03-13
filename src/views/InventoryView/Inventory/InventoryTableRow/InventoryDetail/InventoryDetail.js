@@ -735,8 +735,8 @@ const InventoryDetail = (props) => {
                 </TableHead>
 
                 <TableBody>
-                  {row.recipe_data.ingredients.map((ingredient) => (
-                    <StyledTableRow>
+                  {row.recipe_data.ingredients.map((ingredient, index) => (
+                    <StyledTableRow key = {index} >
                       <StyledTableCell component="th" scope="row">
                         {ingredient.product_name}
                       </StyledTableCell>
