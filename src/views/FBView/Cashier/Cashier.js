@@ -560,7 +560,7 @@ const Cashier = (props) => {
                             <CartRow
                               key={`${row.uuid}_index`}
                               row={row}
-                              //handleUpdateBatches={handleUpdateBatches}
+                              //handleUpdateBatches={handleUpdateBatches} // adedd
                               handleDeleteItemCart={handleDeleteItemCart}
                               //handleChangeItemPrice={handleChangeItemPrice}
                               handleChangeItemQuantity={
