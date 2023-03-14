@@ -11,6 +11,9 @@ import useStyles from "../../../components/TableCommon/style/mainViewStyle";
 
 import { CartRow } from "../../SalesView/Cart/CartTableRow/CartTableRow";
 import CartSummary from "../../../components/CheckoutComponent/CheckoutSummary/CartSummary/NewCartSummary";
+
+import LoadingIndicator from "../../../components/LoadingIndicator/LoadingIndicator";
+import { trackPromise } from "react-promise-tracker";
 import {
   AppBar,
   Toolbar,
@@ -385,13 +388,15 @@ const Cashier = (props) => {
     const loadTables = async () => {
       try {
         const response = 
-          await fbTableApi.getTablesOfBranch(
-            store_uuid,
-            branch_uuid,
-            {
-              orderBy : "tables.created_at",
-              sort : "desc",
-            }
+          await trackPromise(
+            fbTableApi.getTablesOfBranch(
+              store_uuid,
+              branch_uuid,
+              {
+                orderBy : "tables.created_at",
+                sort : "desc",
+              }
+            )
           );
         //setTotalRows(response.total_rows);
 
@@ -499,6 +504,7 @@ const Cashier = (props) => {
               </Toolbar>
             </AppBar>
             <TabPanel value={index} index={0}>
+              
               <CashierTableView
                 tables = {tables}
                 selectedTable = {selectedTable}

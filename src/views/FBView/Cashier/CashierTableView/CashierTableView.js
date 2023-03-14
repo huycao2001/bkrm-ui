@@ -5,7 +5,7 @@ import Pusher from 'pusher-js';
 
 import clsx from "clsx";
 import { grey } from "@material-ui/core/colors";
-
+import LoadingIndicator from '../../../../components/LoadingIndicator/LoadingIndicator';
 import {
   AppBar,
   Toolbar,
@@ -67,6 +67,8 @@ function CashierTableView(props) {
 
     const renderImageOption = () => {
       return (
+        <>
+        <LoadingIndicator/>
         <TableContainer style={{maxHeight: '64vh', minHeight:'60vh'}}>
         <Grid container spacing={2} >
         {tables.map((item, index) => {
@@ -94,6 +96,8 @@ function CashierTableView(props) {
           
         </Grid>
         </TableContainer>
+        
+        </>
       );
     };
     
