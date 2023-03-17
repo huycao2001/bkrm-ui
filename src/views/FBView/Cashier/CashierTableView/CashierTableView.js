@@ -37,6 +37,9 @@ import {
   TableHead,
 } from "@material-ui/core";
 
+import AddIcon from '@material-ui/icons/Add';
+
+
 import React, { useRef, useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -53,7 +56,8 @@ function CashierTableView(props) {
     const{
       tables,
       selectedTable,
-      setSelectedTable
+      setSelectedTable,
+      handleAddCell 
     } = props;
 
     const info = useSelector((state) => state.info);
@@ -68,9 +72,9 @@ function CashierTableView(props) {
     const renderImageOption = () => {
       return (
         <>
-        <LoadingIndicator/>
+        {/* <LoadingIndicator/> */}
         <TableContainer style={{maxHeight: '64vh', minHeight:'60vh'}}>
-        <Grid container spacing={2} >
+        <Grid container spacing={3} >
         {tables.map((item, index) => {
             //let findedItem= findItem(item)
             return(
@@ -93,9 +97,27 @@ function CashierTableView(props) {
           </Grid> 
           )})}
           
-          
+
+          <Tooltip title = "Thêm 1 đơn mang đi">
+            <IconButton 
+              onClick={handleAddCell}
+              size  = "small"
+              style = {{
+                padding : "10px",
+                marginLeft : "20px"
+              }}
+              color = "primary"
+            >
+                <AddIcon size  = "small"/>
+            </IconButton>
+
+          </Tooltip>
         </Grid>
+
+        
         </TableContainer>
+
+        
         
         </>
       );

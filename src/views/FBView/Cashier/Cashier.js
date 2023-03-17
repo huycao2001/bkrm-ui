@@ -64,6 +64,24 @@ import fbTableApi from "../../../api/fbTableApi";
 //     }
 // }));
 
+
+
+function generateUUID() { // Public Domain/MIT
+  var d = new Date().getTime();//Timestamp
+  var d2 = ((typeof performance !== 'undefined') && performance.now && (performance.now()*1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16;//random number between 0 and 16
+      if(d > 0){//Use timestamp until depleted
+          r = (d + r)%16 | 0;
+          d = Math.floor(d/16);
+      } else {//Use microseconds since page-load if supported
+          r = (d2 + r)%16 | 0;
+          d2 = Math.floor(d2/16);
+      }
+      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+}
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -158,11 +176,78 @@ const Cashier = (props) => {
 
   const [products, setProducts] = useState([]);
 
-  const [tables, setTables] = useState([]);
+  const [tables, setTables] = useState([{
+    uuid : generateUUID(),
+    seats : 0, 
+    name : "Mang đi",
+    type : "away",
+    status : "empty",
+    table_group_name : "Bán mang đi"
+  }]);
 
-  const [selectedTable, setSelectedTable] = useState(null);
+  const [selectedTable, setSelectedTable] = useState(tables[0]);
 
   const [isUpdateTotalAmount, setIsUpdateTotalAmount] = React.useState(false);
+
+
+  
+  const[cashierCartList, setCashierCartList] = useState([
+    {
+      table : selectedTable,
+      reservation : null,
+      customer: null,
+      cartItem: [],
+      total_amount: "0",
+      paid_amount: "0",
+      discount: "0",
+      payment_method: "cash",
+      delivery: false,
+      scores: "0",
+      discountDetail: { value: "0", type: "VND" },
+      selectedPromotion: null,
+      otherFee: 0,
+    },
+  ]);
+
+
+
+  const handleAddCell = () => { 
+    let newTable = {
+      uuid : generateUUID(),
+      seats : 0, 
+      type : "away",
+      name : "Mang đi",
+      status : "empty",
+      table_group_name : "Bán mang đi"
+    }
+
+
+    setTables(prev => {
+      return [
+        newTable,
+        ...prev
+      ]
+    });
+  }
+
+
+  const handleDeleteCell = (tableUuid) => { 
+    // Delete the table from tables
+    var newTables = [...tables];
+    newTables = newTables.filter(table => table.uuid != tableUuid); 
+    setTables(newTables); 
+
+    // Delete the current order
+    var newCashierCartList = [...cashierCartList]; 
+    newCashierCartList.filter(cart => cart.table.uuid != tableUuid); 
+    setCashierCartList(newCashierCartList);
+
+    if(selectedTable.uuid === tableUuid){
+      setSelectedTable(null);
+    }
+  }
+
+  
 
 
   useEffect(() => {
@@ -178,7 +263,7 @@ const Cashier = (props) => {
     var newCashierCartList = [...cashierCartList];
 
     let currentCart = newCashierCartList.find(item => item.table.uuid === selectedTable.uuid);
-
+    if(!currentCart) return;
     currentCart.cartItem.forEach((item) => {
       total += item.unit_price * item.quantity;
     });
@@ -208,33 +293,6 @@ const Cashier = (props) => {
   // const handleSelectTable = (table) => {
 
   // }
-  
-
-  const[cashierCartList, setCashierCartList] = useState([
-    {
-      table : null,
-      reservation : null,
-      customer: null,
-      cartItem: [],
-      total_amount: "0",
-      paid_amount: "0",
-      discount: "0",
-      payment_method: "cash",
-      delivery: false,
-      scores: "0",
-      discountDetail: { value: "0", type: "VND" },
-      selectedPromotion: null,
-      otherFee: 0,
-    },
-  ]);
-
-
-
-
-
-
-
-
 
   const handleChangeItemQuantity = (itemUuid, newQuantity) => {
 
@@ -282,6 +340,12 @@ const Cashier = (props) => {
       (item) => item.uuid === itemUuid
     );
     currentCart.cartItem.splice(itemIndex, 1);
+    if(currentCart.cartItem.length === 0){
+      //delete cart if there are no items left
+      var cartIndex = newCashierCartList.findIndex(item => item.table.uuid === selectedTable.uuid);
+      newCashierCartList.splice(cartIndex,1);
+    }
+
     setCashierCartList(newCashierCartList);
     setIsUpdateTotalAmount(!isUpdateTotalAmount);
   };
@@ -301,6 +365,33 @@ const Cashier = (props) => {
 
     let currentCart = newCashierCartList.find(item => item.table.uuid === selectedTable.uuid);
 
+
+    if(!currentCart){
+      // new item for the table -> create a new cart
+      currentCart = {
+        table : selectedTable,
+        reservation : null,
+        customer: null,
+        cartItem: [],
+        total_amount: "0",
+        paid_amount: "0",
+        discount: "0",
+        payment_method: "cash",
+        delivery: false,
+        scores: "0",
+        discountDetail: { value: "0", type: "VND" },
+        selectedPromotion: null,
+        otherFee: 0,
+      }
+
+      
+
+      // setCashierCartList([
+      //   currentCart,
+      //   ...cashierCartList
+      // ]);
+      newCashierCartList = [currentCart , ...newCashierCartList];
+    }
     //console.log("current cart" + JSON.stringify(currentCart));
     //console.log("current value" + JSON.stringify(selectedOption));
 
@@ -313,7 +404,7 @@ const Cashier = (props) => {
 
     if (!item) {
 
-      console.log("add new item ")
+
 
       let newCartItem = {
         id: currentCart.cartItem.length,
@@ -327,11 +418,17 @@ const Cashier = (props) => {
         branch_quantity: Number(selectedOption.branch_quantity),
         has_batches: selectedOption.has_batches,
         batches: selectedOption.batches,
-        branch_inventories: selectedOption.branch_inventories,
+        branch_inventories: selectedOption.branch_inventories.map(item => {
+          return {
+            uuid : item.uuid,
+            quantity_available : item.quantity_available,
+
+          }
+        }),
       };
 
 
-      console.log("di me :  " + JSON.stringify(newCartItem));
+
       currentCart.cartItem.push(newCartItem);
       setCashierCartList(newCashierCartList);
       setIsUpdateTotalAmount(!isUpdateTotalAmount);
@@ -380,7 +477,7 @@ const Cashier = (props) => {
   };
   useEffect(() => {
     loadProducts();
-  }, [])
+  }, [store_uuid,branch_uuid])
 
   //Load tables;
 
@@ -401,31 +498,66 @@ const Cashier = (props) => {
         //setTotalRows(response.total_rows);
 
         if(response.message === "Successfully fetched tables"){
-          var newTables = response.data.tables 
+          // var newTables = [
+          //   {
+          //     uuid : generateUUID(),
+          //     seats : 0, 
+          //     name : "Mang đi",
+          //     status : "empty",
+          //     table_group_name : "Bán mang đi"
+          //   }
+            
+          //   ,
+          //   ...response.data.tables
+          // ];
+           
           
-          setTables(newTables);
+          setTables(prev => {
+            
+            var fetchedTables  = response.data.tables.map(table => {
+              return {
+                uuid : table.uuid,
+                seats : table.seats, 
+                name : table.name,
+                status : table.status,
+                table_group_name : table.table_group_name
+              }
+            });
+            
+            return [
+              ...prev, 
+              ...fetchedTables
+
+            ]
+          });
           //initiate order for each table
-          var fborders = newTables.map(tableItem => {
-            return     {
-              table : tableItem,
-              reservation : null,
-              customer: null,
-              cartItem: [],
-              total_amount: "0",
-              paid_amount: "0",
-              discount: "0",
-              payment_method: "cash",
-              delivery: false,
-              scores: "0",
-              discountDetail: { value: "0", type: "VND" },
-              selectedPromotion: null,
-              otherFee: 0,
-            }
-          }); 
+          // var fborders = newTables.map(tableItem => {
+          //   return     {
+          //     table : {
+          //       uuid : tableItem.uuid,
+          //       seats : tableItem.seats,
+          //       name : tableItem.name, 
+          //       status : tableItem.status, 
+          //       table_group_name : tableItem.table_group_name
+          //     },
+          //     reservation : null,
+          //     customer: null,
+          //     cartItem: [],
+          //     total_amount: "0",
+          //     paid_amount: "0",
+          //     discount: "0",
+          //     payment_method: "cash",
+          //     delivery: false,
+          //     scores: "0",
+          //     discountDetail: { value: "0", type: "VND" },
+          //     selectedPromotion: null,
+          //     otherFee: 0,
+          //   }
+          // }); 
 
-          console.log("fborders" + JSON.stringify(fborders));
+          // console.log("fborders" + JSON.stringify(fborders));
 
-          setCashierCartList(fborders);
+          // setCashierCartList(fborders);
 
 
         }
@@ -440,6 +572,9 @@ const Cashier = (props) => {
   }, [branch_uuid, store_uuid])
 
 
+  useEffect(() => {
+    console.log("cashierCarList" + JSON.stringify(cashierCartList));
+  }, [cashierCartList]);
 
   useEffect(() => {
     console.log("selected" + JSON.stringify(selectedTable));
@@ -509,6 +644,7 @@ const Cashier = (props) => {
                 tables = {tables}
                 selectedTable = {selectedTable}
                 setSelectedTable = {setSelectedTable}
+                handleAddCell = {handleAddCell}
 
               
               />
@@ -519,7 +655,7 @@ const Cashier = (props) => {
                   products = {products}
                   setProducts = {setProducts}
                   handleSearchBarSelect = {handleSearchBarSelect}
-                  selectedCart = {selectedTable ? cashierCartList.find(item => item.table.uuid === selectedTable.uuid).cartItem : [] }
+                  selectedCart = {selectedTable ? (cashierCartList.find(item => item.table.uuid === selectedTable.uuid)?.cartItem || []) : [] }
                 />
             </TabPanel>
           </Box>
@@ -530,6 +666,8 @@ const Cashier = (props) => {
         <Card className={classes.root}>
           <Box style={{ padding: 0, minHeight: "82vh" }}>
             <CartSummary
+              
+              
               disable = {false}
               cartData = {selectedTable ? cashierCartList.find(item => item.table.uuid === selectedTable.uuid) :initCart}
               handleSelectCustomer = {(item) =>{
@@ -542,6 +680,9 @@ const Cashier = (props) => {
               mode = {true}
 
               customers={[]}
+              selectedTable = {selectedTable}
+              setSelectedTable = {selectedTable}
+              handleDeleteCell = {handleDeleteCell}
             >
               {selectedTable !== null && <TableContainer
                     style={{
@@ -561,30 +702,26 @@ const Cashier = (props) => {
                         </TableRow>
                       </TableHead> */}
                       <TableBody>
-                        {cashierCartList.find(item => item.table.uuid === selectedTable.uuid).cartItem.map((row, index) => {
-                          return (
-                            <CartRow
-                              key={`${row.uuid}_index`}
-                              row={row}
-                              //handleUpdateBatches={handleUpdateBatches} // adedd
-                              handleDeleteItemCart={handleDeleteItemCart}
-                              //handleChangeItemPrice={handleChangeItemPrice}
-                              handleChangeItemQuantity={
-                                handleChangeItemQuantity
-                              }
-                              discountData={[]}
-                              mini={true}
-                              imageType={ false}
-                              index={
-                                cashierCartList.find(item => item.table.uuid === selectedTable.uuid).cartItem.length - index
-                              }
-                              typeShow={'list'}
-                              showImage={false}
-
-                              handleUpdateBatches = {null}
-                            />
-                          );
-                        })}
+                      {cashierCartList.find(item => item.table.uuid === selectedTable.uuid)?.cartItem?.map((row, index) => {
+                        return (
+                          <CartRow
+                            key={`${row.uuid}_index`}
+                            row={row}
+                            handleDeleteItemCart={handleDeleteItemCart}
+                            handleChangeItemQuantity={handleChangeItemQuantity}
+                            discountData={[]}
+                            //mini={true}
+                            imageType={false}
+                            index={
+                              (cashierCartList.find(item => item.table.uuid === selectedTable.uuid)?.cartItem?.length || 0) - index
+                            }
+                            typeShow={'list'}
+                            showImage={false}
+                            handleUpdateBatches={null}
+                            mini = {true}
+                          />
+                        );
+                      }) || []}
                       </TableBody>
                     </Table>
                   </TableContainer>}
