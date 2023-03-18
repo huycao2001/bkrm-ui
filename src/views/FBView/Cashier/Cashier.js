@@ -497,21 +497,7 @@ const Cashier = (props) => {
           );
         //setTotalRows(response.total_rows);
 
-        if(response.message === "Successfully fetched tables"){
-          // var newTables = [
-          //   {
-          //     uuid : generateUUID(),
-          //     seats : 0, 
-          //     name : "Mang đi",
-          //     status : "empty",
-          //     table_group_name : "Bán mang đi"
-          //   }
-            
-          //   ,
-          //   ...response.data.tables
-          // ];
-           
-          
+        if(response.message === "Successfully fetched tables"){          
           setTables(prev => {
             
             var fetchedTables  = response.data.tables.map(table => {
