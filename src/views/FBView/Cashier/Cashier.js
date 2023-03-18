@@ -248,7 +248,8 @@ const Cashier = (props) => {
     handleUpdateState("DeleteDeliveryCart", {
       tableUuid : tableUuid
     });
-    setCashierCartList(newCashierCartList);
+    //setCashierCartList(newCashierCartList);
+    setClone(!clone);
 
     if(selectedTable.uuid === tableUuid){
       setSelectedTable(null);
@@ -269,6 +270,9 @@ const Cashier = (props) => {
     const loadState = async () => {
       try{
         const response = await stateApi.getState(store_uuid, branch_uuid); 
+        if(response.message === "Success"){
+          setCashierCartList(response.data);
+        }
 
       console.log("My state" + JSON.stringify(response));
       }catch(e){
@@ -360,7 +364,8 @@ const Cashier = (props) => {
       item : item,
       newQuantity : newQuantity
     })
-    setCashierCartList(newCashierCartList);
+    //setCashierCartList(newCashierCartList);
+    setClone(!clone);
     setIsUpdateTotalAmount(!isUpdateTotalAmount);
   };
 
@@ -395,7 +400,8 @@ const Cashier = (props) => {
     }
 
 
-    setCashierCartList(newCashierCartList);
+    //setCashierCartList(newCashierCartList);
+    setClone(!clone);
     setIsUpdateTotalAmount(!isUpdateTotalAmount);
   };
 
@@ -479,7 +485,8 @@ const Cashier = (props) => {
 
 
       currentCart.cartItem.push(newCartItem);
-      setCashierCartList(newCashierCartList);
+      //setCashierCartList(newCashierCartList);
+      
       if(cartCreated){
         handleUpdateState("AddNewCartWithAnItem", currentCart);
       }else{
@@ -488,7 +495,7 @@ const Cashier = (props) => {
           newCartItem : newCartItem
         });
       }
-      
+      setClone(!clone)
       setIsUpdateTotalAmount(!isUpdateTotalAmount);
       return;
     }
@@ -759,7 +766,7 @@ const Cashier = (props) => {
                         </TableRow>
                       </TableHead> */}
                       <TableBody>
-                      {cashierCartList.find(item => item.table.uuid === selectedTable.uuid)?.cartItem?.map((row, index) => {
+                      {!cashierCartList ? [] :  cashierCartList.find(item => item.table.uuid === selectedTable.uuid)?.cartItem?.map((row, index) => {
                         return (
                           <CartRow
                             key={`${row.uuid}_index`}
