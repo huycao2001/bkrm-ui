@@ -99,18 +99,33 @@ export default function ChatWindow() {
   }
 
   useEffect(() => {
-    const channel = `bkrm_ws.${store_uuid}.${branch_uuid}.fb_orders`;
+    const channel = `ws.stores.${store_uuid}.branches.${branch_uuid}.tables.f7204b10-20c2-409f-b06c-ef36db0636c4`;
+    // const channel = `ws/stores/${store_uuid}/branches/${branch_uuid}/tables/f7204b10-20c2-409f-b06c-ef36db0636c4`;
     // if (!window.Echo.channel(channel)) {
     if (true) {
-      window.Echo.channel(channel)
-        .subscribed(() => {
-          console.log('Now listening to events from channel: ' + channel);
-        })
-        .listen('FBOrderUpdated', (data) => {
-          console.log("WS got: " + JSON.stringify(data));
-          handleReceiveNewMessage(data);
+      let c = window.Echo.channel(channel);
+
+      c.subscribed(() => {
+        console.log('Now listening to events from channel: ' + channel);
+        let ws = new WebSocket(`ws://localhost:6001/app/apollo13?protocol=7&client=js&version=7.5.0&flash=false`);
+
+        ws.onopen = function (event) {
+          ws.send(JSON.stringify(
+            {
+              event: 'bkrm:not-temporary_table_fborder_updated',
+              token: localStorage.getItem("token"),
+              payload: {
+                table_uuid: 'f7204b10-20c2-409f-b06c-ef36db0636c4',
+                temporary_fborder: '[food:2]'
+              },
+            }), []);
         }
-        );
+      });
+      c.listen('TemporaryTableOrderUpdatedEvent', (data) => {
+        console.log("WS got: " + JSON.stringify(data));
+        // handleReceiveNewMessage(data);
+      }
+      );
     }
   }, []);
 

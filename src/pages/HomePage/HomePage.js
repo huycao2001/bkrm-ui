@@ -108,28 +108,28 @@ const HomePage = (props) => {
   useEffect(async () => {
     // console.log(process.env.REACT_APP_PUSHER_APP_KEY);
     if (!ws) {
-      const echo = new Echo({
-        broadcaster: 'pusher',
-        key: 'apollo13',
-        wsHost: window.location.hostname,
-        wsPort: 6001,
-        wssPort: 6001,
-        forceTLS: false,
-        disableStats: true,
-        encrypted: false,
-        enabledTransports: ['ws', 'wss'],
-        // cluster: 'mt1',
-      });
-      echo
-        .channel('bkrm_ws.92d09ff2-b772-4d87-b600-764ab483b2f7.520dce26-ea18-4d32-b281-c6a679f17bc5.fb_orders')
-        .subscribed(() => {
-          console.log('You are subscribed');
-        })
-        .listen('TestEvent', (data) => {
-          console.log("WS got: " + JSON.stringify(data));
-        }
-        );
-      setWs(echo);
+      // const echo = new Echo({
+      //   broadcaster: 'pusher',
+      //   key: 'apollo13',
+      //   wsHost: window.location.hostname,
+      //   wsPort: 6001,
+      //   wssPort: 6001,
+      //   forceTLS: false,
+      //   disableStats: true,
+      //   encrypted: false,
+      //   enabledTransports: ['ws', 'wss'],
+      //   // cluster: 'mt1',
+      // });
+      // echo
+      //   .channel('bkrm_ws.92d09ff2-b772-4d87-b600-764ab483b2f7.520dce26-ea18-4d32-b281-c6a679f17bc5.fb_orders')
+      //   .subscribed(() => {
+      //     console.log('You are subscribed');
+      //   })
+      //   .listen('TestEvent', (data) => {
+      //     console.log("WS got: " + JSON.stringify(data));
+      //   }
+      //   );
+      // setWs(echo);
     }
   });
 
