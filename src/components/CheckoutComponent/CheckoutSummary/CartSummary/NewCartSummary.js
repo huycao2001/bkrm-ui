@@ -23,6 +23,7 @@ import {
 import { calculateTotalQuantity } from "../../../../components/TableCommon/util/sortUtil"
 import Popper from '@material-ui/core/Popper';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import ConfirmPopUp from "../../../ConfirmPopUp/ConfirmPopUp";
 import { useSelector } from "react-redux";
 
 import AddCustomer from "../../../../views/ManagerView/Customer/AddCustomer/AddCustomer";
@@ -122,6 +123,9 @@ const CartSummary = (props) => {
   // so tien khach đưa
   const [customerMoney, setCustomerMoney] = React.useState("0");
 
+  // open delete cart popup
+  const [openDeleteCartPopup, setOpenDeleteCartPopup] = React.useState(false);
+
 
   const handlePromotion = () => {
     
@@ -183,6 +187,24 @@ const CartSummary = (props) => {
   if(cartData){
     return (
       <Box style={{ padding: 30, minHeight: "80vh" }}>
+
+            {openDeleteCartPopup && <ConfirmPopUp
+                open ={openDeleteCartPopup}
+                handleClose = {()=>{
+                    setOpenDeleteCartPopup(false)
+                }}
+                handleConfirm = {()=> {
+                  handleDeleteCell(selectedTable.uuid);
+                  setOpenDeleteCartPopup(false);
+                }}
+                message ={
+                    <Typography>
+                        Bạn có chắc chắn là muốn xóa đơn hàng này ?
+                    </Typography>
+                }
+            />}
+
+
         <Grid container direction="column" alignItems="flex-start" spacing={3}>
           <Grid container direction="row" justifyContent="space-between">
             {/* 1. BASIC INFO */}
@@ -206,7 +228,8 @@ const CartSummary = (props) => {
                   marginTop : "5px"
                 }}
                 onClick = {() => {
-                  handleDeleteCell(selectedTable.uuid)
+                  // handleDeleteCell(selectedTable.uuid)
+                  setOpenDeleteCartPopup(true);
                 }}
               >
                 Xóa đơn hàng
