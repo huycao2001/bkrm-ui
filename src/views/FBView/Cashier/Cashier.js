@@ -65,6 +65,9 @@ import stateApi from "../../../api/stateApi";
 //     }
 // }));
 
+import Echo from "laravel-echo";
+import Pusher from "pusher-js";
+
 
 
 function generateUUID() { // Public Domain/MIT
@@ -259,6 +262,40 @@ const Cashier = (props) => {
   
 
 
+  const [ws, setWs ] = useState(null);
+  useEffect(async () => {
+    // console.log(process.env.REACT_APP_PUSHER_APP_KEY);
+    if (!ws) {
+      const echo = new Echo({
+        broadcaster: 'pusher',
+        key: 'apollo13',
+        wsHost: window.location.hostname,
+        wsPort: 6001,
+        wssPort: 6001,
+        forceTLS: false,
+        disableStats: true,
+        encrypted: false,
+        enabledTransports: ['ws', 'wss'],
+        cluster: 'ap1',
+      });
+      echo
+        .channel('chat')
+        .subscribed(() => {
+          console.log('You are subscribed to channel chat');
+        })
+        .listen('TestEvent', (data) => {
+          console.log("WS got: " + JSON.stringify(data));
+          //if(data.message === "fetch again"){
+            console.log("call it again ?");
+            //setClone(!clone);
+            loadState();
+          //}
+        }
+        );
+      setWs(echo);
+    }
+  } , []);
+
   useEffect(() => {
     updateTotalAmount();
   }, [isUpdateTotalAmount]);
@@ -266,23 +303,25 @@ const Cashier = (props) => {
 
   const [clone,setClone] = useState(false); 
 
-  useEffect(() => { 
-    const loadState = async () => {
-      try{
-        const response = await stateApi.getState(store_uuid, branch_uuid); 
-        if(response.message === "Success"){
-          setCashierCartList(response.data);
-        }
 
-      console.log("My state" + JSON.stringify(response));
-      }catch(e){
-        console.log("error when calling state"); 
-        console.log(e);
+  const loadState = async () => {
+    try{
+      const response = await stateApi.getState(store_uuid, branch_uuid); 
+      if(response.message === "Success"){
+        setCashierCartList(response.data);
       }
-    }
 
-    loadState()
-  } , [clone])
+    console.log("My state" + JSON.stringify(response));
+    }catch(e){
+      console.log("error when calling state"); 
+      console.log(e);
+    }
+  }
+  useEffect(() => { 
+
+
+    loadState();
+  } , [])
 
 
   
@@ -365,7 +404,7 @@ const Cashier = (props) => {
       newQuantity : newQuantity
     })
     //setCashierCartList(newCashierCartList);
-    setClone(!clone);
+    //setClone(!clone);
     setIsUpdateTotalAmount(!isUpdateTotalAmount);
   };
 
@@ -401,7 +440,7 @@ const Cashier = (props) => {
 
 
     //setCashierCartList(newCashierCartList);
-    setClone(!clone);
+    //setClone(!clone);
     setIsUpdateTotalAmount(!isUpdateTotalAmount);
   };
 
@@ -495,7 +534,7 @@ const Cashier = (props) => {
           newCartItem : newCartItem
         });
       }
-      setClone(!clone)
+      //setClone(!clone)
       setIsUpdateTotalAmount(!isUpdateTotalAmount);
       return;
     }
