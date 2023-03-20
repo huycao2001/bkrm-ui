@@ -61,6 +61,11 @@ export default function ChatWindow() {
   const branch_uuid = info.branch.uuid;
   const scrollRef = useRef(null);
   const [drawerOpen, setDrawerOpen] = useState(true);
+  let ws = new WebSocket(`ws://localhost:6001/app/apollo13?protocol=7&client=js&version=7.5.0&flash=false`);
+  ws.onopen = function (event) {
+    wsIsGood = true;
+  };
+  let wsIsGood = false;
 
   const placeholderMessages = [
     { message: "This is a test.", timestamp: "Today", photoURL: "", displayName: "Diavolo", myMessage: false, key: 1 },
@@ -71,17 +76,12 @@ export default function ChatWindow() {
   const [messages, setMessages] = useState([]);
   // const [messages, setMessages] = useState(placeholderMessages);
 
-  const handleSendMessage = async (message) => {
-    try {
-      let res = await messageApi.sendMessage(store_uuid, branch_uuid, user_uuid, message);
-    }
-    catch (e) {
-      console.log(e);
-    }
+  const handleSendMessage = (message) => {
+    sendWsData(message);
   }
 
   const handleReceiveNewMessage = (payload) => {
-    setMessages(messages => messages.concat([{ message: payload.message, timestamp: payload.timestamp, photoURL: "", displayName: payload.user.name, myMessage: (user_uuid == payload.user.uuid), key: messages.length + 1 }]));
+    setMessages(messages => messages.concat([{ message: payload.temporary_fborder, timestamp: payload.timestamp, photoURL: "", displayName: payload.table_uuid, myMessage: (true), key: messages.length + 1 }]));
     if (scrollRef.current) {
       scrollRef.current.scrollIntoView({ behaviour: "smooth" });
     }
@@ -98,7 +98,39 @@ export default function ChatWindow() {
     setDrawerOpen(false);
   }
 
+
+  const sendWsData = (data) => {
+    try {
+      if (ws.OPEN) {
+        ws.send(JSON.stringify(
+          {
+            event: 'bkrm:temporary_table_fborder_updated',
+            token: localStorage.getItem("token"),
+            payload: {
+              table_uuid: 'f7204b10-20c2-409f-b06c-ef36db0636c4',
+              temporary_fborder: data
+            },
+          }), []);
+      }
+    }
+    catch (e) {
+      console.error(e);
+    }
+  }
+
   useEffect(() => {
+    window.Echo = new Echo({
+      broadcaster: 'pusher',
+      key: process.env.REACT_APP_PUSHER_APP_KEY,
+      wsHost: process.env.REACT_APP_PUSHER_URL,
+      wsPort: process.env.REACT_APP_PUSHER_PORT,
+      wssPort: process.env.REACT_APP_PUSHER_PORT,
+      forceTLS: false,
+      disableStats: true,
+      encrypted: false,
+      enabledTransports: ['ws', 'wss'],
+      // cluster: 'mt1',
+    });
     const channel = `ws.stores.${store_uuid}.branches.${branch_uuid}.tables.f7204b10-20c2-409f-b06c-ef36db0636c4`;
     // const channel = `ws/stores/${store_uuid}/branches/${branch_uuid}/tables/f7204b10-20c2-409f-b06c-ef36db0636c4`;
     // if (!window.Echo.channel(channel)) {
@@ -107,25 +139,12 @@ export default function ChatWindow() {
 
       c.subscribed(() => {
         console.log('Now listening to events from channel: ' + channel);
-        let ws = new WebSocket(`ws://localhost:6001/app/apollo13?protocol=7&client=js&version=7.5.0&flash=false`);
 
-        ws.onopen = function (event) {
-          ws.send(JSON.stringify(
-            {
-              event: 'bkrm:not-temporary_table_fborder_updated',
-              token: localStorage.getItem("token"),
-              payload: {
-                table_uuid: 'f7204b10-20c2-409f-b06c-ef36db0636c4',
-                temporary_fborder: '[food:2]'
-              },
-            }), []);
-        }
       });
       c.listen('TemporaryTableOrderUpdatedEvent', (data) => {
         console.log("WS got: " + JSON.stringify(data));
-        // handleReceiveNewMessage(data);
-      }
-      );
+        handleReceiveNewMessage(data);
+      });
     }
   }, []);
 
