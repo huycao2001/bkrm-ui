@@ -263,49 +263,88 @@ const Cashier = (props) => {
 
 
   const [ws, setWs ] = useState(null);
-  useEffect(async () => {
-    //console.log(process.env.REACT_APP_PUSHER_APP_KEY);
-    console.log("call use effect again");
-    if(!selectedTable) {
-      console.log("denideeddd");
-      return;
-    }
-    if (!ws) {
-      const echo = new Echo({
-        broadcaster: 'pusher',
-        key: 'apollo13',
-        wsHost: window.location.hostname,
-        wsPort: 6001,
-        wssPort: 6001,
-        forceTLS: false,
-        disableStats: true,
-        encrypted: false,
-        enabledTransports: ['ws', 'wss'],
-        cluster: 'ap1',
-      });
-      if (selectedTable){
-        var channel = `ws.stores.${store_uuid}.branches.${branch_uuid}.tables.${selectedTable.uuid}`
-        echo
-        .channel(channel)
-        .subscribed(() => {
-          console.log('You are subscribed to ' + channel);
-        })
-        .listen('TemporaryTableOrderUpdatedEvent', (data) => {
-          console.log("WS got: " + JSON.stringify(data));
-          //if(data.message === "fetch again"){
-            console.log("call it again ?");
-            //setClone(!clone);
-            loadState();
-          //}
-        }
-        );
+  // useEffect(async () => {
+  //   //console.log(process.env.REACT_APP_PUSHER_APP_KEY);
+  //   console.log("call use effect again");
+  //   if(!selectedTable) {
+  //     console.log("denideeddd");
+  //     return;
+  //   }
+  //   if (!ws) {
+  //     const echo = new Echo({
+  //       broadcaster: 'pusher',
+  //       key: 'apollo13',
+  //       wsHost: window.location.hostname,
+  //       wsPort: 6001,
+  //       wssPort: 6001,
+  //       forceTLS: false,
+  //       disableStats: true,
+  //       encrypted: false,
+  //       enabledTransports: ['ws', 'wss'],
+  //       cluster: 'ap1',
+  //     });
+  //     if (selectedTable){
+  //       var channel = `ws.stores.${store_uuid}.branches.${branch_uuid}.tables.${selectedTable.uuid}`
+  //       echo
+  //       .channel(channel)
+  //       .subscribed(() => {
+  //         console.log('You are subscribed to ' + channel);
+  //       })
+  //       .listen('TemporaryTableOrderUpdatedEvent', (data) => {
+  //         console.log("WS got: " + JSON.stringify(data));
+  //         //if(data.message === "fetch again"){
+  //           console.log("call it again ?");
+  //           //setClone(!clone);
+  //           loadState();
+  //         //}
+  //       }
+  //       );
 
         
-      setWs(echo);
-      }
+  //     setWs(echo);
+  //     }
       
+  //   }
+  // } , [selectedTable]);
+
+
+
+
+
+
+  useEffect(() => {
+
+
+    if(!selectedTable) return;
+    const channel = `ws.stores.${store_uuid}.branches.${branch_uuid}.tables.${selectedTable.uuid}`;
+
+    if (!ws) {
+      let c = window.Echo.channel(channel);
+      setWs(c);
+      c.subscribed(() => {
+        console.log('Now listening to events from channel: ' + channel);
+        let ws = new WebSocket(`ws://localhost:6001/app/apollo13?protocol=7&client=js&version=7.5.0&flash=false`);
+
+        ws.onopen = function (event) {
+          ws.send(JSON.stringify(
+            {
+              event: 'bkrm:not-temporary_table_fborder_updated',
+              token: localStorage.getItem("token"),
+              payload: {
+                table_uuid: selectedTable.uuid,
+                temporary_fborder: '[food:2]'
+              },
+            }), []);
+        }
+      });
+      c.listen("TemporaryTableOrderUpdatedEvent", (data) => {
+        console.log("WS got: " + JSON.stringify(data));
+        // handleReceiveNewMessage(data);
+      }
+      );
+
     }
-  } , [selectedTable]);
+  }, [selectedTable]);
 
   useEffect(() => {
     updateTotalAmount();

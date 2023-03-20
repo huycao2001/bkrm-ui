@@ -86,7 +86,7 @@ function CashierTableView(props) {
                   setSelectedTable(item);
                   if(ws){
                     console.log("close connection");
-                    ws.disconnect();
+                    //window.Echo.disconnect();
                   }
                   
                   setWs(null);
