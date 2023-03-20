@@ -264,7 +264,12 @@ const Cashier = (props) => {
 
   const [ws, setWs ] = useState(null);
   useEffect(async () => {
-    // console.log(process.env.REACT_APP_PUSHER_APP_KEY);
+    //console.log(process.env.REACT_APP_PUSHER_APP_KEY);
+    console.log("call use effect again");
+    if(!selectedTable) {
+      console.log("denideeddd");
+      return;
+    }
     if (!ws) {
       const echo = new Echo({
         broadcaster: 'pusher',
@@ -278,12 +283,14 @@ const Cashier = (props) => {
         enabledTransports: ['ws', 'wss'],
         cluster: 'ap1',
       });
-      echo
-        .channel('chat')
+      if (selectedTable){
+        var channel = `ws.stores.${store_uuid}.branches.${branch_uuid}.tables.${selectedTable.uuid}`
+        echo
+        .channel(channel)
         .subscribed(() => {
-          console.log('You are subscribed to channel chat');
+          console.log('You are subscribed to ' + channel);
         })
-        .listen('TestEvent', (data) => {
+        .listen('TemporaryTableOrderUpdatedEvent', (data) => {
           console.log("WS got: " + JSON.stringify(data));
           //if(data.message === "fetch again"){
             console.log("call it again ?");
@@ -292,9 +299,13 @@ const Cashier = (props) => {
           //}
         }
         );
+
+        
       setWs(echo);
+      }
+      
     }
-  } , []);
+  } , [selectedTable]);
 
   useEffect(() => {
     updateTotalAmount();
@@ -733,11 +744,14 @@ const Cashier = (props) => {
 
 <Button
           onClick={() => {
-            setClone(!clone);
+            if(ws){
+              console.log("cancel connection");
+              ws.disconnect();
+            }
           }}
         >
 
-          Sync
+          Cancel connection
         </Button>
               </Toolbar>
             </AppBar>
@@ -748,6 +762,8 @@ const Cashier = (props) => {
                 selectedTable = {selectedTable}
                 setSelectedTable = {setSelectedTable}
                 handleAddCell = {handleAddCell}
+                ws = {ws}
+                setWs = {setWs}
 
               
               />
