@@ -1,2 +1,3 @@
 # Version note
-- Implementation of the first solution of realtime handle for cart using API to update the state for cart and receive the broadcast message from the server 
+- Implementation of the second solution of realtime handle for cart using native websocket to send the meesage for server and the server will update the state and dispatch the state back to client
+- Each table will be one channel
