@@ -59,7 +59,9 @@ function CashierTableView(props) {
       setSelectedTable,
       handleAddCell,
       ws,
-      setWs
+      setWs,
+      socket,
+      setSocket
     } = props;
 
     const info = useSelector((state) => state.info);
@@ -86,10 +88,16 @@ function CashierTableView(props) {
                   setSelectedTable(item);
                   if(ws){
                     console.log("close connection");
-                    //window.Echo.disconnect();
+                    ws.disconnect();
+                  }
+
+                  if(socket){
+                    console.log("close socket connection"); 
+                    socket.close(); 
                   }
                   
                   setWs(null);
+                  setSocket(null); 
                 }}>
                     <CardContent style={{margin:-5}}>
                         <Typography gutterBottom  style={{color:'#000', fontWeight:500, fontSize:Number(12)}}> {item.name} </Typography>

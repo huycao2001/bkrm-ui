@@ -21,18 +21,18 @@ import Pusher from "pusher-js";
 
 
 
-window.Echo = new Echo({
-  broadcaster: 'pusher',
-  key: "apollo13",
-  wsHost: "localhost",
-  wsPort: 6001,
-  wssPort: 6001,
-  forceTLS: false,
-  disableStats: true,
-  encrypted: false,
-  enabledTransports: ['ws', 'wss'],
-  cluster: 'ap1',
-});
+// window.Echo = new Echo({
+//   broadcaster: 'pusher',
+//   key: "apollo13",
+//   wsHost: "localhost",
+//   wsPort: 6001,
+//   wssPort: 6001,
+//   forceTLS: false,
+//   disableStats: true,
+//   encrypted: false,
+//   enabledTransports: ['ws', 'wss'],
+//   cluster: 'ap1',
+// });
 function App() {
   var isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const customization = useSelector((state) => state.customize);

@@ -67,6 +67,7 @@ import stateApi from "../../../api/stateApi";
 
 import Echo from "laravel-echo";
 import Pusher from "pusher-js";
+import { ContactSupportOutlined } from "@material-ui/icons";
 
 
 
@@ -263,88 +264,141 @@ const Cashier = (props) => {
 
 
   const [ws, setWs ] = useState(null);
-  // useEffect(async () => {
-  //   //console.log(process.env.REACT_APP_PUSHER_APP_KEY);
-  //   console.log("call use effect again");
-  //   if(!selectedTable) {
-  //     console.log("denideeddd");
-  //     return;
-  //   }
-  //   if (!ws) {
-  //     const echo = new Echo({
-  //       broadcaster: 'pusher',
-  //       key: 'apollo13',
-  //       wsHost: window.location.hostname,
-  //       wsPort: 6001,
-  //       wssPort: 6001,
-  //       forceTLS: false,
-  //       disableStats: true,
-  //       encrypted: false,
-  //       enabledTransports: ['ws', 'wss'],
-  //       cluster: 'ap1',
-  //     });
-  //     if (selectedTable){
-  //       var channel = `ws.stores.${store_uuid}.branches.${branch_uuid}.tables.${selectedTable.uuid}`
-  //       echo
-  //       .channel(channel)
-  //       .subscribed(() => {
-  //         console.log('You are subscribed to ' + channel);
-  //       })
-  //       .listen('TemporaryTableOrderUpdatedEvent', (data) => {
-  //         console.log("WS got: " + JSON.stringify(data));
-  //         //if(data.message === "fetch again"){
-  //           console.log("call it again ?");
-  //           //setClone(!clone);
-  //           loadState();
-  //         //}
-  //       }
-  //       );
+
+  const [socket, setSocket] = useState(null);
+
+  const sendData = (data) => { 
+    if(socket){
+      console.log("sending data")
+      try{
+        socket.send(JSON.stringify(data), []);
+      }
+      catch(e){
+        console.log("Send data failed : " + e);
+      }
+    }
+  }
+
+  useEffect(async () => {
+    //console.log(process.env.REACT_APP_PUSHER_APP_KEY);
+    console.log("call use effect again");
+    if(!selectedTable) {
+      console.log("denideeddd");
+      return;
+    }
+    if (!ws) {
+      const echo = new Echo({
+        broadcaster: 'pusher',
+        key: 'apollo13',
+        wsHost: window.location.hostname,
+        wsPort: 6001,
+        wssPort: 6001,
+        forceTLS: false,
+        disableStats: true,
+        encrypted: false,
+        enabledTransports: ['ws', 'wss'],
+        cluster: 'ap1',
+      });
+      if (selectedTable){
+        var channel = `ws.stores.${store_uuid}.branches.${branch_uuid}.tables.${selectedTable.uuid}`
+        echo
+        .channel(channel)
+        .subscribed(() => {
+          console.log('You are subscribed to ' + channel);
+          let iniSocket = new WebSocket(`ws://localhost:6001/app/apollo13?protocol=7&client=js&version=7.5.0&flash=false`);
+          iniSocket.onopen = function (event) {
+            iniSocket.send(JSON.stringify(
+              {
+                event: 'bkrm:not-temporary_table_fborder_updated',
+                token: localStorage.getItem("token"),
+                payload: {
+                  table_uuid: selectedTable.uuid,
+                  temporary_fborder: '[food:2]'
+                },
+              }), []);
+          }
+
+          setSocket(iniSocket);
+
+        })
+        .listen('TemporaryTableOrderUpdatedEvent', (data) => {
+          console.log("WS got: " + JSON.stringify(data));
+          console.log("type of data " + typeof data);
+
+
+          if(data.temporary_fborder){
+            handleUpdateTableCart(data.table_uuid, data.temporary_fborder);
+          }
+          
+        }
+        );
 
         
-  //     setWs(echo);
-  //     }
-      
-  //   }
-  // } , [selectedTable]);
-
-
-
-
-
-
-  useEffect(() => {
-
-
-    if(!selectedTable) return;
-    const channel = `ws.stores.${store_uuid}.branches.${branch_uuid}.tables.${selectedTable.uuid}`;
-
-    if (!ws) {
-      let c = window.Echo.channel(channel);
-      setWs(c);
-      c.subscribed(() => {
-        console.log('Now listening to events from channel: ' + channel);
-        let ws = new WebSocket(`ws://localhost:6001/app/apollo13?protocol=7&client=js&version=7.5.0&flash=false`);
-
-        ws.onopen = function (event) {
-          ws.send(JSON.stringify(
-            {
-              event: 'bkrm:not-temporary_table_fborder_updated',
-              token: localStorage.getItem("token"),
-              payload: {
-                table_uuid: selectedTable.uuid,
-                temporary_fborder: '[food:2]'
-              },
-            }), []);
-        }
-      });
-      c.listen("TemporaryTableOrderUpdatedEvent", (data) => {
-        console.log("WS got: " + JSON.stringify(data));
-        // handleReceiveNewMessage(data);
+      setWs(echo);
       }
-      );
+      
+    }
+  } , [selectedTable]);
+
+
+  const handleUpdateTableCart = (tableUuid, cart) => { 
+    var newCashierCartList = [...cashierCartList]; 
+    let currentCart = newCashierCartList.find(item => item.table.uuid === tableUuid);
+
+    if(cart === 'null'){
+      newCashierCartList = newCashierCartList.filter(item => item.table.uuid !== tableUuid);
+      setCashierCartList(newCashierCartList);
+      return;
 
     }
-  }, [selectedTable]);
+    if(currentCart){
+      currentCart = JSON.parse(cart);
+
+    }else{
+      newCashierCartList = [...newCashierCartList, JSON.parse(cart)];
+    }
+    console.log("update state back to list")
+    console.log(newCashierCartList);
+
+
+    setCashierCartList(newCashierCartList);
+  }
+
+
+
+  // useEffect(() => {
+
+
+  //   if(!selectedTable) return;
+  //   const channel = `ws.stores.${store_uuid}.branches.${branch_uuid}.tables.${selectedTable.uuid}`;
+
+  //   if (!ws) {
+  //     let c = window.Echo.channel(channel);
+  //     setWs(c);
+  //     c.subscribed(() => {
+  //       console.log('Now listening to events from channel: ' + channel);
+  //       let ws = new WebSocket(`ws://localhost:6001/app/apollo13?protocol=7&client=js&version=7.5.0&flash=false`);
+
+  //       ws.onopen = function (event) {
+  //         ws.send(JSON.stringify(
+  //           {
+  //             event: 'bkrm:not-temporary_table_fborder_updated',
+  //             token: localStorage.getItem("token"),
+  //             payload: {
+  //               table_uuid: selectedTable.uuid,
+  //               temporary_fborder: '[food:2]'
+  //             },
+  //           }), []);
+  //       }
+  //     });
+  //     c.listen("TemporaryTableOrderUpdatedEvent", (data) => {
+  //       console.log("WS got: " + JSON.stringify(data));
+  //       // handleReceiveNewMessage(data);
+  //     }
+  //     );
+
+  //   }
+  // }, [selectedTable]);
 
   useEffect(() => {
     updateTotalAmount();
@@ -422,9 +476,6 @@ const Cashier = (props) => {
 
     let currentCart = newCashierCartList.find(item => item.table.uuid === selectedTable.uuid);
 
-    //console.log("current cart" + JSON.stringify(currentCart));
-    //console.log("current value" + JSON.stringify(selectedOption));
-
     let itemIndex = currentCart.cartItem.findIndex(
       (item) => item.uuid === itemUuid
     );
@@ -438,24 +489,43 @@ const Cashier = (props) => {
     //   newQuantity = "";
     // }
     if (newQuantity === 0 && !item.has_batches) {
+
+      console.log("new quantity = 0");
+
       handleDeleteItemCart(itemUuid);
       return;
     }
     if (newQuantity < 0) {
+      console.log("quantity < 0");
       return;
     }
 
     //let newCartList = [...cartList];
+    var oldQuantity  = currentCart.cartItem[itemIndex].quantity; 
     currentCart.cartItem[itemIndex].quantity = newQuantity;
+    currentCart.total_amount +=  Number(currentCart.cartItem[itemIndex].unit_price * (newQuantity - oldQuantity));
+    currentCart.paid_amount =  currentCart.total_amount;
+
     //setCartList(newCartList);
-    handleUpdateState("UpdateItemQuantity", {
-      cart : currentCart,
-      item : item,
-      newQuantity : newQuantity
-    })
+    // handleUpdateState("UpdateItemQuantity", {
+    //   cart : currentCart,
+    //   item : item,
+    //   newQuantity : newQuantity
+    // })
+
+    console.log("update right ?" + JSON.stringify(currentCart));
+
+    sendData({
+      event: 'bkrm:temporary_table_fborder_updated',
+      token: localStorage.getItem("token"),
+      payload: {
+        table_uuid: selectedTable.uuid,
+        temporary_fborder: JSON.stringify(currentCart)
+      },
+    });
     //setCashierCartList(newCashierCartList);
     //setClone(!clone);
-    setIsUpdateTotalAmount(!isUpdateTotalAmount);
+    // setIsUpdateTotalAmount(!isUpdateTotalAmount);
   };
 
 
@@ -475,23 +545,49 @@ const Cashier = (props) => {
 
     currentCart.cartItem.splice(itemIndex, 1);
     if(currentCart.cartItem.length === 0){
-      //delete cart if there are no items left
-      var cartIndex = newCashierCartList.findIndex(item => item.table.uuid === selectedTable.uuid);
-      newCashierCartList.splice(cartIndex,1);
-      handleUpdateState("DeleteCart", {
-        cart : currentCart
-      })
-    }else{
-      handleUpdateState("DeleteItemFromCart", {
-        cart : currentCart,
-        item : item
-      })
+      sendData({
+        event: 'bkrm:temporary_table_fborder_updated',
+        token: localStorage.getItem("token"),
+        payload: {
+          table_uuid: selectedTable.uuid,
+          temporary_fborder: JSON.stringify(null)
+        },
+      });
+      return; 
     }
+
+    //Update total amount again 
+    currentCart.total_amount -= Number(item.unit_price * item.quantity);
+    currentCart.paid_amount  =  currentCart.total_amount ;
+
+    console.log("delete cart" + JSON.stringify(currentCart));
+    sendData({
+      event: 'bkrm:temporary_table_fborder_updated',
+      token: localStorage.getItem("token"),
+      payload: {
+        table_uuid: selectedTable.uuid,
+        temporary_fborder: JSON.stringify(currentCart)
+      },
+    });
+    // if(currentCart.cartItem.length === 0){
+    //   //delete cart if there are no items left
+    //   var cartIndex = newCashierCartList.findIndex(item => item.table.uuid === selectedTable.uuid);
+    //   newCashierCartList.splice(cartIndex,1);
+
+    //   // handleUpdateState("DeleteCart", {
+    //   //   cart : currentCart
+    //   // })
+    // }else{
+    //   // handleUpdateState("DeleteItemFromCart", {
+    //   //   cart : currentCart,
+    //   //   item : item
+    //   // })
+    // }
 
 
     //setCashierCartList(newCashierCartList);
     //setClone(!clone);
-    setIsUpdateTotalAmount(!isUpdateTotalAmount);
+    // setIsUpdateTotalAmount(!isUpdateTotalAmount);
   };
 
 
@@ -518,13 +614,13 @@ const Cashier = (props) => {
         reservation : null,
         customer: null,
         cartItem: [],
-        total_amount: "0",
-        paid_amount: "0",
-        discount: "0",
+        total_amount: 0,
+        paid_amount: 0 ,
+        discount: 0 ,
         payment_method: "cash",
         delivery: false,
-        scores: "0",
-        discountDetail: { value: "0", type: "VND" },
+        scores: 0,
+        discountDetail: { value: 0, type: "VND" },
         selectedPromotion: null,
         otherFee: 0,
       }
@@ -571,28 +667,31 @@ const Cashier = (props) => {
         }),
       };
 
-
-
       currentCart.cartItem.push(newCartItem);
-      //setCashierCartList(newCashierCartList);
-      
-      if(cartCreated){
-        handleUpdateState("AddNewCartWithAnItem", currentCart);
-      }else{
-        handleUpdateState("AddItemToCart", {
-          cart : currentCart,
-          newCartItem : newCartItem
-        });
-      }
+      currentCart.total_amount = currentCart.cartItem.reduce(
+        (accumulator, currentValue) => accumulator + Number(currentValue.unit_price),
+        0
+      );
+      currentCart.paid_amount = currentCart.total_amount;
+
+      //setIsUpdateTotalAmount(!isUpdateTotalAmount);
+      sendData({
+        event: 'bkrm:temporary_table_fborder_updated',
+        token: localStorage.getItem("token"),
+        payload: {
+          table_uuid: selectedTable.uuid,
+          temporary_fborder: JSON.stringify(currentCart)
+        },
+      });
       //setClone(!clone)
-      setIsUpdateTotalAmount(!isUpdateTotalAmount);
+      
       return;
     }
 
 
-    console.log("fff");
+
     if (!item.has_batches) {
-      console.log("heeheh");
+
       handleChangeItemQuantity(
         selectedOption.uuid,
         currentCart.cartItem[itemIndex].quantity + 1
@@ -803,6 +902,8 @@ const Cashier = (props) => {
                 handleAddCell = {handleAddCell}
                 ws = {ws}
                 setWs = {setWs}
+                socket = {socket}
+                setSocket = {setSocket}
 
               
               />
