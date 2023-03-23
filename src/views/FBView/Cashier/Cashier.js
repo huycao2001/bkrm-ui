@@ -300,6 +300,7 @@ const Cashier = (props) => {
         cluster: 'ap1',
       });
       if (selectedTable){
+        //ws.stores.{$table->store->uuid}.branches.{$table->branch->uuid}.tables.{$table->uuid}
         var channel = `ws.stores.${store_uuid}.branches.${branch_uuid}.tables.${selectedTable.uuid}`
         echo
         .channel(channel)
@@ -321,13 +322,15 @@ const Cashier = (props) => {
           setSocket(iniSocket);
 
         })
-        .listen('TemporaryTableOrderUpdatedEvent', (data) => {
+        .listen('.bkrm:temporary_fborder_updated_event', (data) => {
           console.log("WS got: " + JSON.stringify(data));
           console.log("type of data " + typeof data);
 
 
-          if(data.temporary_fborder){
+          if(data.temporary_fborder !== '[]'){
             handleUpdateTableCart(data.table_uuid, data.temporary_fborder);
+          }else{
+            console.log("no ????")
           }
           
         }
@@ -342,6 +345,7 @@ const Cashier = (props) => {
 
 
   const handleUpdateTableCart = (tableUuid, cart) => { 
+
     var newCashierCartList = [...cashierCartList]; 
     let currentCart = newCashierCartList.find(item => item.table.uuid === tableUuid);
 
@@ -516,7 +520,7 @@ const Cashier = (props) => {
     console.log("update right ?" + JSON.stringify(currentCart));
 
     sendData({
-      event: 'bkrm:temporary_table_fborder_updated',
+      event: 'bkrm:temporary_fborder_request_update_event',
       token: localStorage.getItem("token"),
       payload: {
         table_uuid: selectedTable.uuid,
@@ -545,8 +549,9 @@ const Cashier = (props) => {
 
     currentCart.cartItem.splice(itemIndex, 1);
     if(currentCart.cartItem.length === 0){
+      // Delete the whole cart
       sendData({
-        event: 'bkrm:temporary_table_fborder_updated',
+        event: 'bkrm:temporary_fborder_request_update_event',
         token: localStorage.getItem("token"),
         payload: {
           table_uuid: selectedTable.uuid,
@@ -562,7 +567,7 @@ const Cashier = (props) => {
 
     console.log("delete cart" + JSON.stringify(currentCart));
     sendData({
-      event: 'bkrm:temporary_table_fborder_updated',
+      event: 'bkrm:temporary_fborder_request_update_event',
       token: localStorage.getItem("token"),
       payload: {
         table_uuid: selectedTable.uuid,
@@ -676,7 +681,7 @@ const Cashier = (props) => {
 
       //setIsUpdateTotalAmount(!isUpdateTotalAmount);
       sendData({
-        event: 'bkrm:temporary_table_fborder_updated',
+        event: 'bkrm:temporary_fborder_request_update_event',
         token: localStorage.getItem("token"),
         payload: {
           table_uuid: selectedTable.uuid,
