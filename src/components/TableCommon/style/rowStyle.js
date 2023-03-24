@@ -11,24 +11,24 @@ export default makeStyles((theme) => ({
   },
   rowClicked: {
     //backgroundColor: theme.customization.mode === "Light" ? theme.palette.secondary.light : theme.palette.secondary.main ,
-    // backgroundColor:
-    //   theme.customization.mode === "Light" ? grey[200] : grey[700],
-    backgroundColor: "#2098D1",
-      "& $cell": {
-        color: "white"
-      }
+    backgroundColor:
+      theme.customization.mode === "Light" ? grey[200] : grey[700],
+    // backgroundColor: "#2098D1",
+    //   "& $cell": {
+    //     color: "white"
+    //   }
   },
   row: {
     cursor: "pointer",
     width: "100%",
     "&:hover": {
       // backgroundColor: theme.customization.mode === "Light" ? theme.palette.secondary.light : theme.palette.secondary.main ,
-      // backgroundColor:
-      //   theme.customization.mode === "Light" ? grey[200] : red[700],
-      backgroundColor: "#2098D1",
-      "& $cell": {
-        color: "white"
-      },
+      backgroundColor:
+        theme.customization.mode === "Light" ? grey[200] : grey[200],
+      // backgroundColor: "#2098D1",
+      // "& $cell": {
+      //   color: "white"
+      // },
     },
 
 

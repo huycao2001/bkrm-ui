@@ -45,6 +45,7 @@ import SearchWithAutoComplete from "../../../../components/SearchBar/SearchWithA
 import { statusAction } from "../../../../store/slice/statusSlice";
 import { infoActions } from "../../../../store/slice/infoSlice";
 import SearchIcon from "@material-ui/icons/Search";
+import ConfirmPopUp from "../../../../components/ConfirmPopUp/ConfirmPopUp";
 import { FormatedImage } from "../../../../components/SearchBar/SearchProduct";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -105,6 +106,13 @@ const AddInventory = (props) => {
 
   // Recipe inputs 
   const [ingredients , setIngredients] = useState([]); 
+
+  // This price is the price of the total ingredients of a dish
+  const [totalImportedPrice , setTotalImportedPrice] = useState(0); 
+
+  // Open confirm popup when imported price is smaller than the total price of the ingredients
+  const [openConfirmPopup, setOpenConfirmPopup] = useState(false);
+
 
 
 
@@ -207,7 +215,7 @@ const AddInventory = (props) => {
         productFormik.values.salesPrice.toString()
       );
 
-      if(ingredients.length > 0){
+      if(false){ //ingredients.length
         var total_standard_price = ingredients.reduce(
           (accumulator, currentValue) => accumulator + currentValue.quantity_required * currentValue.standard_price,
           0
@@ -280,28 +288,48 @@ const AddInventory = (props) => {
 
 
       // Add recipe 
-        var recipe = {
-          quantity_produced: 0
-        }
-        var ingredients_list = ingredients.map((item) => {
-          return {
-            product_uuid : item.uuid,
-            quantity_required : item.quantity_required
-          }
-        });
+        // var recipe = {
+        //   quantity_produced: 0
+        // }
+        // var ingredients_list = ingredients.map((item) => {
+        //   return {
+        //     product_uuid : item.uuid,
+        //     quantity_required : item.quantity_required
+        //   }
+        // });
   
-        if(ingredients_list.length > 0){
-          recipe = {
+        // if(ingredients_list.length > 0){
+        //   recipe = {
+        //     quantity_produced: 1, 
+        //     ingredients : ingredients_list
+        //   }
+        // }else{
+        //   recipe = {
+        //     quantity_produced: 0,
+        //     ingredients : ingredients_list
+        //   }
+        // }
+        // bodyFormData.append("recipe", JSON.stringify(recipe));
+
+
+
+        if(ingredients.length){
+          var ingredients_list = ingredients.map((item) => {
+            return {
+              product_uuid : item.uuid,
+              quantity_required : item.quantity_required
+            }
+          });
+
+
+          var recipe = {
             quantity_produced: 1, 
             ingredients : ingredients_list
           }
-        }else{
-          recipe = {
-            quantity_produced: 0,
-            ingredients : ingredients_list
-          }
+
+          bodyFormData.append("recipe", JSON.stringify(recipe));
+
         }
-        bodyFormData.append("recipe", JSON.stringify(recipe));
       //}
 
 
@@ -635,6 +663,18 @@ const AddInventory = (props) => {
           handleClose={handleCloseCategory}
           onReset={onReset}
         />
+
+
+          <ConfirmPopUp
+                open={openConfirmPopup}
+                handleConfirm={addProductHandler}
+                handleClose={() => setOpenConfirmPopup(false)}
+                message={
+                    
+                        "Giá vốn của món ăn đang nhỏ hơn tổng giá vốn của nguyên liệu ! Bạn có chắc muốn sử dụng giá vốn này ?"
+                    
+                }
+            />
         <SnackBarGeneral
           handleClose={() => setOpenSnack(false)}
           open={openSnack}
@@ -830,6 +870,7 @@ const AddInventory = (props) => {
               onChange={(e) => {
                 // productFormik.handleChange
                 productFormik.setFieldValue("importedPrice", e.target.value);
+
                 if (relatedList.length !== 0) {
                   var list = [...relatedList];
                   list = relatedList.map(
@@ -1265,8 +1306,25 @@ const AddInventory = (props) => {
               else if(isIngredient === false && ingredients.length == 0){
                 dispatch(statusAction.failedStatus("Vui lòng thêm nguyên liệu thành phần cho món ăn"));
               }
+              else if(ingredients.length ){
+                //dispatch(statusAction.failedStatus("Vui lòng nhập giá vốn"));
+
+                var total_standard_price = ingredients.reduce(
+                  (accumulator, currentValue) => accumulator + currentValue.quantity_required * currentValue.standard_price,
+                  0
+                );
+
+                if(productFormik.values.importedPrice < total_standard_price){
+                  setOpenConfirmPopup(true)
+                }else{
+                  addProductHandler();
+                }
+
+              }
               else {
                 addProductHandler();
+                //dispatch(statusAction.successfulStatus("???????"));
+
               }
             }}
             variant="contained"

@@ -3,7 +3,8 @@ import React from "react";
 import { styled } from "@mui/material/styles";
 import { useTheme, makeStyles, createStyles } from "@material-ui/core/styles";
 import { grey } from "@material-ui/core/colors";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 //Table
 import TableHeader from "../../../../components/TableCommon/TableHeader/TableHeader";
 import TableWrapper from "../../../../components/TableCommon/TableWrapper/TableWrapper";
@@ -13,6 +14,8 @@ import TableBody from "@mui/material/TableBody";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { ThousandFormat } from "../../../../components/TextField/NumberFormatCustom";
+import {Select, TreeSelect} from 'antd';
+
 // import TextField from '@mui/material/TextField';
 import DeleteForeverOutlinedIcon from "@material-ui/icons/DeleteForeverOutlined";
 
@@ -39,6 +42,7 @@ import {
 } from "@material-ui/core";
 
 import SearchProduct from "../../../../components/SearchBar/SearchProduct";
+import productApi from "../../../../api/productApi";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -118,10 +122,80 @@ const AddRecipe = (props) => {
   const theme = useTheme();
   const classes = useStyles(theme);
 
+  const info = useSelector((state) => state.info);
+  const store_uuid = info.store.uuid;
+  const branch_uuid = info.branch.uuid;
+
   var total_standard_price = 0;
-  for(var item of ingredients){
-    total_standard_price+= item.quantity_required*item.standard_price;
+  for(var ingredient of ingredients){
+    if(ingredient.uom){
+      total_standard_price+= ingredient.quantity_required * ingredient.standard_price * 1/ingredient.conversion;
+    }else{
+      total_standard_price+= ingredient.quantity_required * ingredient.standard_price;
+    }
+    
   } 
+
+
+  const [listUOMs, setListUOMs] = useState([]); 
+
+  const handleGetUOMs = async (product_uuid) => {
+    try{
+      const response = await productApi.getUOMs(store_uuid, product_uuid); 
+      console.log("response go : " + JSON.stringify(response)); 
+      var uoms = response.data.unit_of_measurements;
+      if(uoms.length > 0 ){
+        var defaultUOM = {
+          value :product_uuid, 
+          label : products.find(product => product.uuid === product_uuid).quantity_per_unit,
+          parent : product_uuid,
+          conversion : 1
+        }
+
+
+        var newMeasurement = {
+          product_uuid : product_uuid, 
+          uoms : [ defaultUOM, ...uoms.map (uom => { 
+            return {
+              value : uom.uuid,
+              label : uom.quantity_per_unit,
+              parent : product_uuid,
+              conversion : uom.conversion_number
+
+            }
+          })]
+        }
+        setListUOMs([ newMeasurement, ...listUOMs]); 
+      }
+
+    }
+    catch(e){
+      console.log("get uoms failed : " + e); 
+    }
+  }
+
+
+  const handleFindUOMs = (product_uuid) => { 
+    const uomList =listUOMs.find(item => item.product_uuid === product_uuid); 
+    if(uomList){
+      return uomList.uoms;
+
+    }
+    return [];
+  } 
+
+
+  const handleDeleteUOMs = (product_uuid) => { 
+    setListUOMs(prev => { 
+      var newList = [...listUOMs]; 
+      newList = newList.filter(item => item.product_uuid !== product_uuid);
+      return newList;
+    })
+  }
+
+  useEffect(() => {
+    console.log("uoms : " + JSON.stringify(listUOMs)); 
+  }, [listUOMs]);
 
 
   const handleAddIngredient = (selectedItem) => {
@@ -148,6 +222,7 @@ const AddRecipe = (props) => {
         quantity_required : 1,
         img_urls : selectedItem.img_urls
       }
+      handleGetUOMs(selectedItem.uuid);
       setIngredients(prevIngredients => [...prevIngredients, newItem]); 
     }
   }
@@ -159,6 +234,7 @@ const AddRecipe = (props) => {
       return item.uuid !== selectedItem.uuid
     });
 
+    handleDeleteUOMs(selectedItem.uuid);
     setIngredients(newIngredients);
   }
 
@@ -180,7 +256,7 @@ const AddRecipe = (props) => {
 
    
   useEffect(() => {
-    console.log("????" + JSON.stringify(ingredients));
+    console.log("ingredients : " + JSON.stringify(ingredients));
   }, [ingredients]);
 
   return (
@@ -245,15 +321,52 @@ const AddRecipe = (props) => {
                   </StyledTableCell>
 
                   <StyledTableCell component="th" scope="row">
-                    {"Cái"}
+                  {handleFindUOMs(ingredient.uuid).length > 0 ?  <Select
+                      defaultValue={handleFindUOMs(ingredient.uuid)[0].label}
+                      style={{ width: '100%'}}  
+                      dropdownStyle={{ maxHeight: 400, overflow: 'auto',zIndex:100000000  }}
+                      onChange = {(uomUuid, object) => {
+                          //tableFormik.values.table_group_name = value;
+                          console.log("value is " + uomUuid);
+                          console.log("label is "  + JSON.stringify(object))
+
+                          // set Ingredient
+                          const newIngredients = ingredients.map((item) => {
+                            if (item.uuid === object.parent) {
+                              console.log("found it")
+
+                              return {
+                                ...item,
+                                standard_uom_price : item.standard_price * 1/object.conversion,
+                                uom: uomUuid,
+                                conversion : object.conversion
+                              };
+                            } else {
+                              console.log("wait why ?")
+                              return item;
+                            }
+                          });
+                          
+                          setIngredients(newIngredients);
+                          
+
+                      } }
+                      options={handleFindUOMs(ingredient.uuid) }
+                    /> : "Cái"}
+
+                    {/* {"cais"} */}
                   </StyledTableCell>
 
                   <StyledTableCell component="th" scope="row">
-                    <ThousandFormat value = {ingredient.standard_price}/>
+                    {ingredient.uom ? <ThousandFormat value = {ingredient.standard_price * 1/ingredient.conversion}/> : 
+                      <ThousandFormat value = {ingredient.standard_price }/>
+                    }
                   </StyledTableCell>
 
                   <StyledTableCell component="th" scope="row">
-                    <ThousandFormat value = {ingredient.standard_price * ingredient.quantity_required}  />
+                  {ingredient.uom ? <ThousandFormat value = {ingredient.standard_price* ingredient.quantity_required  * 1/ingredient.conversion}/> : 
+                      <ThousandFormat value = {ingredient.standard_price * ingredient.quantity_required }/>
+                    }
                   </StyledTableCell>
 
                   <StyledTableCell component="th" scope="row">
