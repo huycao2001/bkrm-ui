@@ -50,6 +50,7 @@ export default function SignUp() {
     validationSchema: Yup.object({
       name: Yup.string().required("Nhập tên chủ cửa hàng"),
       user_name: Yup.string().required("Nhập tên đăng nhập"),
+      email : Yup.string().required('Vui lòng nhập email'),
       phone: Yup.string()
         .length(10, "Số điện thoại không chính xác")
         .required("Nhập số điện thoại")

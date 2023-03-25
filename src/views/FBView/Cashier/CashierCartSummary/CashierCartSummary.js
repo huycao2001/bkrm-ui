@@ -25,29 +25,33 @@ import Popper from '@material-ui/core/Popper';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import { useSelector } from "react-redux";
 
-import AddCustomer from "../../../../views/ManagerView/Customer/AddCustomer/AddCustomer";
+import AddCustomer from "../../../ManagerView/Customer/AddCustomer/AddCustomer"
+//import AddCustomer from "../../../../views/ManagerView/Customer/AddCustomer/AddCustomer";
 import giftBox from "../../../../assets/img/icon/giftbox.png";
 // import giftBox from "../../../../assets/img/icon/gift.png";
 // import giftBox from "../../../../assets/img/icon/gift2.png";
 
-import SearchCustomer from "../../../SearchBar/SearchCustomer";
+import SearchCustomer from "../../../../components/SearchBar/SearchCustomer";
 
 //import project
-import * as Input from "../../../TextField/NumberFormatCustom";
+// import * as Input from "../../../TextField/NumberFormatCustom";
 
 // import VNDInput from '../../../TextField/NumberFormatCustom';
 // import { VNDFormat,ThousandFormat } from '../../../TextField/NumberFormatCustom';
 import setting from "../../../../assets/constant/setting";
 
-import VNDInput from "../../../TextField/NumberFormatCustom";
+
+import VNDInput from "../../../../components/TextField/NumberFormatCustom";
 import {
   VNDFormat,
   ThousandFormat,
-} from "../../../TextField/NumberFormatCustom";
+} from "./../../../components/TextField/NumberFormatCustom";
 import { useDispatch } from "react-redux";
 import { statusAction } from "../../../../store/slice/statusSlice";
-import DiscountPopUp from "../../../../views/SalesView/Cart/DiscountPopup/DiscountPopup"
-import DiscountInputDetail from "../../../TextField/DiscountInputDetail";
+//import DiscountPopUp from "../../../../views/SalesView/Cart/DiscountPopup/DiscountPopup"
+import DiscountInputDetail from "../../../../components/TextField/DiscountInputDetail";
+
+
 import openNotification from "../../../../components/StatusPopup/StatusPopup";
 
 const useStyles = makeStyles((theme) =>
@@ -67,7 +71,7 @@ const useStyles = makeStyles((theme) =>
     popup: { borderColor: theme.customization.primaryColor[500], padding: 5, paddingLeft: 12, boxShadow: "0px 5px 10px 0px rgba(0, 0, 0, 0.5)" },
   })
 );
-const CartSummary = (props) => {
+const CashierCartSummary = (props) => {
   const {
     cartData,
     handleSelectCustomer,
@@ -219,14 +223,14 @@ const CartSummary = (props) => {
         </div>
 
         {/* <AddCustomer open={open} handleClose={handleClose} /> */}
-        
-        {open &&<AddCustomer 
+        {/* Implement later */}
+        {/* {open &&<AddCustomer 
         open={open} 
         handleClose={()=>{setOpen(false)}}  
         onReload={props.reloadCustomers} 
         setAddCustomer={setAddCustomer}
         isCart={true}
-        />}
+        />} */}
         {/* when change mode to menu product */}
         {props.children}
 
@@ -258,7 +262,7 @@ const CartSummary = (props) => {
         >
           <div>
             <ListItem style={{ padding: 0, margin: 0 }}>
-              <Typography variant="h5">{!canEnterDiscountWhenSell && mode ? `Tổng tiền (${calculateTotalQuantity(cartData.cartItem)})` : `Tổng tiền hàng` }</Typography>
+              <Typography variant="h5">{!canEnterDiscountWhenSell && mode ? `Tổng tiền (${calculateTotalQuantity(cartData.cartItem)})` : `Tổng tiền hàng`}</Typography>
               {/* { filteredPromotion.length > 0   ? 
                 <div onClick={()=>{setOpenDiscount(!openDiscount)}}>
                     <img id="gift" src={require('../../../../assets/img/icon/giftbox.png').default} style={{height:16,width:16, marginLeft:10, marginTop:-3}} />
@@ -457,20 +461,7 @@ const CartSummary = (props) => {
           </FormControl>
         </Grid>
 
-        {/* <Grid
-              container
-              direction="row"
-              justifyContent="flex-end"
-              alignItems="center"
-            >
-              <FormControlLabel
-                labelPlacement="start"
-                control={
-                  <Checkbox checked={cartData.delivery} onChange={(e)=>handleCheckDelivery(e.target.checked)} />
-                }
-                label="Giao hàng"
-              />
-            </Grid> */}
+
         <Button
           variant="contained"
           fullWidth
@@ -486,5 +477,6 @@ const CartSummary = (props) => {
   );
 };
 
-export default CartSummary;
+export default CashierCartSummary;
+
 

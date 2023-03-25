@@ -16,6 +16,10 @@ import {
   Dialog,
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
+
+import AddRecipe from "../../../AddInventory/AddRecipe";
+
+import AddUnit from "../../../AddInventory/AddUnit";
 //import project
 import VNDInput , { ThousandSeperatedInput }from "../../../../../../components/TextField/NumberFormatCustom";
 // import img
@@ -46,16 +50,43 @@ const UploadImages = (img) => {
 };
 const UpdateInventory = (props) => {
   const dispatch = useDispatch();
-  const { handleClose, open,isManageInventory } = props;
+  const { handleClose, open,isManageInventory, productInfo } = props;
   const [openAddCategory, setOpenAddCategory] = useState(false);
   const handleCloseCategory = () => setOpenAddCategory(false);
   const [categoryList, setCategoryList] = useState([]);
   const [images, setImages] = useState([]);
+
+  // list of products for recipe 
+  const [products, setProducts] = useState([]);
+  // Ingredients list 
+  const [ingredients , setIngredients] = useState(prev => {
+    if(productInfo.recipe_data.ingredients){
+      var ingredient_list =  productInfo.recipe_data.ingredients.map(item => {
+        return {
+          uuid : item.product_uuid,
+          product_code : item.product_code,
+          name : item.product_name,
+          quantity_required : item.quantity_required,
+          standard_price : item.standard_price
+        }
+      });
+
+      return ingredient_list;
+    }
+    return [];
+  }); 
+
   const [display, setDisplay] = useState([]);
   useEffect(()=>{
-    const displayList = JSON.parse(props.productInfo.img_urls ? props.productInfo.img_urls : "[]").map((img) => ({link:img,isUrl: true}))
+    const displayList = JSON.parse(productInfo.img_urls ? productInfo.img_urls : "[]").map((img) => ({link:img,isUrl: true}))
     setDisplay(displayList)
-  },[props.productInfo.images])
+  },[productInfo.images])
+
+
+
+  useEffect(()=>{
+    console.log("ingredient list" + JSON.stringify(ingredients));
+  }, [])
   const addImageHandler = (e) => {
     console.log(e.target.files[0]);
     console.log(URL.createObjectURL(e.target.files[0]));
@@ -72,15 +103,15 @@ const UpdateInventory = (props) => {
   const productFormik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      name: props.productInfo.name,
-      barcode: props.productInfo.bar_code ? props.productInfo.bar_code : '',
-      importedPrice: props.productInfo.standard_price || 0,
-      salesPrice: props.productInfo.list_price || 0,
-      category: props.productInfo.category.uuid || "Mặc định",
-      unit: props.productInfo.quantity_per_unit || '',
-      re_order_point: props.productInfo.min_reorder_quantity || 0,
-      product_code: props.productInfo.product_code || '',
-      max_order:props.productInfo.max_order || '',
+      name: productInfo.name,
+      barcode: productInfo.bar_code ? productInfo.bar_code : '',
+      importedPrice: productInfo.standard_price || 0,
+      salesPrice: productInfo.list_price || 0,
+      category: productInfo.category.uuid || "Mặc định",
+      unit: productInfo.quantity_per_unit || '',
+      re_order_point: productInfo.min_reorder_quantity || 0,
+      product_code: productInfo.product_code || '',
+      max_order:productInfo.max_order || '',
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Nhập tên sản phẩm "),
@@ -92,6 +123,7 @@ const UpdateInventory = (props) => {
   })
   const info = useSelector((state) => state.info);
   const store_uuid = info.store.uuid;
+  const branch_uuid = info.branch.uuid;
 
   const theme = useTheme();
   const classes = useStyles(theme);
@@ -101,7 +133,24 @@ const UpdateInventory = (props) => {
       var bodyFormData = new FormData();
       bodyFormData.append("name", productFormik.values.name.toString());
       bodyFormData.append("list_price", productFormik.values.salesPrice.toString());
-      bodyFormData.append("standard_price",productFormik.values.importedPrice.toString());
+
+      //
+      if(ingredients.length){
+        var total_standard_price = ingredients.reduce(
+          (accumulator, currentValue) => accumulator + currentValue.quantity_required * currentValue.standard_price,
+          0
+        );
+        bodyFormData.append(
+          "standard_price",
+          total_standard_price
+        );
+      }else{
+        bodyFormData.append("standard_price",productFormik.values.importedPrice.toString());
+      }
+      
+      
+      
+      
       bodyFormData.append("bar_code", productFormik.values.barcode.toString());
       bodyFormData.append("product_code", productFormik.values.product_code.toString());
       bodyFormData.append("quantity_per_unit", productFormik.values.unit.toString());
@@ -123,9 +172,26 @@ const UpdateInventory = (props) => {
       bodyFormData.append("img_urls", img_url);
 
       images.forEach((image) => bodyFormData.append("images[]", image));
+
+
+      // Ingredients 
+      if(ingredients.length){
+        var ingredients_list = ingredients.map((item) => {
+          return {
+            product_uuid : item.uuid,
+            quantity_required : item.quantity_required
+          }
+        });
+
+        var recipe = {
+          quantity_produced: 1, 
+          ingredients : ingredients_list
+        }
+        bodyFormData.append("recipe", JSON.stringify(recipe));
+      }
       const response = await productApi.updateProduct(
         store_uuid,
-        props.productInfo.uuid,
+        productInfo.uuid,
         bodyFormData
       );
       dispatch(statusAction.successfulStatus("Sửa sản phẩm thành công"));
@@ -135,6 +201,8 @@ const UpdateInventory = (props) => {
       dispatch(statusAction.failedStatus("Sửa thất bại"));
     }
   };
+
+  // Fetch categories
   useEffect(() => {
     const fetchCategoryList = async () => {
       try {
@@ -146,7 +214,24 @@ const UpdateInventory = (props) => {
       }
     };
     fetchCategoryList();
-  }, [store_uuid, props.productInfo]);
+  }, [store_uuid, productInfo]);
+
+
+  // Fetch products for recipes
+  useEffect(() => {
+    const loadProducts = async() => {
+      try{
+        const response = await productApi.searchBranchProduct(store_uuid, branch_uuid, "");
+        setProducts(response.data);
+      }catch(e){
+        console.log("UpdateInventory loads products failed")
+        console.log(e); 
+      }
+    }
+
+
+    loadProducts();
+  }, [branch_uuid, store_uuid])
   
   const handleCloseAndReset = () => {
     handleClose();
@@ -167,6 +252,9 @@ const UpdateInventory = (props) => {
     <Dialog
       open={open}
       onClose={handleClose}
+      sx={{
+        minWidth : "200vh"
+      }}
       aria-labelledby="form-dialog-title"
     >
       <AddCategory open={openAddCategory} handleClose={handleCloseCategory} />
@@ -177,7 +265,7 @@ const UpdateInventory = (props) => {
           gutterBottom
           style={{ marginBottom: 20 }}
         >
-          Chỉnh sửa sản phẩm
+          Cập nhật sản phẩm
         </Typography>
         <Grid
           container
@@ -350,6 +438,13 @@ const UpdateInventory = (props) => {
 
             </>:null}
           </Grid>
+
+          {productInfo.recipe_data.ingredients && <AddRecipe
+            ingredients = {ingredients}
+            setIngredients = {setIngredients}
+            products = {products}
+          
+          />}
         </Grid>
         <Grid container spacing={2}>          <Grid item xs>
             <Box

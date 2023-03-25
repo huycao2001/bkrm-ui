@@ -5,6 +5,7 @@ import { useTheme, makeStyles, styled } from "@material-ui/core/styles";
 import EditTwoToneIcon from '@material-ui/icons/EditTwoTone';
 import SimpleModal from "../../../../components/Modal/ModalWrapper";
 
+
 import ModalWrapperWithClose from "../../../../components/Modal/ModalWrapperWithClose";
 
 import DeleteForeverTwoToneIcon from '@material-ui/icons/DeleteForeverTwoTone';
@@ -104,7 +105,7 @@ const AddAttribute = ({ attributeList, datas, setDatas, setRelatedList, list_pri
         <div style={{ marginBottom: 10 }}>
             {datas.map((data, index) => {
                 return (
-                    <AttributeRow attributeList={attributeList} index={index} data={data} datas={datas} updateFieldChanged={updateFieldChanged} deleteAttr={deleteAttr}  updateValueChanged={updateValueChanged}/>
+                    <AttributeRow key = {index} attributeList={attributeList} index={index} data={data} datas={datas} updateFieldChanged={updateFieldChanged} deleteAttr={deleteAttr}  updateValueChanged={updateValueChanged}/>
                 )
             })}
             <Button variant="outlined" size="small" color="primary" style={{ marginLeft: 20, marginTop: 10, textTransform: "none" }}

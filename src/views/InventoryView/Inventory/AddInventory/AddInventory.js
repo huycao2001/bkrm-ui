@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useTheme } from "@material-ui/core/styles";
 //import library
+import InfoIcon from '@material-ui/icons/Info';
 import {
   Button,
   TextField,
@@ -21,9 +22,12 @@ import {
   Card,
   CardHeader,
   Checkbox,
-  ListItem
+  ListItem,
+  Radio,
+  RadioGroup
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
+import InfoButton from "../../../../components/Button/InfoButton";
 //import project
 import VNDInput, {
   ThousandSeperatedInput,
@@ -48,11 +52,13 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import clsx from "clsx";
 import TagsInput from "../../../../components/TextField/TagsInput";
 import AddAttribute from "./AddAttribute";
+import AddUnit from "./AddUnit";
+import AddRecipe from "./AddRecipe";
 import RelaltedItemList from "./RelaltedItemList";
 import SnackBarGeneral from "../../../../components/SnackBar/SnackBarGeneral";
 import CategorySelect from "../../../../components/Category/CategorySelect";
 import setting from "../../../../assets/constant/setting"
-import ReactQuill, {Quill} from 'react-quill';
+import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import ImageResize from 'quill-image-resize-module-react';
 // import Tree from "../../../../components/Select/Tree"
@@ -93,25 +99,35 @@ const AddInventory = (props) => {
   const [images, setImages] = useState([]);
   const [display, setDisplay] = useState([]);
   const [imageURL, setImageURL] = useState("");
+
+  // Products for creaing recipe
+  const [products, setProducts] = useState([]); 
+
+  // Recipe inputs 
+  const [ingredients , setIngredients] = useState([]); 
+
+
+
+
   const addImageHandler = (e) => {
-   try{
-    console.log(e.target.files[0]);
-    console.log(URL.createObjectURL(e.target.files[0]));
-    setImages([...images, e.target.files[0]]);
-    setDisplay([
-      ...display,
-      {
-        index: images.length,
-        link: URL.createObjectURL(e.target.files[0]),
-        isUrl: false,
-      },
-    ]);
-   }catch(err) {
-     console.log(err)
-   }
+    try {
+      console.log(e.target.files[0]);
+      console.log(URL.createObjectURL(e.target.files[0]));
+      setImages([...images, e.target.files[0]]);
+      setDisplay([
+        ...display,
+        {
+          index: images.length,
+          link: URL.createObjectURL(e.target.files[0]),
+          isUrl: false,
+        },
+      ]);
+    } catch (err) {
+      console.log(err)
+    }
   };
 
-  const [description, setDescription] = useState('');
+  const [isIngredient, setIsIngredient] = useState(true);
 
   const productFormik = useFormik({
     initialValues: {
@@ -124,11 +140,12 @@ const AddInventory = (props) => {
       re_order_point: 0,
       product_code: "",
       has_batches: false,
-      quantity:0,
-      max_order:999999999,
-      description:"",
-      notification_period:7,
-      expiration_date : ""
+      quantity: 0,
+      max_order: 999999999,
+      description: "",
+      notification_period: 7,
+      expiration_date: "",
+      product_type: "ingredient"
 
     },
     validationSchema: Yup.object({
@@ -154,10 +171,15 @@ const AddInventory = (props) => {
 
 
 
-  // useEffect(()=>{
-  //   console.log('date :' + productFormik.values.expiration_date);
-  //   console.log('date :' + productFormik.values.expiration_date + 'huycao');
-  // },[productFormik.values.expiration_date])
+  // useEffect(() => {
+  //   //console.log('date :' + productFormik.values.expiration_date);
+  //   console.log('product_type:' + productFormik.values.product_type + ' huycao');
+  //   console.log('has batch:' + productFormik.values.has_batches + ' huycao');
+  //   console.log('expire:' + productFormik.values.expiration_date + ' huycao');
+  // }, [productFormik.values.product_type, productFormik.values.has_batches, productFormik.values.expiration_date])
+
+
+
 
   const [openSnack, setOpenSnack] = React.useState(false);
   const [snackStatus, setSnackStatus] = React.useState({
@@ -169,6 +191,7 @@ const AddInventory = (props) => {
   const info = useSelector((state) => state.info);
   const store_uuid = info.store.uuid;
   const branch_uuid = info.branch.uuid;
+  const store_type = info.store.store_type;
   const dispatch = useDispatch();
   // dispatch(infoActions.setStore({...info.store, general_configuration: "{\"inventory\":{\"status\":true},\"recommendedProduct\":{\"status\":true},\"variation\":{\"status\":true},\"expiryDate\":{\"status\":true},\"customerScore\":{\"status\":false,\"value\":10000,\"exceptDiscountProduct\":false,\"exceptDiscountInvoice\":false,\"exceptVoucher\":false},\"email\":{\"status\":false,\"emailAddress\":\"\",\"password\":\"\"},\"notifyDebt\":{\"status\":true,\"checkDebtAmount\":true,\"debtAmount\":\"500000\",\"checkNumberOfDay\":false,\"numberOfDay\":\"15\",\"typeDebtDay\":\"firstDebt\",\"canNotContinueBuy\":false,\"canNotContinueDebt\":false},\"returnLimit\":{\"status\":false,\"day\":7},\"canFixPriceSell\":{\"status\":false,\"cart\":false,\"import\":true,\"returnCart\":true,\"returnImport\":true},\"printReceiptWhenSell\":{\"status\":true,\"cart\":true,\"import\":false,\"returnCart\":false,\"returnImport\":false,\"order\":false,\"checkInventroy\":false},\"discount\":{\"status\":true,\"applyMultiple\":false,\"applyOnline\":true},\"voucher\":{\"status\":true},\"delivery\":{\"status\":true},\"vat\":{\"status\":false,\"listCost\":[{\"key\":\"1\",\"costName\":\"\",\"value\":0,\"type\":\"%\"}]},\"orderLowStock\":{\"status\":true,\"choiceQuantity\":\"select\",\"selectQuantity\":\"latest\",\"inputQuantity\":10,\"selectSuplier\":\"latest\"},\"autoApplyDiscount\":{\"status\":true}}"}));
 
@@ -183,10 +206,23 @@ const AddInventory = (props) => {
         "list_price",
         productFormik.values.salesPrice.toString()
       );
-      bodyFormData.append(
-        "standard_price",
-        productFormik.values.importedPrice.toString()
-      );
+
+      if(ingredients.length > 0){
+        var total_standard_price = ingredients.reduce(
+          (accumulator, currentValue) => accumulator + currentValue.quantity_required * currentValue.standard_price,
+          0
+        );
+        bodyFormData.append(
+          "standard_price",
+          total_standard_price
+        );
+      }
+      else{
+        bodyFormData.append(
+          "standard_price",
+          productFormik.values.importedPrice.toString()
+        );
+      }
       bodyFormData.append("bar_code", productFormik.values.barcode.toString());
       bodyFormData.append(
         "product_code",
@@ -194,7 +230,7 @@ const AddInventory = (props) => {
       );
       bodyFormData.append(
         "quantity_per_unit",
-        productFormik.values.unit ? productFormik.values.unit.toString() :"Cái"
+        productFormik.values.unit ? productFormik.values.unit.toString() : "Cái"
       );
       bodyFormData.append(
         "min_reorder_quantity",
@@ -220,7 +256,7 @@ const AddInventory = (props) => {
         "has_batches",
         Number(productFormik.values.has_batches)
       );
-      
+
       bodyFormData.append(
         "expiration_date",
         productFormik.values.expiration_date
@@ -242,14 +278,69 @@ const AddInventory = (props) => {
 
       images.forEach((image) => bodyFormData.append("images[]", image));
 
+
+      // Add recipe 
+        var recipe = {
+          quantity_produced: 0
+        }
+        var ingredients_list = ingredients.map((item) => {
+          return {
+            product_uuid : item.uuid,
+            quantity_required : item.quantity_required
+          }
+        });
+  
+        if(ingredients_list.length > 0){
+          recipe = {
+            quantity_produced: 1, 
+            ingredients : ingredients_list
+          }
+        }else{
+          recipe = {
+            quantity_produced: 0,
+            ingredients : ingredients_list
+          }
+        }
+        bodyFormData.append("recipe", JSON.stringify(recipe));
+      //}
+
+
+      // Add UOM 
+      if(unitList.length){
+        var unit_of_measurement_categories = [{
+          unit_of_measurements : unitList
+        }];
+
+        bodyFormData.append("unit_of_measurement_categories", JSON.stringify(unit_of_measurement_categories));
+      }
+
       await productApi.createProduct(store_uuid, bodyFormData);
       dispatch(statusAction.successfulStatus("Tạo sản phẩm thành công"));
-      props.setReload();
+      if(props.setReload){
+        props.setReload();
+      }
     } catch (error) {
       console.log(error);
       dispatch(statusAction.failedStatus("Tạo sản phẩm thất bại"));
     }
   };
+
+
+
+  const loadProducts = async() => {
+    try{
+      const response = await productApi.searchBranchProduct(store_uuid, branch_uuid, "");
+
+      // Set the products for making dishes
+      setProducts(response.data);
+
+      //console.log("res : " + JSON.stringify(response.data));
+    }catch(e){
+      console.log("AddInventory.js load products failed")
+      console.log(e); 
+    }
+  }
+
 
   const [reset, setReset] = useState(true);
   const onReset = () => {
@@ -261,7 +352,7 @@ const AddInventory = (props) => {
         const response = await productApi.getNestedCategory(store_uuid);
         setCategoryList(response.data);
         productFormik.setFieldValue("category", response.data[0].uuid);
-      } catch (error) {
+      } catch (error) {             
         console.log(error);
         return [];
       }
@@ -288,6 +379,10 @@ const AddInventory = (props) => {
   const searchSampleProductHandler = async (searchKey) => {
     return productApi.searchDefaultProducts(searchKey, 1);
   };
+
+
+
+
   const handleCloseAndReset = () => {
     handleClose();
     productFormik.resetForm();
@@ -379,15 +474,36 @@ const AddInventory = (props) => {
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+
+  //Mô tả
   const [expandedDescription, setExpandedDescription] = React.useState(false);
   const handleExpandedDescription = () => {
     setExpandedDescription(!expandedDescription);
   };
+
+
+  // Định lượng nguyên liệu 
+  const [expandedIngredient, setExpandedIngredient] = React.useState(false);
+  const handleExpandedIngredient = () => {
+    setExpandedIngredient(!expandedIngredient);
+  };
+
+
+  // Công thức cho món ăn chế biến 
+  const [expandedRecipe, setExpandedRecipe] = React.useState(false);
+  const handleExpandedRecipe = () => {
+    setExpandedRecipe(!expandedRecipe);
+  };
+
+
   //Lô, HSD
-  const [outOfDate, setOutOfDate] = React.useState("false");
+  const [hasBatches, setHasBatches] = useState(false);
 
   // Attr
   const [datas, setDatas] = useState([{ key: "unset", items: [] }]);
+
+  //Unit
+  const [unitList, setUnitList] = useState([]);
 
   // {name:e,product_code:"", bar_code: "",standard_price:0, unit_price :0}
   const [relatedList, setRelatedList] = useState([]);
@@ -450,13 +566,13 @@ const AddInventory = (props) => {
         productFormik.values.description.toString()
         // JSON.stringify(productFormik.values.description)
       );
-       bodyFormData.append(
+      bodyFormData.append(
         "notification_period",
         productFormik.values.notification_period.toString()
         // JSON.stringify(productFormik.values.description)
       );
 
-      
+
       bodyFormData.append("branch_uuid", branch_uuid);
       bodyFormData.append("quantity", 0);
       for (var i = 0; i < relatedList.length; i++) {
@@ -491,7 +607,9 @@ const AddInventory = (props) => {
       await productApi.addProductWithVaration(store_uuid, bodyFormData);
       dispatch(statusAction.successfulStatus("Tạo sản phẩm thành công"));
       // handleClose();
-      props.setReload(true);
+      if(props.setReload){
+        props.setReload();
+      }
     } catch (error) {
       console.log(error);
       dispatch(statusAction.failedStatus("Tạo sản phẩm thất bại"));
@@ -500,17 +618,17 @@ const AddInventory = (props) => {
 
   const [value, setValue] = useState(null)
 
-  const store_setting = info.store.general_configuration? JSON.parse(info.store.general_configuration): setting
+  const store_setting = info.store.general_configuration ? JSON.parse(info.store.general_configuration) : setting
 
-return (
+  return (
     <Dialog
       open={open}
       onClose={handleCloseAndReset}
       aria-labelledby="form-dialog-title"
       maxWidth="md"
     >
-     
-      
+
+
       <Box className={classes.root}>
         <AddCategory
           open={openAddCategory}
@@ -569,7 +687,7 @@ return (
               }
               onBlur={productFormik.handleBlur}
               type="text"
-            
+
             />
             {/* <TextField
               label="Mã sản phẩm (tự động)"
@@ -587,7 +705,7 @@ return (
               fullWidth
               size="small"
               name="barcode"
-              onKeyDown={(e) => {}}
+              onKeyDown={(e) => { }}
               onChange={productFormik.handleChange}
               value={productFormik.values.barcode}
               InputProps={{
@@ -612,9 +730,20 @@ return (
               name="unit"
               onChange={productFormik.handleChange}
               value={productFormik.values.unit}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <InfoButton title = "Đơn vị của nguyên liệu được lưu trong kho. Ví dụ : đĩa, chai, lon,..."/>
+                  </InputAdornment>
+                ),
+              }}
             />
+
+            {/* <InfoButton
+              title = "dddd"
+            /> */}
             <Box className={`${classes.box} ${classes.margin}`}>
-             
+
               <FormControl required size="small" variant="outlined" fullWidth>
                 {/* <InputLabel htmlFor="category">Danh mục</InputLabel> */}
                 {/* <Select
@@ -629,20 +758,20 @@ return (
                   <CategorySelect categoryList={categoryList}/>
                 </Select> */}
                 <TreeSelect
-                      id="category"
-                      name="category"  
-                      style={{ width: '100%'}}   
-                      dropdownStyle={{ maxHeight: 400, overflow: 'auto',zIndex:100000000  }}
-                      treeData={categoryList}
-                      value={productFormik.values.category}
-                      onChange={(val)=>productFormik.setFieldValue("category",val )}
-                      treeDefaultExpandAll
-                      onBlur={productFormik.handleBlur}
-                      
-                    />
+                  id="category"
+                  name="category"
+                  style={{ width: '100%' }}
+                  dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: 100000000 }}
+                  treeData={categoryList}
+                  value={productFormik.values.category}
+                  onChange={(val) => productFormik.setFieldValue("category", val)}
+                  treeDefaultExpandAll
+                  onBlur={productFormik.handleBlur}
+
+                />
 
 
-                    
+
               </FormControl>
               <Tooltip title="Thêm danh mục">
                 <IconButton
@@ -709,6 +838,16 @@ return (
                   // list = relatedList.map(e =>({name:e,product_code:"", bar_code: "",standard_price:productFormik.values.importedPrice, list_price :value}))
                   // setRelatedList(list)
                 }
+
+                // if(!isIngredient){
+                //   // Dish
+                //   var total_standard_price = ingredients.reduce(
+                //     (accumulator, currentValue) => accumulator + currentValue.quantity_required * currentValue.standard_price,
+                //     0
+                //   );
+                //   productFormik.setFieldValue("importedPrice", total_standard_price);
+                  
+                // }
               }}
               error={
                 productFormik.touched.importedPrice &&
@@ -730,80 +869,80 @@ return (
               </Typography>
             ) : null} */}
             {store_setting?.inventory.status ?
-            <>
-            <ThousandSeperatedInput
-              label="Tồn kho ban đầu"
-              variant="outlined"
-              fullWidth
-              size="small"
-              className={classes.margin}
-              name="quantity"
-              value={productFormik.values.quantity}
-              // onChange={productFormik.handleChange}
-              onChange={(e) => {
-                // productFormik.handleChange
-                productFormik.setFieldValue("quantity", e.target.value);
-                if (relatedList.length !== 0) {
-                  var list = [...relatedList];
-                  list = relatedList.map(
-                    (i) => (i.quantity = e.target.value)
-                  );
-                  // list = relatedList.map(e =>({name:e,product_code:"", bar_code: "",standard_price:productFormik.values.importedPrice, list_price :value}))
-                  // setRelatedList(list)
-                }
-              }}
-              error={
-                productFormik.touched.quantity && productFormik.errors.quantity
-              }
-              helperText={
-                productFormik.touched.quantity
-                  ? productFormik.errors.quantity
-                  : null
-              }
-              onBlur={productFormik.handleBlur}
-            />
+              <>
+                <ThousandSeperatedInput
+                  label="Tồn kho ban đầu"
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  className={classes.margin}
+                  name="quantity"
+                  value={productFormik.values.quantity}
+                  // onChange={productFormik.handleChange}
+                  onChange={(e) => {
+                    // productFormik.handleChange
+                    productFormik.setFieldValue("quantity", e.target.value);
+                    if (relatedList.length !== 0) {
+                      var list = [...relatedList];
+                      list = relatedList.map(
+                        (i) => (i.quantity = e.target.value)
+                      );
+                      // list = relatedList.map(e =>({name:e,product_code:"", bar_code: "",standard_price:productFormik.values.importedPrice, list_price :value}))
+                      // setRelatedList(list)
+                    }
+                  }}
+                  error={
+                    productFormik.touched.quantity && productFormik.errors.quantity
+                  }
+                  helperText={
+                    productFormik.touched.quantity
+                      ? productFormik.errors.quantity
+                      : null
+                  }
+                  onBlur={productFormik.handleBlur}
+                />
 
-            <ThousandSeperatedInput
-              label="Số lượng đặt hàng lại"
-              variant="outlined"
-              fullWidth
-              size="small"
-              className={classes.margin}
-              name="re_order_point"
-              value={productFormik.values.re_order_point}
-              onChange={productFormik.handleChange}
-              error={
-                productFormik.touched.re_order_point &&
-                productFormik.errors.re_order_point
-              }
-              helperText={
-                productFormik.touched.re_order_point
-                  ? productFormik.errors.re_order_point
-                  : null
-              }
-              onBlur={productFormik.handleBlur}
-            />
-            <ThousandSeperatedInput
-              label="Số lượng nhập hàng tối đa"
-              variant="outlined"
-              fullWidth
-              size="small"
-              className={classes.margin}
-              name="max_order"
-              value={productFormik.values.max_order}
-              onChange={productFormik.handleChange}
-              error={
-                productFormik.touched.max_order &&
-                productFormik.errors.max_order
-              }
-              helperText={
-                productFormik.touched.max_order
-                  ? productFormik.errors.max_order
-                  : null
-              }
-              onBlur={productFormik.handleBlur}
-            />
-            </>:null}
+                <ThousandSeperatedInput
+                  label="Số lượng đặt hàng lại"
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  className={classes.margin}
+                  name="re_order_point"
+                  value={productFormik.values.re_order_point}
+                  onChange={productFormik.handleChange}
+                  error={
+                    productFormik.touched.re_order_point &&
+                    productFormik.errors.re_order_point
+                  }
+                  helperText={
+                    productFormik.touched.re_order_point
+                      ? productFormik.errors.re_order_point
+                      : null
+                  }
+                  onBlur={productFormik.handleBlur}
+                />
+                <ThousandSeperatedInput
+                  label="Số lượng nhập hàng tối đa"
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  className={classes.margin}
+                  name="max_order"
+                  value={productFormik.values.max_order}
+                  onChange={productFormik.handleChange}
+                  error={
+                    productFormik.touched.max_order &&
+                    productFormik.errors.max_order
+                  }
+                  helperText={
+                    productFormik.touched.max_order
+                      ? productFormik.errors.max_order
+                      : null
+                  }
+                  onBlur={productFormik.handleBlur}
+                />
+              </> : null}
           </Grid>
         </Grid>
         <Grid container spacing={2}>
@@ -812,7 +951,7 @@ return (
               display="flex"
               flexDirection="row"
               alignItems="center"
-              style={{ marginTop: 10, marginBottom:20 }}
+              style={{ marginTop: 10, marginBottom: 20 }}
             >
               {display.map((img) => (
                 <Tooltip title="Xóa tất cả hình ảnh">
@@ -846,70 +985,142 @@ return (
         </Grid>
         {/* {store_setting?.expiryDate.status  ? ( */}
 
-        {store_setting?.expiryDate.status  &&store_setting?.inventory.status ? (
+        {store_setting?.expiryDate.status && store_setting?.inventory.status ? (
           // <div style={{ flexGrow: 1, textAlign: "right" , alignItems:'center'}}>
-             <Grid container alignItems="center" justifyContent='flex-end'>
-            {productFormik.values.has_batches?
-            <>
-            <Typography>Ngày hết hạn :  </Typography>
-            <TextField
-              autoFocus
-              margin="dense"
-              name="expiration_date"
-              size = 'small'
-              // defaultValue={new Date().toISOString().substring(0, 10)}
-              type="date"
-              value={productFormik.values.expiration_date}
-              onChange={productFormik.handleChange}
-            />
-
-             <Typography>Thông báo trước khi hết HSD :  </Typography>
-             <ThousandSeperatedInput
-            //  label="Thông báo trước khi hết HSD"
-              // variant="outlined"
-              // fullWidth
-              size="small"
-             style={{marginRight:10}}
-              name="notification_period"
-              value={productFormik.values.notification_period}
-              onChange={productFormik.handleChange}
-              error={
-                productFormik.touched.notification_period &&
-                productFormik.errors.notification_period
-              }
-              helperText={
-                productFormik.touched.notification_period
-                  ? productFormik.errors.notification_period
-                  : null
-              }
-              onBlur={productFormik.handleBlur}
-             />
-            <Typography style={{marginRight:10}}>ngày </Typography>
-            
-            
-          </>
-        
-             :null
-
-        }
-        
-            <FormControlLabel
-              control={
-                <Checkbox
-                  //checked={outOfDate}
-                  name="has_batches"
-                  checked={productFormik.values.has_batches}
+          <Grid container alignItems="center" justifyContent='flex-end'>
+            {hasBatches ?
+              <>
+                <Typography>Ngày hết hạn :  </Typography>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  name="expiration_date"
+                  size='small'
+                  // defaultValue={new Date().toISOString().substring(0, 10)}
+                  type="date"
+                  value={productFormik.values.expiration_date}
                   onChange={productFormik.handleChange}
-                  //onChange={(event) => setOutOfDate(event.target.checked)}
                 />
-              }
-              label="Lô, hạn sử dụng"
-            />
-   </Grid>
+
+                <Typography>Thông báo trước khi hết HSD :  </Typography>
+                <ThousandSeperatedInput
+                  //  label="Thông báo trước khi hết HSD"
+                  // variant="outlined"
+                  // fullWidth
+                  size="small"
+                  style={{ marginRight: 10 }}
+                  name="notification_period"
+                  value={productFormik.values.notification_period}
+                  onChange={productFormik.handleChange}
+                  error={
+                    productFormik.touched.notification_period &&
+                    productFormik.errors.notification_period
+                  }
+                  helperText={
+                    productFormik.touched.notification_period
+                      ? productFormik.errors.notification_period
+                      : null
+                  }
+                  onBlur={productFormik.handleBlur}
+                />
+                <Typography style={{ marginRight: 10 }}>ngày </Typography>
+
+
+              </>
+
+              : null
+
+            }
+
+            {((store_type === 'fb' && isIngredient) ||
+              store_type != 'fb') &&
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    //checked={outOfDate}
+                    //name="has_batches"
+                    checked={productFormik.values.has_batches === true}
+                    onChange={(event) => {
+                      setHasBatches(!hasBatches);
+                      productFormik.values.has_batches = !productFormik.values.has_batches;
+                    }}
+                  //onChange={(event) => setOutOfDate(event.target.checked)}
+                  />
+                }
+                label="Lô, hạn sử dụng"
+              />
+
+            }
+
+
+
+            {store_type === 'fb' &&
+              <RadioGroup
+                //defaultValue={productFormik.values.product_type}
+                row={true}
+              >
+
+                <FormControlLabel
+                  value="ingredient"
+                  control={
+                    <Radio
+                      //name = 'product_type' 
+                      checked={productFormik.values.product_type === 'ingredient'}
+                    />
+                  }
+                  label="Nguyên liệu"
+                  onChange={(e) => {
+                    setIsIngredient(true);
+                    productFormik.values.product_type = e.target.value;
+                    // Clear ingredient list if this product is an ingredient.
+                    setIngredients([])
+                  }}
+                />
+
+                <FormControlLabel
+                  value="dish"
+                  control={
+                    <Radio
+                      //name = 'product_type'
+                      checked={productFormik.values.product_type !== 'ingredient'}
+                    />
+                  }
+                  label="Món ăn chế biến sẵn"
+                  onChange={(e) => {
+                    // Change product type
+                    productFormik.values.product_type = e.target.value;
+                    
+                    // Hide the ingredient unit input
+                    setIsIngredient(false);
+                    
+                    // No batches for dishes
+                    productFormik.values.has_batches = false;
+                    setHasBatches(false);
+
+                    // Remove the expiration date
+                    productFormik.values.expiration_date = '';
+
+                    //Reset unit list
+                    setUnitList([]);
+
+                    //Get the list of products from the branch to add recipe
+                    if(products.length == 0){
+                      loadProducts();
+                    }
+
+                  }}
+                />
+
+
+              </RadioGroup>
+
+            }
+
+          </Grid>
           /* </div> */
         ) : null}
 
-        {store_setting?.variation.status ? (
+        {store_setting?.variation.status && store_type ==='grocery' ? (
           <>
             <Card className={classes.attrCard} >
               <CardHeader
@@ -937,8 +1148,8 @@ return (
                   setRelatedList={setRelatedList}
                   list_price={productFormik.values.salesPrice}
                   standard_price={productFormik.values.importedPrice}
-                  // attrOfProduct={attrOfProduct}
-                  // setAttrOfProduct={setAttrOfProduct}
+                // attrOfProduct={attrOfProduct}
+                // setAttrOfProduct={setAttrOfProduct}
                 />
               </Collapse>
             </Card>
@@ -953,7 +1164,7 @@ return (
                 <RelaltedItemList
                   relatedList={relatedList}
                   setRelatedList={setRelatedList}
-                  isManageInventory = {store_setting?.inventory.status}
+                  isManageInventory={store_setting?.inventory.status}
                 />
               </Card>
             ) : null}
@@ -962,20 +1173,67 @@ return (
         ) : null}
 
 
-      {/* MÔ TẢ */}
-      <Card className={classes.attrCard}>
+        {/* MÔ TẢ */}
+        <Card className={classes.attrCard}>
           <CardHeader
             onClick={handleExpandedDescription}
-            action={ <IconButton size="small" className={clsx(classes.expand, {  [classes.expandOpen]: expandedDescription, })}  onClick={handleExpandedDescription} aria-expanded={expanded} >  <ExpandMoreIcon /> </IconButton> }
+            action={<IconButton size="small" className={clsx(classes.expand, { [classes.expandOpen]: expandedDescription, })} onClick={handleExpandedDescription} aria-expanded={expanded} >  <ExpandMoreIcon /> </IconButton>}
             title="Mô tả"
             className={classes.attrHead}
           />
-          <Collapse in={expandedDescription} timeout="auto" unmountOnExit style={{padding:0}}>
-              <ReactQuill theme="snow" name="description"value={productFormik.values.description} onChange={(val) => productFormik.setFieldValue("description",val)}  modules={modules} formats={formats}  placeholder={'Write something...'} />
+          <Collapse in={expandedDescription} timeout="auto" unmountOnExit style={{ padding: 0 }}>
+            <ReactQuill theme="snow" name="description" value={productFormik.values.description} onChange={(val) => productFormik.setFieldValue("description", val)} modules={modules} formats={formats} placeholder={'Write something...'} />
           </Collapse>
 
 
         </Card>
+
+
+        {/* Đơn vị nguyên liệu*/}
+        {isIngredient &&
+          <Card className={classes.attrCard}>
+            <CardHeader
+              onClick={handleExpandedIngredient}
+              action={<IconButton size="small" className={clsx(classes.expand, { [classes.expandOpen]: expandedIngredient, })} onClick={handleExpandedIngredient} aria-expanded={expanded} >  <ExpandMoreIcon /> </IconButton>}
+              title="Đơn vị tính"
+              className={classes.attrHead}
+            />
+            <Collapse in={expandedIngredient} timeout="auto" unmountOnExit style={{ padding: 0 }}>
+              <AddUnit
+                unitList = {unitList}
+                setUnitList = {setUnitList}
+              />
+            </Collapse>
+
+
+          </Card>
+        }
+
+
+        {/* Công thức*/}
+        {!isIngredient &&
+          <Card className={classes.attrCard}>
+            <CardHeader
+              onClick={handleExpandedRecipe}
+              action={<IconButton size="small" className={clsx(classes.expand, { [classes.expandOpen]: expandedRecipe, })} onClick={handleExpandedRecipe} aria-expanded={expanded} >  <ExpandMoreIcon /> </IconButton>}
+              title="Nguyên liệu thành phần"
+              className={classes.attrHead}
+            />
+            <Collapse in={expandedRecipe} timeout="auto" unmountOnExit style={{ padding: 0 }}>
+                <AddRecipe
+                  products = {products}
+                  // handleAddIngredient = {handleAddIngredient}
+                  // handleDeleteIngredient = {handleDeleteIngredient}
+                  // handleUpdateIngredientQuantity = {handleUpdateIngredientQuantity}
+                  ingredients = {ingredients}
+                  setIngredients = {setIngredients}
+                  productFormik = {productFormik}
+                />
+            </Collapse>
+
+
+          </Card>
+        }
         {/* <div>
         <Tree />
         </div> */}
@@ -1003,7 +1261,11 @@ return (
             onClick={() => {
               if (relatedList.length) {
                 handleAddProductWithVariation();
-              } else {
+              }
+              else if(isIngredient === false && ingredients.length == 0){
+                dispatch(statusAction.failedStatus("Vui lòng thêm nguyên liệu thành phần cho món ăn"));
+              }
+              else {
                 addProductHandler();
               }
             }}
@@ -1012,12 +1274,12 @@ return (
             color="primary"
             disabled={
               !(
-                productFormik.isValid 
+                productFormik.isValid
                 // &&
                 // Object.keys(productFormik.touched).length > 0
               ) ||
               Number(productFormik.values.importedPrice) >
-                Number(productFormik.values.salesPrice)
+              Number(productFormik.values.salesPrice)
               || productFormik.values.has_batches === true && productFormik.values.expiration_date === ''
             }
           >
@@ -1025,9 +1287,9 @@ return (
           </Button>
         </Grid>
       </Box>
-     
+
     </Dialog>
-  
+
   );
 };
 
@@ -1036,17 +1298,17 @@ export default AddInventory;
 
 const modules = {
   toolbar: [
-    [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
-    [{size: []}],
+    [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+    [{ size: [] }],
     [{ align: '' }, { align: 'center' }, { align: 'right' }, { align: 'justify' }],
     ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-    [{'color':[]}],
-    [{'background':[]}],
-    [{'list': 'ordered'}, {'list': 'bullet'}, 
-     {'indent': '-1'}, {'indent': '+1'}],
+    [{ 'color': [] }],
+    [{ 'background': [] }],
+    [{ 'list': 'ordered' }, { 'list': 'bullet' },
+    { 'indent': '-1' }, { 'indent': '+1' }],
     ['link', 'image', 'video'],
     ['clean'],
-    
+
   ],
   clipboard: {
     // toggle to add extra line breaks when pasting HTML:
@@ -1054,8 +1316,8 @@ const modules = {
   },
   imageResize: {
     parchment: Quill.import('parchment'),
-    modules: ['Resize', 'DisplaySize','Toolbar']
- }
+    modules: ['Resize', 'DisplaySize', 'Toolbar']
+  }
 }
 
 
@@ -1063,6 +1325,6 @@ const formats = [
   'header', 'font', 'size',
   'bold', 'italic', 'underline', 'strike', 'blockquote',
   'list', 'bullet', 'indent',
-  'link', 'image', 'video','color','background'
+  'link', 'image', 'video', 'color', 'background'
 ]
 

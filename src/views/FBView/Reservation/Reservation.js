@@ -384,7 +384,7 @@ export default () => {
     const utcDate = new Date();
     const ictDate = new Date(utcDate.getTime() + 7 * 60 * 60 * 1000);
     const mysqlDateTime = ictDate.toISOString().slice(0, 19).replace("T", " ");
-    return mysqlDateTime.slice(0, 11);
+    return mysqlDateTime.slice(0, 10);
   });
   const [currentView, setCurrentView] = useState("Week");
   const [range, setRange] = useState(getRange(new Date(), "Week"));
@@ -629,6 +629,7 @@ export default () => {
           searchKey={query.searchKey} setSearchKey={(value) => setQuery({ ...query, searchKey: value })}
           orderByOptions={
             [
+              {value : 'reservations.created_at', label : 'Thời gian tạo'},
               { value: 'reservations.id', label: "Mã đặt bàn" },
               { value: 'reservations.name', label: "Tên bàn" },
               { value: 'reservations.number_of_guests', label: "Số ghế" },

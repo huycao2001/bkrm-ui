@@ -56,7 +56,7 @@ const ReservationFilter = (props) => {
     const handleChangeMinReservation_datetime = (newReservation_datetime) => {
         setMinReservation_datetime(newReservation_datetime);
     }
-    const [maxReservation_datetime, setMaxReservation_datetime] = React.useState(dayjs());
+    const [maxReservation_datetime, setMaxReservation_datetime] = React.useState('');
 
     const handleChangeMaxReservation_datetime = (newReservation_datetime) => {
         setMaxReservation_datetime(newReservation_datetime);
@@ -77,7 +77,9 @@ const ReservationFilter = (props) => {
         >
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DateTimePicker
-                    required
+                    format = "DD/MM/YYYY HH:mm:ss A"
+                    inputFormat="DD/MM/YYYY HH:mm:ss A"
+                    //required
                     label="Từ"
                     value={minReservation_datetime}
                     onChange={handleChangeMinReservation_datetime}
@@ -87,7 +89,9 @@ const ReservationFilter = (props) => {
 
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DateTimePicker
-                    required
+                    format = "DD/MM/YYYY HH:mm:ss A"
+                    inputFormat="DD/MM/YYYY HH:mm:ss A"
+                    //required
                     label="Đến"
                     value={maxReservation_datetime}
                     onChange={handleChangeMaxReservation_datetime}
