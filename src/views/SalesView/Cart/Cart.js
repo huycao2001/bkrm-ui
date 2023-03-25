@@ -36,7 +36,7 @@ import {
   Avatar,
   TableCell,
   TableRow,
-  Button,
+  Button
 } from "@material-ui/core";
 import SearchBarCode from "../../../components/SearchBar/SearchBarCode";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -67,16 +67,13 @@ import SnackBarGeneral from "../../../components/SnackBar/SnackBarGeneral";
 import customerApi from "../../../api/customerApi";
 // FILE này xử lý state -> connect search bar, table, với summary lại + quản lý chọn cart
 import { calculateTotalQuantity } from "../../../components/TableCommon/util/sortUtil";
-import {
-  CartMiniTableRow,
-  VarianceProductMiniTableRow,
-} from "../../../components/MiniTableRow/MiniTableRow";
+import { CartMiniTableRow, VarianceProductMiniTableRow } from "../../../components/MiniTableRow/MiniTableRow";
 import branchApi from "../../../api/branchApi";
 import setting from "../../../assets/constant/setting";
 import { infoActions } from "../../../store/slice/infoSlice";
 import productApi from "../../../api/productApi";
 import { statusAction } from "../../../store/slice/statusSlice";
-import promotionCouponApi from "../../../api/promotionCouponApi";
+import promotionCouponApi from '../../../api/promotionCouponApi';
 import { loadingActions } from "../../../store/slice/loadingSlice";
 import ModalWrapperWithClose from "../../../components/Modal/ModalWrapperWithClose";
 import { enableMapSet } from "@reduxjs/toolkit/node_modules/immer";
@@ -85,7 +82,8 @@ const Cart = () => {
   const theme = useTheme();
   const classes = useStyles(theme);
   const [selectedBranch, setSelectedBranch] = useState({});
-  const [disable, setDisable] = useState(false);
+  const [disable, setDisable] = useState(false)
+
 
   // redux
   const info = useSelector((state) => state.info);
@@ -97,14 +95,11 @@ const Cart = () => {
     ? JSON.parse(info.store.general_configuration)
     : setting;
 
-  const defaultPaymentAmount =
-    store_setting?.defaultPaymentAmount.status &&
-    store_setting?.defaultPaymentAmount.cart;
-  console.log("store_setting", store_setting);
-  console.log("defaultPaymentAmount", defaultPaymentAmount);
+  const defaultPaymentAmount = store_setting?.defaultPaymentAmount.status && store_setting?.defaultPaymentAmount.cart 
+  console.log("store_setting",store_setting)
+  console.log("defaultPaymentAmount",defaultPaymentAmount)
 
-  const canEnterDiscountWhenSell =
-    store_setting?.canEnterDiscountWhenSell?.status;
+    const canEnterDiscountWhenSell = store_setting?.canEnterDiscountWhenSell?.status
 
   const [discountData, setDiscountData] = useState([]);
 
@@ -129,12 +124,14 @@ const Cart = () => {
         payment_method: "cash",
         delivery: false,
         scores: "0",
-        discountDetail: { value: "0", type: "VND" },
-        selectedPromotion: null,
-        otherFee: 0,
+        discountDetail:{value:'0', type:'VND' },
+        selectedPromotion:null,
+        otherFee:0
       },
     ];
   };
+
+
 
   const [cartList, setCartList] = React.useState(loadCartLocalStorage());
   const [products, setProducts] = useState([]);
@@ -147,15 +144,17 @@ const Cart = () => {
     );
   }, [cartList]);
 
+
+
+
   useEffect(() => {
     if (products.length) {
       window.localStorage.setItem(
         "products",
-        JSON.stringify({
-          store_uuid: store_uuid,
-          branch_uuid: branch_uuid,
-          data: products,
-        })
+        JSON.stringify({ 
+          store_uuid: store_uuid, 
+          branch_uuid: branch_uuid, 
+          data: products })
       );
     }
   }, [products]);
@@ -164,10 +163,9 @@ const Cart = () => {
     if (customers.length) {
       window.localStorage.setItem(
         "customers",
-        JSON.stringify({
-          store_uuid: store_uuid,
-          data: customers,
-        })
+        JSON.stringify({ 
+          store_uuid: store_uuid, 
+          data: customers })
       );
     }
   }, [customers]);
@@ -175,37 +173,34 @@ const Cart = () => {
   useEffect(() => {
     if (window.localStorage.getItem("products")) {
       const products = JSON.parse(window.localStorage.getItem("products"));
-      if (
-        products.store_uuid === store_uuid &&
-        products.branch_uuid === branch_uuid
-      ) {
-        console.log(products.data);
+      if (products.store_uuid === store_uuid && products.branch_uuid === branch_uuid ) {
+        console.log(products.data)
         setProducts(products.data);
       }
     }
     if (window.localStorage.getItem("mode")) {
       const cartMode = JSON.parse(window.localStorage.getItem("mode"));
-      if (cartMode.store_uuid === store_uuid) {
-        setTypeShow(cartMode.typeShow);
+      if (cartMode.store_uuid === store_uuid ) {
+        setTypeShow(cartMode.typeShow)
         setMode(cartMode.mode);
         setShowImage(cartMode.showImage);
+        
       }
     }
     if (window.localStorage.getItem("customers")) {
       const customers = JSON.parse(window.localStorage.getItem("customers"));
-      if (customers.store_uuid === store_uuid) {
+      if (customers.store_uuid === store_uuid ) {
         setCustomers(customers.data);
       }
     }
-  }, [store_uuid, branch_uuid]);
+  }, [store_uuid, branch_uuid])
+
 
   //// ----------II. FUNCTION
-  const otherfee = store_setting?.vat;
+  const otherfee = store_setting?.vat
 
-  let otherFeeMoney = otherfee?.listCost?.reduce(
-    (sum, fee) => (fee.type !== "%" ? sum + Number(fee.value) : sum),
-    0
-  );
+  let otherFeeMoney = otherfee?.listCost?.reduce((sum,fee)=>fee.type!=="%"? sum + Number(fee.value):sum , 0);
+
 
   // 1.Cart
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -225,6 +220,7 @@ const Cart = () => {
   useEffect(() => {
     updateTotalAmount();
   }, [isUpdateTotalAmount]);
+
 
   const handleSearchCustomer = async (searchKey) => {
     try {
@@ -259,17 +255,18 @@ const Cart = () => {
         branch_uuid,
         ""
       );
-      setProducts(response.data);
+      setProducts(response.data)
+
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
     // dispatch(infoActions.setProducts(response.data));
   };
 
   useEffect(() => {
-    console.log("reload heer");
+    console.log("reload heer")
     loadProducts();
-  }, [reloadProduct]);
+  }, [reloadProduct])
 
   useEffect(() => {
     const loadCustomers = async () => {
@@ -285,15 +282,13 @@ const Cart = () => {
       }
     };
     const loadPromotionCoupons = async () => {
-      const response = await promotionCouponApi.getActivePromotionVoucher(
-        store_uuid
-      );
-      console.log("eeeeee", response);
+      const response = await promotionCouponApi.getActivePromotionVoucher(store_uuid)
+      console.log("eeeeee",response)
       setDiscountData(response.promotions);
-    };
+    } 
     if (store_uuid) {
       loadCustomers();
-      loadPromotionCoupons();
+      loadPromotionCoupons()
     }
     if (store_uuid && branch_uuid) {
       loadProducts();
@@ -308,8 +303,8 @@ const Cart = () => {
     }, 60000 * 5);
 
     return () => {
-      clearInterval(intervalID);
-    };
+      clearInterval(intervalID)
+    }
   }, [store_uuid, branch_uuid]);
   const [reloadCustomers, setReloadCustomers] = useState(false);
   useEffect(() => {
@@ -325,6 +320,8 @@ const Cart = () => {
       loadingCustomer();
     }
   }, [reloadCustomers]);
+
+
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -354,9 +351,10 @@ const Cart = () => {
         discount: "0",
         delivery: false,
         scores: "0",
-        discountDetail: { value: "0", type: "VND" },
-        selectedPromotion: null,
-        otherFee: 0,
+        discountDetail:{value:'0', type:'VND' },
+        selectedPromotion:null,
+        otherFee:0
+
       },
     ]);
     setSelectedIndex(cartList.length);
@@ -367,7 +365,7 @@ const Cart = () => {
     const newCartList = [...cartList];
 
     // newCartList[index].cartItem = [];
-    newCartList[index] = {
+    newCartList[index] ={
       customer: null,
       cartItem: [],
       total_amount: "0",
@@ -376,15 +374,16 @@ const Cart = () => {
       discount: "0",
       delivery: false,
       scores: "0",
-      discountDetail: { value: "0", type: "VND" },
-      selectedPromotion: null,
-      otherFee: 0,
+      discountDetail:{value:'0', type:'VND' },
+      selectedPromotion:null,
+      otherFee:0
+
     };
 
-    setCartList(newCartList);
+    setCartList(newCartList)
 
     handleClose();
-  };
+  }
 
   const handleDelete = (index) => {
     // DELETE CART
@@ -400,9 +399,9 @@ const Cart = () => {
           payment_method: "cash",
           delivery: false,
           scores: "0",
-          discountDetail: { value: "0", type: "VND" },
-          selectedPromotion: null,
-          otherFee: 0,
+          discountDetail:{value:'0', type:'VND' },
+          selectedPromotion:null,
+          otherFee:0
         },
       ]);
     } else {
@@ -413,7 +412,7 @@ const Cart = () => {
     } else if (selectedIndex > index) {
       setSelectedIndex(selectedIndex - 1);
     }
-
+    
     handleClose();
   };
   const updateCustomer = (value) => {
@@ -434,21 +433,16 @@ const Cart = () => {
   //mode
   const [mode, setMode] = React.useState(false);
   const [showImage, setShowImage] = React.useState(true);
-  const [typeShow, setTypeShow] = useState("list");
+  const [typeShow, setTypeShow] = useState('list')
   const handleChangeMode = (event) => {
     setMode(event.target.checked);
   };
   useEffect(() => {
     window.localStorage.setItem(
       "mode",
-      JSON.stringify({
-        store_uuid: store_uuid,
-        mode: mode,
-        typeShow: typeShow,
-        showImage: showImage,
-      })
+      JSON.stringify({store_uuid: store_uuid,  mode: mode, typeShow: typeShow , showImage:showImage})
     );
-  }, [mode, typeShow, showImage]);
+  }, [mode,typeShow,showImage]);
 
   // handle search select item add to cart
   const handleSearchBarSelect = (selectedOption) => {
@@ -523,17 +517,13 @@ const Cart = () => {
     let item = cartList[selectedIndex].cartItem.find(
       (item) => item.uuid === itemUuid
     );
-    if (isNaN(newQuantity)) {
-      newQuantity = "";
-    }
+    if(isNaN(newQuantity)){newQuantity = ''}
     if (newQuantity === 0 && !item.has_batches) {
       handleDeleteItemCart(itemUuid);
       return;
     }
-    if (newQuantity < 0) {
-      return;
-    }
-
+    if (newQuantity < 0){return } 
+  
     let newCartList = [...cartList];
     newCartList[selectedIndex].cartItem[itemIndex].quantity = newQuantity;
     setCartList(newCartList);
@@ -554,9 +544,7 @@ const Cart = () => {
   };
 
   const handleChangeItemPrice = (itemUuid, newPrice) => {
-    if (newPrice < 0) {
-      return;
-    }
+    if (newPrice < 0){return } 
 
     let itemIndex = cartList[selectedIndex].cartItem.findIndex(
       (item) => item.uuid === itemUuid
@@ -578,9 +566,7 @@ const Cart = () => {
   };
 
   const handleUpdatePaidAmount = (amount) => {
-    if (amount < 0) {
-      return;
-    }
+    if (amount < 0){return } 
     let newCartList = update(cartList, {
       [selectedIndex]: { paid_amount: { $set: amount } },
     });
@@ -600,57 +586,28 @@ const Cart = () => {
     setCartList(newCartList);
   };
   const handleUpdateDiscountDetail = (obj) => {
+  
+    
     // newCartList = update(newCartList, {
     //   [selectedIndex]: {
     //     otherFee: { $set:totalOtherFee },
     //   },
     // });
 
-    let discountUpdate =
-      obj.type === "%"
-        ? (
-            (
-              (Number(obj.value) *
-                Number(cartList[selectedIndex].total_amount)) /
-              100 /
-              100
-            ).toFixed() * 100
-          ).toString()
-        : obj.value;
+    let discountUpdate =  obj.type === '%'?( (Number(obj.value) * Number(cartList[selectedIndex].total_amount)/100/100).toFixed() * 100).toString() : obj.value 
 
-    let percentFee = otherfee?.listCost?.reduce(
-      (sum, fee) => (fee.type === "%" ? sum + Number(fee.value) : sum),
-      0
-    );
-    let totalOtherFee =
-      (percentFee *
-        (Number(cartList[selectedIndex].total_amount) -
-          Number(discountUpdate))) /
-        100 +
-      otherFeeMoney;
+
+    let percentFee = otherfee?.listCost?.reduce((sum,fee)=>fee.type==="%"? sum + Number(fee.value):sum , 0);
+    let totalOtherFee = percentFee * (Number(cartList[selectedIndex].total_amount) - Number(discountUpdate))/100 +  otherFeeMoney
+
 
     let newCartList = update(cartList, {
       // [selectedIndex]: { discountDetail: { $set: obj } , discount:{ $set: discountUpdate }, paid_amount:{ $set: (Number(cartList[selectedIndex].total_amount) -Number(discountUpdate)).toString() }},
-      [selectedIndex]: defaultPaymentAmount
-        ? {
-            discountDetail: { $set: obj },
-            discount: { $set: discountUpdate },
-            otherFee: { $set: totalOtherFee },
-            paid_amount: {
-              $set: (
-                Number(cartList[selectedIndex].total_amount) -
-                Number(discountUpdate) +
-                Number(totalOtherFee)
-              ).toString(),
-            },
-          }
-        : {
-            discountDetail: { $set: obj },
-            discount: { $set: discountUpdate },
-            otherFee: { $set: totalOtherFee },
-          },
-    });
+      [selectedIndex]: defaultPaymentAmount? { discountDetail: { $set: obj } , discount:{ $set: discountUpdate },  otherFee: { $set:totalOtherFee },paid_amount:{ $set: (Number(cartList[selectedIndex].total_amount) -Number(discountUpdate)+ Number(totalOtherFee)).toString() }}:
+        { discountDetail: { $set: obj } , discount:{ $set: discountUpdate }, otherFee: { $set:totalOtherFee }} ,
 
+    });
+  
     setCartList(newCartList);
   };
 
@@ -659,27 +616,24 @@ const Cart = () => {
     //   return;
     // }
     let newCartList = update(cartList, {
-      [selectedIndex]: defaultPaymentAmount
-        ? {
-            discount: { $set: amount },
-            paid_amount: {
-              $set: (
-                Number(cartList[selectedIndex].total_amount) - Number(amount)
-              ).toString(),
-            },
-          }
-        : // [selectedIndex]:defaultPaymentAmount? { discount: { $set: amount }}:
 
-          { discount: { $set: amount } },
+      [selectedIndex]:defaultPaymentAmount? { discount: { $set: amount },paid_amount: { $set: (Number(cartList[selectedIndex].total_amount) -Number(amount)).toString() }  }:
+      // [selectedIndex]:defaultPaymentAmount? { discount: { $set: amount }}:
+
+      { discount: { $set: amount } },
+
     });
 
-    if (defaultPaymentAmount) {
+
+ 
+
+
+    if( defaultPaymentAmount){
       newCartList = update(newCartList, {
         [selectedIndex]: {
           // paid_amount: { $set: (Number(cartList[selectedIndex].total_amount) - Number(amount) + Number(totalOtherFee)).toString() },
         },
-      });
-    }
+      }) };
 
     //
 
@@ -695,6 +649,7 @@ const Cart = () => {
         },
       });
     }
+
 
     setCartList(newCartList);
   };
@@ -722,36 +677,27 @@ const Cart = () => {
     //     paid_amount: { $set: total - cartList[selectedIndex].discount },
     //   },
     // }) ;
-    //
+    // 
 
     //
-
-    let percentFee = otherfee?.listCost?.reduce(
-      (sum, fee) => (fee.type === "%" ? sum + Number(fee.value) : sum),
-      0
-    );
-    let totalOtherFee =
-      (percentFee *
-        (Number(total) - Number(cartList[selectedIndex].discount))) /
-        100 +
-      otherFeeMoney;
-    console.log("percentFee", percentFee);
+   
+    let percentFee = otherfee?.listCost?.reduce((sum,fee)=>fee.type==="%"? sum + Number(fee.value):sum , 0);
+    let totalOtherFee = percentFee * (Number(total) - Number(cartList[selectedIndex].discount))/100 +  otherFeeMoney
+    console.log("percentFee",percentFee)
     newCartList = update(newCartList, {
       [selectedIndex]: {
-        otherFee: { $set: totalOtherFee },
+        otherFee: { $set:totalOtherFee },
       },
     });
 
-    if (defaultPaymentAmount) {
-      newCartList = update(newCartList, {
-        [selectedIndex]: {
-          paid_amount: {
-            $set: total - cartList[selectedIndex].discount + totalOtherFee,
-          },
-        },
-      });
-    }
-    //
+
+    if( defaultPaymentAmount){
+    newCartList = update(newCartList, {
+      [selectedIndex]: {
+        paid_amount: { $set: total - cartList[selectedIndex].discount + totalOtherFee },
+      },
+    }) };
+    // 
     if (store_setting?.customerScore.status) {
       newCartList = update(newCartList, {
         [selectedIndex]: {
@@ -765,88 +711,80 @@ const Cart = () => {
       });
     }
 
-    //
-
+    // 
+    
     setCartList(newCartList);
   };
 
-  const [code, setCode] = React.useState("");
+  const[code,setCode] =React.useState("")
   const [openPopUpWarning, setOpenPopUpWarning] = useState(false);
-  const handleCloseWarning = () => {
-    setOpenPopUpWarning(false);
-  };
+  const handleCloseWarning = () =>{
+    setOpenPopUpWarning(false)
+  }
 
-  console.log("otherFeeeee", cartList[selectedIndex]?.otherFee);
+  console.log("otherFeeeee",cartList[selectedIndex]?.otherFee)
+  
 
   const handleConfirm = async () => {
     let cart = cartList[selectedIndex];
 
     var emptyCart = cart.cartItem.length === 0;
     const printReceiptWhenSell = store_setting?.printReceiptWhenSell;
-    const canSellWhenNegativeQuantity =
-      store_setting?.canSellWhenNegativeQuantity;
-    const alowDebt = store_setting?.alowDebt;
+    const canSellWhenNegativeQuantity = store_setting?.canSellWhenNegativeQuantity;
+    const alowDebt =  store_setting?.alowDebt;
     // var correctQuantity = cart.cartItem.every(function (element, index) {
     //   if (element.quantity > element.branch_quantity) return false;
     //   else return true;
     // });
 
-    var correctQuantity =
-      store_setting?.inventory.status && !canSellWhenNegativeQuantity.status
-        ? cart.cartItem.every(function (element, index) {
-            if (element.quantity > element.branch_quantity) return false;
-            else return true;
-          })
-        : true;
+    var correctQuantity = store_setting?.inventory.status && !canSellWhenNegativeQuantity.status
+      ? cart.cartItem.every(function (element, index) {
+          if (element.quantity > element.branch_quantity) return false;
+          else return true;
+        })
+      : true;
 
-    var notExistNullQuantity = cart.cartItem.every(function (element, index) {
-      if (element.quantity === "" || Number(element.quantity) === 0)
-        return false;
+    var notExistNullQuantity =  cart.cartItem.every(function (element, index) {
+      if (element.quantity === '' || Number(element.quantity)===0) return false;
       else return true;
-    });
-    var notExistZeroPrice = cart.cartItem.every(function (element, index) {
-      if (Number(element.unit_price) === 0) return false;
+    })
+    var notExistZeroPrice =  cart.cartItem.every(function (element, index) {
+      if (Number(element.unit_price)  === 0) return false;
       else return true;
-    });
+    })
 
-    if (
-      emptyCart ||
-      !correctQuantity ||
-      !notExistNullQuantity ||
-      (!alowDebt.status &&
-        Number(cart.paid_amount) <
-          Number(cart.total_amount) - Number(cart.discount))
-    ) {
+    if (emptyCart || !correctQuantity || !notExistNullQuantity|| (!alowDebt.status && Number(cart.paid_amount) < Number(cart.total_amount) - Number(cart.discount) )) {
       setOpenSnack(true);
       if (emptyCart) {
         setSnackStatus({
           style: "error",
           message: "Giỏ hàng trống",
         });
-      } else if (!correctQuantity) {
+      } else if ( !correctQuantity ) {
         setSnackStatus({
           style: "error",
           message: "Giỏ hàng bị vượt tồn kho",
         });
-      } else if (!notExistNullQuantity) {
+      }else if(!notExistNullQuantity){
         setSnackStatus({
           style: "error",
           message: "Có sản phẩm chưa nhập số lượng",
         });
-      } else {
+      }else{
         setSnackStatus({
           style: "error",
           message: "Không cho phép khách hàng nợ",
         });
       }
-    } else if (
-      !notExistZeroPrice ||
-      (cart.paid_amount < cart.total_amount - cart.discount && !cart.customer)
-    ) {
-      setOpenPopUpWarning(true);
-      return;
-    } else {
-      handleConfirmCallApi();
+    } 
+
+    else if(!notExistZeroPrice || ( cart.paid_amount < cart.total_amount - cart.discount && !cart.customer)){
+        setOpenPopUpWarning(true)
+        return 
+    }
+    else {
+      handleConfirmCallApi()
+
 
       // let d = moment.now() / 1000;
 
@@ -878,7 +816,7 @@ const Cart = () => {
 
       // try {
       //   let res = await orderApi.addOrder(store_uuid, branch.uuid, body);
-
+        
       //   setSnackStatus({
       //     style: "success",
       //     message: "Tạo hóa đơn thành công: " + res.data.order.order_code,
@@ -900,10 +838,10 @@ const Cart = () => {
       // loadProducts()
     }
   };
-  const handleConfirmCallApi = async () => {
+  const handleConfirmCallApi  = async () => {
     const printReceiptWhenSell = store_setting?.printReceiptWhenSell;
     let cart = cartList[selectedIndex];
-
+    
     let d = moment.now() / 1000;
 
     let orderTime = moment
@@ -916,10 +854,7 @@ const Cart = () => {
       customer_uuid: cart.customer ? cart.customer.uuid : "",
       total_amount: cart.total_amount.toString(),
       payment_method: cart.payment_method,
-      paid_amount: Math.min(
-        cart.paid_amount,
-        Number(cart.total_amount) - Number(cart.discount)
-      ),
+      paid_amount: Math.min(cart.paid_amount, Number(cart.total_amount) - Number(cart.discount)),
       discount: cart.discount,
       status:
         cart.paid_amount < cart.total_amount - cart.discount
@@ -934,20 +869,20 @@ const Cart = () => {
       is_customer_order: false,
       points: cart.scores,
       //
-      otherFee: cart.otherFee,
+      otherFee:cart.otherFee
     };
 
     try {
       setDisable(true);
       let res = await orderApi.addOrder(store_uuid, branch.uuid, body);
-
+      
       setSnackStatus({
         style: "success",
         message: "Tạo hóa đơn thành công: " + res.data.order.order_code,
       });
       setOpenSnack(true);
       if (printReceiptWhenSell.status && printReceiptWhenSell.cart) {
-        setCode(res.data.order.order_code);
+        setCode(res.data.order.order_code)
         handlePrint();
       }
       handleDeleteAllItem(selectedIndex);
@@ -959,9 +894,12 @@ const Cart = () => {
       setOpenSnack(true);
       console.log(err);
     }
-    setDisable(false);
-    loadProducts();
-  };
+    setDisable(false)
+    loadProducts()
+  }
+
+
+
 
   //print
 
@@ -974,155 +912,102 @@ const Cart = () => {
   // };
   const [barcodeChecked, setBarcodeChecked] = useState(true);
 
-  console.log("typeShow==='image''", typeShow);
-  console.log(
-    "store_setting?.printReceiptWhenSell",
-    store_setting?.printReceiptWhenSell
-  );
+  console.log("typeShow==='image''",typeShow)
+  console.log("store_setting?.printReceiptWhenSell",store_setting?.printReceiptWhenSell)
   return (
     <>
-      <Grid
-        container
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        spacing={2}
-      >
-        {addProduct && (
-          <AddInventory
-            open={addProduct}
-            handleClose={() => {
-              setAddProduct(false);
-            }}
-            setReload={() => {
-              setReloadProduct(!reloadProduct);
-            }}
-          />
-        )}{" "}
-        <SnackBarGeneral
-          handleClose={handleCloseSnackBar}
-          open={openSnack}
-          status={snackStatus}
-        />
-        {/* 1. TABLE CARD (left) */}
-        <Grid item xs={12} sm={typeShow === "list" && mode ? 7 : 8}>
-          <Card className={classes.root}>
-            <Box
-              style={{
-                padding: xsScreen ? 0 : 30,
-                minHeight: "79vh",
-                paddingBottom: 0,
-              }}
-            >
-              <Box style={{ height: xsScreen ? null : "69vh" }}>
-                {/* 1.1 TITLE + BTN CHANGE CART +  SEARCH */}
-                <Grid
-                  container
-                  direction="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                  style={{ marginTop: -10, marginBottom: 30 }}
-                >
-                  <Grid>
-                    <ListItem>
-                      {/* 1.1.1 Title */}
-                      <Typography variant="h3"> Bán hàng </Typography>
-                      <Typography
-                        variant="h3"
-                        style={{
-                          marginLeft: 10,
-                          color: theme.customization.primaryColor[500],
-                        }}
-                      >
-                        {" "}
-                        # {selectedIndex + 1}
-                      </Typography>
-                      {/* 1.1.2. Btn Channge Cart */}
-                      <ChangeCartBtn
-                        selectedIndex={selectedIndex}
-                        anchorEl={anchorEl}
-                        cartList={cartList}
-                        handleClick={handleClick}
-                        handleClose={handleClose}
-                        handleChoose={handleChoose}
-                        handleDelete={handleDelete}
-                        handleAdd={handleAdd}
-                        isCart={true}
-                      />
-                    </ListItem>
-                  </Grid>
-                  <Grid>
-                    <Grid container alignItems="center">
-                      {!mode ? (
-                        <>
-                          <Grid item>
-                            <FormControlLabel
-                              control={
-                                <Switch
-                                  size="small"
-                                  checked={searchBarState === "barcode"}
-                                  onChange={(e, checked) => {
-                                    dispatch(
-                                      infoActions.setSearchBarState(
-                                        checked ? "barcode" : "search"
-                                      )
-                                    );
-                                  }}
-                                  color="primary"
-                                />
-                              }
-                              label={"Dùng mã vạch"}
-                            />
-                          </Grid>
-                          <Grid item>
-                            {searchBarState === "barcode" ? (
-                              <SearchBarCode
-                                products={products}
-                                handleSearchBarSelect={handleSearchBarSelect}
-                              />
-                            ) : (
-                              <SearchProduct
-                                products={products}
-                                handleSearchBarSelect={handleSearchBarSelect}
-                                isCart={true}
-                              />
-                            )}
-                          </Grid>
-                        </>
+    <Grid  container   direction="row" justifyContent="space-between"  alignItems="center"  spacing={2}>
+      {addProduct &&
+       <AddInventory
+        open={addProduct}
+        handleClose={() => {
+          setAddProduct(false)
+        }}
+        setReload={() => {
+          setReloadProduct(!reloadProduct)
+        }}
+      />}{" "}
+    
+      <SnackBarGeneral handleClose={handleCloseSnackBar} open={openSnack} status={snackStatus}  />
+     
+     
+     {/* 1. TABLE CARD (left) */}
+      <Grid item xs={12} sm={typeShow==='list' && mode?7:8}>
+        <Card className={classes.root}>
+          <Box style={{ padding: xsScreen ? 0 : 30,  minHeight: "79vh", paddingBottom: 0,}}  >
+            <Box style={{ height: xsScreen ? null : "69vh" }}>
+              {/* 1.1 TITLE + BTN CHANGE CART +  SEARCH */}
+              <Grid container direction="row"  justifyContent="space-between" alignItems="center" style={{ marginTop: -10, marginBottom: 30 }}   >
+                <Grid>
+                  <ListItem>
+                    {/* 1.1.1 Title */}
+                    <Typography variant="h3"> Bán hàng </Typography>
+                    <Typography variant="h3"  style={{  marginLeft: 10,  color: theme.customization.primaryColor[500], }} >
+                      {" "}   # {selectedIndex + 1}
+                    </Typography>
+                    {/* 1.1.2. Btn Channge Cart */}
+                    <ChangeCartBtn
+                      selectedIndex={selectedIndex}
+                      anchorEl={anchorEl}
+                      cartList={cartList}
+                      handleClick={handleClick}
+                      handleClose={handleClose}
+                      handleChoose={handleChoose}
+                      handleDelete={handleDelete}
+                      handleAdd={handleAdd}
+                      isCart={true}
+                    />
+                  </ListItem>
+                </Grid>
+                <Grid>
+                <Grid container alignItems="center">
+                  {!mode? 
+                  <>
+                    <Grid item>
+                      <FormControlLabel   control={ <Switch  size="small"  checked={searchBarState === 'barcode'}  onChange={(e, checked) => { dispatch(infoActions.setSearchBarState(checked ? 'barcode' : 'search'))  }} color="primary"  />  } label={"Dùng mã vạch"}  />
+                    </Grid>
+                    <Grid item>
+                      {searchBarState === 'barcode' ? (
+                        <SearchBarCode  products={products} 
+                          handleSearchBarSelect={handleSearchBarSelect}
+                        />
                       ) : (
                         <SearchProduct
-                          products={products}
-                          setProducts={setProducts}
-                          isFilter={true}
+                          products={products} 
+                          handleSearchBarSelect={handleSearchBarSelect}
+                          isCart={true}
                         />
                       )}
-                      {info.role === "owner" ? (
-                        <Grid item>
-                          <ButtonBase
-                            sx={{ borderRadius: "1px" }}
-                            onClick={() => {
-                              setAddProduct(true);
-                            }}
-                            style={{ marginLeft: 10 }}
-                          >
-                            <Avatar
-                              variant="rounded"
-                              className={classes.headerAvatar}
-                            >
-                              <Tooltip title="Thêm sản phẩm">
-                                <AddIcon stroke={1.5} size="1.3rem" />
-                              </Tooltip>
-                            </Avatar>
-                          </ButtonBase>
-                        </Grid>
-                      ) : null}
                     </Grid>
+                  </>:
+                 <SearchProduct products={products} setProducts={setProducts} isFilter={true} />
+                  }
+                    {info.role === 'owner'?
+                    <Grid item>
+                      <ButtonBase
+                        sx={{ borderRadius: "1px" }}
+                        onClick={() => {
+                          setAddProduct(true);
+                        }}
+                        style={{ marginLeft: 10 }}
+                      >
+                        <Avatar
+                          variant="rounded"
+                          className={classes.headerAvatar}
+                        >
+                          <Tooltip title="Thêm sản phẩm">
+                            <AddIcon stroke={1.5} size="1.3rem" />
+                          </Tooltip>
+                        </Avatar>
+                      </ButtonBase>
+                    </Grid>:null}
                   </Grid>
                 </Grid>
+              </Grid>
 
-                {/* 1.2 TABLE */}
-                {!mode ? (
-                  <TableWrapper isCart={true}>
+              {/* 1.2 TABLE */}
+              {!mode ? (
+                  <TableWrapper isCart={true} >
                     <TableHeader
                       classes={classes}
                       order={order}
@@ -1132,10 +1017,8 @@ const Cart = () => {
                       isCart={true}
                     />
                     <TableBody>
-                      {stableSort(
-                        cartList[selectedIndex].cartItem,
-                        getComparator(order, orderBy)
-                      ).map((row, index) => {
+                      { stableSort( cartList[selectedIndex].cartItem, getComparator(order, orderBy) )
+                      .map((row, index) => {
                         return (
                           <CartRow
                             key={`${row.uuid}_index`}
@@ -1147,56 +1030,45 @@ const Cart = () => {
                             discountData={discountData.filter(
                               (discount) => discount.discountKey === "product"
                             )}
-                            index={
-                              cartList[selectedIndex].cartItem.length - index
-                            }
+                            index={cartList[selectedIndex].cartItem.length - index}
                             showImage={showImage}
                           />
                         );
                       })}
                     </TableBody>
-                  </TableWrapper>
-                ) : (
-                  //  Mode nha hang
-                  <MenuProduct
-                    products={products}
-                    handleSearchBarSelect={handleSearchBarSelect}
-                    isCart={true}
-                    selectedItem={cartList[selectedIndex]?.cartItem}
-                    typeShow={typeShow}
-                    setTypeShow={setTypeShow}
-                    setProducts={setProducts}
-                    showImage={showImage}
-                    setShowImage={setShowImage}
-                  />
-                )}
-              </Box>
-              {/* 1.3 CHANGE MODE  */}
-
-              {/* <FormControlLabel control={<Switch  size="small"  checked={mode} onChange={handleChangeMode} />}style={{ display: "flex",  justifyContent: "flex-end",   margin: -20,  marginTop: 45, }} /> */}
-            </Box>
-            <FormControlLabel
-              control={
-                <Switch
-                  size="small"
-                  checked={mode}
-                  onChange={handleChangeMode}
+                  </TableWrapper>   
+ 
+              ) : (
+                //  Mode nha hang
+                <MenuProduct 
+                  products={products} 
+                  handleSearchBarSelect={handleSearchBarSelect}
+                  isCart={true}
+                  selectedItem={cartList[selectedIndex]?.cartItem}
+                  typeShow={typeShow}
+                  setTypeShow={setTypeShow}
+                  setProducts={setProducts}
+                  showImage={showImage}
+                  setShowImage={setShowImage}
                 />
-              }
-              style={{ display: "flex", justifyContent: "flex-end" }}
-            />
-          </Card>
-        </Grid>
-        {/* 2.SUMMARY CARD (right) */}
-        <Grid
-          item
-          xs={12}
-          sm={typeShow === "list" && mode ? 5 : 4}
-          className={classes.root}
-        >
-          <Card className={classes.root}>
-            <Box style={{ padding: 0, minHeight: "82vh" }}>
-              {/* {!mode ? ( */}
+              )}
+            </Box>
+            {/* 1.3 CHANGE MODE  */}
+            
+            {/* <FormControlLabel control={<Switch  size="small"  checked={mode} onChange={handleChangeMode} />}style={{ display: "flex",  justifyContent: "flex-end",   margin: -20,  marginTop: 45, }} /> */}
+
+
+          </Box>
+          <FormControlLabel control={<Switch  size="small"  checked={mode} onChange={handleChangeMode} />}style={{ display: "flex",  justifyContent: "flex-end",  }} />
+
+        </Card>
+      </Grid>
+      
+      {/* 2.SUMMARY CARD (right) */}
+      <Grid item xs={12} sm={typeShow==='list' && mode?5:4} className={classes.root}>
+        <Card className={classes.root}>
+          <Box style={{ padding: 0, minHeight: "82vh" }}>
+            {/* {!mode ? ( */}
               <CartSummary
                 disable={disable}
                 setSelectedBranch={setSelectedBranch}
@@ -1222,168 +1094,97 @@ const Cart = () => {
                 handleUpdateDiscountDetail={handleUpdateDiscountDetail}
                 handleUpdateSelectedPromotion={handleUpdateSelectedPromotion}
               >
-                {!mode ? null : (
-                  <TableContainer
-                    style={{
-                      maxHeight:
-                        !canEnterDiscountWhenSell && mode ? "44vh" : "37vh",
-                      height:
-                        !canEnterDiscountWhenSell && mode ? "44vh" : "37vh",
-                    }}
-                  >
-                    <Table size="small">
-                      <TableBody>
-                        {stableSort(
-                          cartList[selectedIndex].cartItem,
-                          getComparator(order, orderBy)
-                        ).map((row, index) => {
-                          return (
-                            <CartRow
-                              key={`${row.uuid}_index`}
-                              row={row}
-                              handleUpdateBatches={handleUpdateBatches}
-                              handleDeleteItemCart={handleDeleteItemCart}
-                              handleChangeItemPrice={handleChangeItemPrice}
-                              handleChangeItemQuantity={
-                                handleChangeItemQuantity
-                              }
-                              discountData={discountData.filter(
-                                (discount) => discount.discountKey === "product"
-                              )}
-                              mini={true}
-                              imageType={typeShow === "image" && mode}
-                              index={
-                                cartList[selectedIndex].cartItem.length - index
-                              }
-                              typeShow={typeShow}
-                              showImage={showImage}
-                            />
-                          );
-                        })}
-                      </TableBody>
+                {!mode ? null:
+                  <TableContainer  style={{ maxHeight: !canEnterDiscountWhenSell && mode ?"44vh":"37vh", height:!canEnterDiscountWhenSell && mode ?"44vh": "37vh",}} >
+                   <Table  size="small">
+
+                    <TableBody>
+                      {stableSort( cartList[selectedIndex].cartItem, getComparator(order, orderBy) )
+                        .map((row, index) => {
+                        return (
+                          <CartRow
+                            key={`${row.uuid}_index`}
+                            row={row}
+                            handleUpdateBatches={handleUpdateBatches}
+                            handleDeleteItemCart={handleDeleteItemCart}
+                            handleChangeItemPrice={handleChangeItemPrice}
+                            handleChangeItemQuantity={handleChangeItemQuantity}
+                            discountData={discountData.filter(
+                              (discount) => discount.discountKey === "product"
+                            )}
+                            mini={true}
+                            imageType={typeShow==='image' && mode}
+                            index={cartList[selectedIndex].cartItem.length - index}
+                            typeShow={typeShow}
+                            showImage={showImage}
+
+                          />
+                        );
+                      })}
+                    </TableBody>
                     </Table>
-                  </TableContainer>
-                )}
+                  </TableContainer>     
+              }
               </CartSummary>
-            </Box>
-          </Card>
-        </Grid>
-        <PopUpWarningZeroPrice
-          open={openPopUpWarning}
-          handleClose={handleCloseWarning}
-          handleConfirmCallApi={handleConfirmCallApi}
-          isDebtWarning={
-            cartList[selectedIndex].paid_amount <
-              cartList[selectedIndex].total_amount -
-                cartList[selectedIndex].discount &&
-            !cartList[selectedIndex].customer
-          }
-          existZeroPrice={
-            !cartList[selectedIndex].cartItem.every(function (element, index) {
-              if (Number(element.unit_price) === 0) return false;
-              else return true;
-            })
-          }
-        />
-        {/* 3. Receipt */}
-        <div style={{ display: "none" }}>
-          <div ref={componentRef}>
-            <ReceiptPrinter
-              cart={cartList[selectedIndex]}
-              code={code}
-              type={store_setting?.printReceiptWhenSell.cartModal}
-            />
-          </div>
-        </div>
+          </Box>
+        </Card>
       </Grid>
-      {/* <ReceiptPrinter cart={cartList[selectedIndex]} code={code} /> */}
-    </>
+      <PopUpWarningZeroPrice  open={openPopUpWarning} handleClose={handleCloseWarning} handleConfirmCallApi={handleConfirmCallApi} isDebtWarning={ cartList[selectedIndex].paid_amount < cartList[selectedIndex].total_amount - cartList[selectedIndex].discount && !cartList[selectedIndex].customer} 
+      existZeroPrice={!cartList[selectedIndex].cartItem.every(function (element, index) { if (Number(element.unit_price)  === 0) return false; else return true;})} />
+      {/* 3. Receipt */}
+      <div style={{ display: "none" }}>
+        <div ref={componentRef}>
+          <ReceiptPrinter cart={cartList[selectedIndex]} code={code} type={store_setting?.printReceiptWhenSell.cartModal}/>
+        </div>
+      </div>
+    </Grid>
+              {/* <ReceiptPrinter cart={cartList[selectedIndex]} code={code} /> */}
+</>
   );
 };
 
 export default Cart;
 
-const PopUpWarningZeroPrice = ({
-  open,
-  handleClose,
-  handleConfirmCallApi,
-  isDebtWarning,
-  existZeroPrice,
-}) => {
+
+const PopUpWarningZeroPrice = ({open,handleClose,handleConfirmCallApi, isDebtWarning,existZeroPrice}) =>{
   const theme = useTheme();
 
   return (
-    <ModalWrapperWithClose
-      title={
-        isDebtWarning
-          ? "Hoá đơn nợ chưa có thông tin khách hàng"
-          : "Có sản phẩm đang có giá bán bằng 0"
-      }
-      open={open}
-      handleClose={handleClose}
-    >
+    <ModalWrapperWithClose title={isDebtWarning?"Hoá đơn nợ chưa có thông tin khách hàng":"Có sản phẩm đang có giá bán bằng 0"} open={open} handleClose={handleClose}>
       <Typography style={{ marginTop: 10, marginBottom: 10 }}>
-        {isDebtWarning
-          ? "Bạn chưa nhập thông tin khách hàng. Hệ thống không theo dõi công nợ với khách lẻ."
-          : "Giỏ hàng đang có sản phẩm có giá bán bằng 0."}
+      {isDebtWarning?"Bạn chưa nhập thông tin khách hàng. Hệ thống không theo dõi công nợ với khách lẻ." :"Giỏ hàng đang có sản phẩm có giá bán bằng 0."}
       </Typography>
-      {existZeroPrice && isDebtWarning ? (
-        <>
-          <Typography variant="h3" style={{ marginTop: 10, marginBottom: 10 }}>
-            Có sản phẩm đang có giá bán bằng 0
-          </Typography>
-          <Typography style={{ marginTop: 10, marginBottom: 30 }}>
-            Giỏ hàng đang có sản phẩm có giá bán bằng 0
-          </Typography>
-        </>
-      ) : null}
+    {existZeroPrice && isDebtWarning?
+    <>
+      <Typography variant="h3" style={{ marginTop: 10, marginBottom: 10 }}>
+        Có sản phẩm đang có giá bán bằng 0
+      </Typography>
+      <Typography style={{ marginTop: 10, marginBottom: 30 }}>
+         Giỏ hàng đang có sản phẩm có giá bán bằng 0
+      </Typography>
+      </>:null}
 
-      <Typography
-        style={{
-          fontWeight: 600,
-          color: theme.customization.primaryColor[500],
-        }}
-      >
+
+      <Typography style={{ fontWeight: 600, color:theme.customization.primaryColor[500] }}>
         Bạn có chắc chắn muốn tiếp tục thanh toán?
       </Typography>
 
-      <Grid
-        item
-        xs={12}
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "flex-end",
-          paddingTop: 20,
-        }}
-      >
-        <Button
-          onClick={handleClose}
-          variant="contained"
-          size="small"
-          style={{ marginRight: 20 }}
-          color="secondary"
-        >
-          {" "}
-          Huỷ{" "}
+      <Grid item xs={12}style={{  display: "flex",  flexDirection: "row", justifyContent: "flex-end", paddingTop: 20, }} >
+        <Button onClick={handleClose} variant="contained" size="small" style={{ marginRight: 20 }}color="secondary" >
+          {" "} Huỷ{" "}
         </Button>
-        <Button
-          onClick={() => {
-            handleConfirmCallApi();
-            handleClose();
-          }}
-          variant="contained"
-          size="small"
-          color="primary"
-        >
+        <Button onClick={() => {handleConfirmCallApi(); handleClose()}} variant="contained" size="small" color="primary" >
           Xác nhận{" "}
         </Button>
       </Grid>
     </ModalWrapperWithClose>
-  );
-};
+  )
+}
 
-// Dien thoai
+
+
+
+ // Dien thoai
 //  cartList[selectedIndex].cartItem.map((row, index) => {
 //   return (
 //     <CartMiniTableRow

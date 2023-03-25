@@ -25,7 +25,7 @@ import Popper from '@material-ui/core/Popper';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import { useSelector } from "react-redux";
 
-import AddCustomer from "../../../../views/ManagerView/Customer/AddCustomer/AddCustomer";
+//import AddCustomer from "../../../../views/ManagerView/Customer/AddCustomer/AddCustomer";
 import giftBox from "../../../../assets/img/icon/giftbox.png";
 // import giftBox from "../../../../assets/img/icon/gift.png";
 // import giftBox from "../../../../assets/img/icon/gift2.png";
@@ -219,14 +219,14 @@ const CartSummary = (props) => {
         </div>
 
         {/* <AddCustomer open={open} handleClose={handleClose} /> */}
-        
-        {open &&<AddCustomer 
+        {/* Implement later */}
+        {/* {open &&<AddCustomer 
         open={open} 
         handleClose={()=>{setOpen(false)}}  
         onReload={props.reloadCustomers} 
         setAddCustomer={setAddCustomer}
         isCart={true}
-        />}
+        />} */}
         {/* when change mode to menu product */}
         {props.children}
 
@@ -258,7 +258,7 @@ const CartSummary = (props) => {
         >
           <div>
             <ListItem style={{ padding: 0, margin: 0 }}>
-              <Typography variant="h5">{!canEnterDiscountWhenSell && mode ? `Tổng tiền (${calculateTotalQuantity(cartData.cartItem)})` : `Tổng tiền hàng` }</Typography>
+              <Typography variant="h5">{!canEnterDiscountWhenSell && mode ? `Tổng tiền (${calculateTotalQuantity(cartData.cartItem)})` : `Tổng tiền hàng`}</Typography>
               {/* { filteredPromotion.length > 0   ? 
                 <div onClick={()=>{setOpenDiscount(!openDiscount)}}>
                     <img id="gift" src={require('../../../../assets/img/icon/giftbox.png').default} style={{height:16,width:16, marginLeft:10, marginTop:-3}} />
@@ -481,10 +481,159 @@ const CartSummary = (props) => {
         >
           Thanh toán
         </Button>
+        {/* </>
+        ) : (
+          */}
+        {/* <>
+            <Grid
+              container
+              direction="row"
+              justifyContent="space-between"
+              className={classes.marginRow}
+              style={{marginTop:-15}}
+            >
+              <Typography variant="h5">Tổng tiền hàng</Typography>
+              <Typography variant="body2">500.000</Typography>
+            </Grid>
+            <Grid
+              container
+              direction="row"
+              justifyContent="space-between"
+              className={classes.marginRow}
+            >
+              <Typography variant="h5">Giảm giá</Typography>
+              <Input.ThousandSeperatedInput
+                id="standard-basic"
+                style={{ width: 90 }}
+                size="small"
+                inputProps={{ style: { textAlign: "right" } }}
+              />
+            </Grid>
+            <Button
+              variant="contained"
+              fullWidth
+              color="primary"
+              style={{  }}
+              onClick={handleClickOpenPopUp}
+            >
+              <Grid container direction="row" justifyContent="space-between">
+                <Grid item>Thanh toán  ( {calculateTotalQuantity(cartData.cartItem)} ) </Grid>
+                <Grid item>500.000 </Grid>
+              </Grid>
+            </Button>
+            <Dialog
+              open={openPopUp}
+              onClose={handleClosePopUp}
+              aria-labelledby="form-dialog-title"
+            >
+              <CheckoutPopUp />
+            </Dialog>
+          </>
+        )} */}
       </Grid>
     </Box>
   );
 };
 
 export default CartSummary;
+
+// const CheckoutPopUp = (props) => {
+//   const { onClose, handleChangePayment, payment } = props;
+//   const theme = useTheme();
+//   const classes = useStyles(theme);
+//   return (
+//     <>
+//       <Box style={{ marginTop: 20, marginLeft: 15, marginBottom: 10 }}>
+//         <Typography className={classes.headerTitle} variant="h5">
+//           Trả tiền NCC
+//         </Typography>
+//       </Box>
+//       <DialogContent>
+//         <Grid
+//           container
+//           direction="row"
+//           justifyContent="space-between"
+//           className={classes.marginRow}
+//         >
+//           <Typography variant="h5">Tổng tiền hàng</Typography>
+//           <Typography variant="body2">500.000</Typography>
+//         </Grid>
+//         <Grid
+//           container
+//           direction="row"
+//           justifyContent="space-between"
+//           alignItems="center"
+//           className={classes.marginRow}
+//         >
+//           <Typography variant="h5" style={{ paddingRight: 50 }}>
+//             Đã trả CNN
+//           </Typography>
+//           <Input.ThousandSeperatedInput
+//             id="standard-basic"
+//             style={{ width: 90 }}
+//             size="small"
+//             inputProps={{ style: { textAlign: "right" } }}
+//           />
+//         </Grid>
+//         <Grid
+//           container
+//           direction="row"
+//           justifyContent="space-between"
+//           alignItems="center"
+//           className={classes.marginRow}
+//         >
+//           <Typography variant="h5">Công nợ</Typography>
+//           <Input.ThousandSeperatedInput
+//             id="standard-basic"
+//             style={{ width: 90 }}
+//             size="small"
+//             inputProps={{ style: { textAlign: "right" } }}
+//           />
+//         </Grid>
+//         <Grid
+//           container
+//           direction="row"
+//           justifyContent="flex-end"
+//           alignItems="center"
+//           className={classes.marginRow}
+//         >
+//           <FormControl component="fieldset">
+//             <RadioGroup
+//               aria-label="gender"
+//               name="gender1"
+//               value={payment}
+//               onChange={handleChangePayment}
+//             >
+//               <Grid container direction="row">
+//                 <FormControlLabel
+//                   labelPlacement="start"
+//                   value="card"
+//                   control={<Radio />}
+//                   label="Thẻ"
+//                 />
+//                 <FormControlLabel
+//                   labelPlacement="start"
+//                   value="cash"
+//                   control={<Radio />}
+//                   label="Tiền mặt"
+//                 />
+//               </Grid>
+//             </RadioGroup>
+//           </FormControl>
+//         </Grid>
+//       </DialogContent>
+//       <DialogActions>
+//         <Button
+//           variant="contained"
+//           onClick={onClose}
+//           fullWidth
+//           color="primary"
+//           style={{ marginTop: 40 }}
+//         >
+//           Thanh toán ()
+//         </Button>
+//       </DialogActions>
+//     </>
+//   );
+// };
 

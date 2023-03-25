@@ -10,7 +10,7 @@ import { Empty } from 'antd';
 import { Pagination } from 'antd';
 
 const TableWrapper = (props) => {
-    const {isCart, isReport, isUnitTable, pagingState, setPagingState,list,tableRef} = props;
+    const {isCart, isReport, pagingState, setPagingState,list,tableRef} = props;
 
     // console.log("pagingState",pagingState)
     const theme = useTheme();
@@ -34,7 +34,7 @@ const TableWrapper = (props) => {
 
             {/* <TableContainer style={{maxHeight: '90vh',}}> */}
             {/* <TableContainer style={{maxHeight: '84vh', minHeight:'60vh'}}> */}
-            <TableContainer style={ isUnitTable ? {maxHeight: '50vh', minHeight:'20vh'} : {maxHeight: '64vh', minHeight:'60vh'}}>
+            <TableContainer style={{maxHeight: '64vh', minHeight:'60vh'}}>
 
                 <Table
                     ref={tableRef}

@@ -54,28 +54,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-function formatDateTime(dateString){
-    //const dateString = "2023-03-02 11:05:00";
-    const date = new Date(dateString);
-    
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const year = date.getFullYear().toString();
-    
-    let hours = date.getHours();
-    const ampm = hours >= 12 ? "PM" : "AM";
-    hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-    const seconds = date.getSeconds().toString().padStart(2, "0");
-    const time = hours.toString().padStart(2, "0") + ":" + minutes + ":" + seconds + " " + ampm;
-    
-    return  `${day}/${month}/${year} ${time}`;
-
-
-
-}
-
 const ReservationTableRow = (props) => {
     const {
         row,
@@ -111,7 +89,7 @@ const ReservationTableRow = (props) => {
                     {row.id}
                 </TableCell>
                 <TableCell className={classes.cell} align="left" style={{ color: colorText }}>
-                    {formatDateTime(row.reservation_datetime)}
+                    {row.reservation_datetime}
                 </TableCell>
                 <TableCell className={classes.cell} align="left" style={{ color: colorText }}>
                     {row.name}

@@ -66,7 +66,7 @@ import {
         parent_category_uuid: "",
       })
     }
-    //console.log("categoryInfo",categoryInfo)
+    console.log("categoryInfo",categoryInfo)
     return (
       <ModalWrapper {...props}>
         <Typography variant="h4" gutterBottom>

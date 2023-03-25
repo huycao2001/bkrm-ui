@@ -162,13 +162,11 @@ const SearchProduct = (props) => {
     <div style={{ width: 320, paddingLeft: 20 }}>
         {!isFilter ?
         <Autocomplete
-          freeSolo={true}
           filterOptions={filter}
           options={props.products}
           autoComplete
           getOptionLabel={getOptionLabel}
           onChange={(event, value) => {
-            //console.log("value is " + JSON.stringify(value))
             if (value?.name) {
               setSelectedOption(value);
               props.handleSearchBarSelect(value);
