@@ -699,8 +699,7 @@ const Import = () => {
   return (
     <Grid container direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
 
-    {addProduct &&       
-    <AddInventory
+      <AddInventory
         open={addProduct}
         handleClose={() => {
           setAddProduct(false)
@@ -708,7 +707,7 @@ const Import = () => {
         setReload={() => {
           setReloadProduct(!reloadProduct);
         }}
-      />}
+      />
 
       <SnackBarGeneral handleClose={handleCloseSnackBar} open={openSnack} status={snackStatus} />
 

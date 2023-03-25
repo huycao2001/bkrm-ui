@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { withStyles, useTheme, makeStyles, createStyles } from "@material-ui/core/styles";
+import { useTheme, makeStyles, createStyles } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 //import library
-import { styled } from "@mui/material/styles";
 import {
   //Box,
   Grid,
@@ -47,18 +46,7 @@ import {
   ThousandFormat,
   VNDFormat,
 } from "../../../../../components/TextField/NumberFormatCustom";
-import {
-  Table,
-  TableHead, 
-  TableBody,
-  TableCell, 
-  TableRow, 
-  Avatar, 
-  ListItem, 
-  Chip 
-} from "@mui/material";
-
-import { tableCellClasses } from "@mui/material/TableCell";
+import { TableCell, TableRow, Avatar, ListItem, Chip } from "@material-ui/core";
 import clsx from "clsx";
 
 import { FormatedProductStatus } from "../../../../../components/TableCommon/util/format";
@@ -68,32 +56,6 @@ import branchApi from "../../../../../api/branchApi";
 
 import defaultProduct from "../../../../../assets/img/product/default-product.png";
 import BranchInventoryPopUp from "./BranchInventoryPopUp";
-
-
-
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: "#2196f3",
-    color: theme.palette.common.white,
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-  },
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:nth-of-type(odd)": {
-    backgroundColor: theme.palette.action.hover,
-  },
-  // hide last border
-  "&:last-child td, &:last-child th": {
-    border: 0,
-  },
-}));
-
-
-
 const useStyles = makeStyles((theme) =>
   createStyles({
     root: {
@@ -707,60 +669,6 @@ const InventoryDetail = (props) => {
                 ) : null}
               </Grid>
             </Grid>
-
-            {row.recipe_data.ingredients && <Grid
-            container
-            direction="column"
-            >
-              <Box
-                  sx={{
-                    fontSize: 18,
-                    fontWeight: 400,
-                    color: "#212121",
-                    mb: 2,
-                  }}
-                >
-                  Thành phần nguyên liệu
-                </Box>
-              <Table>
-                <TableHead sx={{ borderBottom: 0 }}>
-                  <TableRow sx={{ borderBottom: 0 }}>
-                    <StyledTableCell>Tên thành phần</StyledTableCell>
-                    <StyledTableCell>Số lượng</StyledTableCell>
-                    <StyledTableCell>Đơn vị</StyledTableCell>
-                    <StyledTableCell>Giá nhập</StyledTableCell>
-                    <StyledTableCell>Thành tiền</StyledTableCell>
-                    
-                  </TableRow>
-                </TableHead>
-
-                <TableBody>
-                  {row.recipe_data.ingredients.map((ingredient, index) => (
-                    <StyledTableRow key = {index} >
-                      <StyledTableCell component="th" scope="row">
-                        {ingredient.product_name}
-                      </StyledTableCell>
-
-                      <StyledTableCell component="th" scope="row">
-                        {ingredient.quantity_required}
-                      </StyledTableCell>
-
-                      <StyledTableCell component="th" scope="row">
-                        {"Cái"}
-                      </StyledTableCell>
-                      <StyledTableCell component="th" scope="row">
-                        <ThousandFormat value = {ingredient.standard_price}/>
-                      </StyledTableCell>
-
-                      <StyledTableCell component="th" scope="row">
-                        <ThousandFormat value = {ingredient.standard_price * ingredient.quantity_required}  />
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  ))}
-                </TableBody>
-              </Table>
-
-            </Grid>}
 
             <Grid
               container

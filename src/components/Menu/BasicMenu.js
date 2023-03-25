@@ -280,9 +280,9 @@ export const fbModule = {
     },
     {
       id: 22,
-      title: "Cashier",
-      key: "Cashier",
-      url: "/home/fb/cashier",
+      title: "Reception",
+      key: "Reception",
+      url: "/home/fb/reception",
       // icon:  <Box component="img" sx={{ height: 24, width: 24 }} src={customerIcon} style={{marginLeft:-10}} />,
       // iconColor: customerIcon,
       // icon1: icons.FavoriteBorderOutlinedIcon,

@@ -3,7 +3,7 @@ import React from 'react'
 const CategorySelect = (props) => {
     const {categoryList} =  props 
     return (
-        categoryList.map((category, index) => <MyOption key = {index} category={category} currentLevel={0} />)
+        categoryList.map((category) => <MyOption category={category} currentLevel={0} />)
 
     )
 }
@@ -22,7 +22,7 @@ const MyOption = (props) => {
                 <option key={category.key} value={category.uuid} >
                     {padding + category.name}
                 </option>,
-                ...category.children?.map((subCategory, index) => <MyOption key = {index} category={subCategory} currentLevel={currentLevel + 1} />)
+                ...category.children?.map((subCategory) => <MyOption category={subCategory} currentLevel={currentLevel + 1} />)
             ]
         )
     } catch (error) {

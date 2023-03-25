@@ -5,7 +5,7 @@ import {useTheme,withStyles} from "@material-ui/core/styles";
 // import library
 import {TableHead,TableRow,TableCell,TableSortLabel} from '@material-ui/core';
 import { grey} from '@material-ui/core/colors'
-import InfoButton from '../../Button/InfoButton';
+
 
 
 const StyledTableCell = withStyles((theme) => ({
@@ -59,8 +59,6 @@ function TableHeader(props) {
 
              >
                   {headCell.label}
-
-                  {headCell.label === 'Giá trị quy đổi' && <InfoButton title = "Giá trị quy đổi từ 1 đơn vị trong kho sang đơn vị hiện tại"/> }
             </StyledTableCell>
               
             ))}
