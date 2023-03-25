@@ -885,17 +885,7 @@ const Cashier = (props) => {
                   handleSearchBarSelect = {handleSearchBarSelect}
                 />
 
-<Button
-          onClick={() => {
-            if(ws){
-              console.log("cancel connection");
-              ws.disconnect();
-            }
-          }}
-        >
 
-          Cancel connection
-        </Button>
               </Toolbar>
             </AppBar>
             <TabPanel value={index} index={0}>
