@@ -53,7 +53,8 @@ import SearchProductCashier from "../../../components/SearchBar/SearchProductCas
 import CashierTableView from "./CashierTableView/CashierTableView";
 
 import productApi from "../../../api/productApi";
-import fbTableApi from "../../../api/fbTableApi"; 
+import fbTableApi from "../../../api/fbTableApi";
+import stateApi from "../../../api/stateApi"; 
 
 // import Tabs from "@material-ui/core/Tabs";
 // import Tab from "@material-ui/core/Tab";
@@ -63,6 +64,10 @@ import fbTableApi from "../../../api/fbTableApi";
 //         backgroundColor : theme.palette.primary.light
 //     }
 // }));
+
+import Echo from "laravel-echo";
+import Pusher from "pusher-js";
+import { ContactSupportOutlined } from "@material-ui/icons";
 
 
 
@@ -176,39 +181,43 @@ const Cashier = (props) => {
 
   const [products, setProducts] = useState([]);
 
-  const [tables, setTables] = useState([{
-    uuid : generateUUID(),
-    seats : 0, 
-    name : "Mang đi",
-    type : "away",
-    status : "empty",
-    table_group_name : "Bán mang đi"
-  }]);
+  // const [tables, setTables] = useState([{
+  //   uuid : generateUUID(),
+  //   seats : 0, 
+  //   name : "Mang đi",
+  //   type : "away",
+  //   status : "empty",
+  //   table_group_name : "Bán mang đi"
+  // }]);
 
-  const [selectedTable, setSelectedTable] = useState(tables[0]);
+
+  const [tables, setTables] = useState([]);
+
+  const [selectedTable, setSelectedTable] = useState(null);
 
   const [isUpdateTotalAmount, setIsUpdateTotalAmount] = React.useState(false);
 
 
   
-  const[cashierCartList, setCashierCartList] = useState([
-    {
-      table : selectedTable,
-      reservation : null,
-      customer: null,
-      cartItem: [],
-      total_amount: "0",
-      paid_amount: "0",
-      discount: "0",
-      payment_method: "cash",
-      delivery: false,
-      scores: "0",
-      discountDetail: { value: "0", type: "VND" },
-      selectedPromotion: null,
-      otherFee: 0,
-    },
-  ]);
+  const[cashierCartList, setCashierCartList] = useState([]);
 
+
+  const handleUpdateState = async (type, payload) => {
+    try{
+      const response = await stateApi.updateState(store_uuid, branch_uuid, {
+        eventType : type,
+        payload : payload
+      });
+
+      if(response.message){
+        dispatch(statusAction.successfulStatus(response.message));
+      }
+    }catch(e){
+      dispatch(statusAction.failedStatus("somthing went wrong"))
+    }
+
+
+  }
 
 
   const handleAddCell = () => { 
@@ -220,7 +229,6 @@ const Cashier = (props) => {
       status : "empty",
       table_group_name : "Bán mang đi"
     }
-
 
     setTables(prev => {
       return [
@@ -239,8 +247,13 @@ const Cashier = (props) => {
 
     // Delete the current order
     var newCashierCartList = [...cashierCartList]; 
-    newCashierCartList.filter(cart => cart.table.uuid != tableUuid); 
-    setCashierCartList(newCashierCartList);
+    newCashierCartList.filter(cart => cart.table.uuid != tableUuid);
+
+    handleUpdateState("DeleteDeliveryCart", {
+      tableUuid : tableUuid
+    });
+    //setCashierCartList(newCashierCartList);
+    setClone(!clone);
 
     if(selectedTable.uuid === tableUuid){
       setSelectedTable(null);
@@ -250,20 +263,187 @@ const Cashier = (props) => {
   
 
 
+  const [ws, setWs ] = useState(null);
+
+  const [socket, setSocket] = useState(null);
+
+  const sendData = (data) => { 
+    if(socket){
+      console.log("sending data")
+      try{
+        socket.send(JSON.stringify(data), []);
+      }
+      catch(e){
+        console.log("Send data failed : " + e);
+      }
+    }
+  }
+
+  useEffect(async () => {
+    //console.log(process.env.REACT_APP_PUSHER_APP_KEY);
+    console.log("call use effect again");
+    if(!selectedTable) {
+      console.log("denideeddd");
+      return;
+    }
+    if (!ws) {
+      const echo = new Echo({
+        broadcaster: 'pusher',
+        key: 'apollo13',
+        wsHost: window.location.hostname,
+        wsPort: 6001,
+        wssPort: 6001,
+        forceTLS: false,
+        disableStats: true,
+        encrypted: false,
+        enabledTransports: ['ws', 'wss'],
+        cluster: 'ap1',
+      });
+      if (selectedTable){
+        //ws.stores.{$table->store->uuid}.branches.{$table->branch->uuid}.tables.{$table->uuid}
+        var channel = `ws.stores.${store_uuid}.branches.${branch_uuid}.tables.${selectedTable.uuid}`
+        echo
+        .channel(channel)
+        .subscribed(() => {
+          console.log('You are subscribed to ' + channel);
+          let iniSocket = new WebSocket(`ws://localhost:6001/app/apollo13?protocol=7&client=js&version=7.5.0&flash=false`);
+          iniSocket.onopen = function (event) {
+            iniSocket.send(JSON.stringify(
+              {
+                event: 'bkrm:not-temporary_table_fborder_updated',
+                token: localStorage.getItem("token"),
+                payload: {
+                  table_uuid: selectedTable.uuid,
+                  temporary_fborder: '[food:2]'
+                },
+              }), []);
+          }
+
+          setSocket(iniSocket);
+
+        })
+        .listen('.bkrm:temporary_fborder_updated_event', (data) => {
+          console.log("WS got: " + JSON.stringify(data));
+          console.log("type of data " + typeof data);
+
+
+          if(data.temporary_fborder !== '[]'){
+            handleUpdateTableCart(data.table_uuid, data.temporary_fborder);
+          }else{
+            console.log("no ????")
+          }
+          
+        }
+        );
+
+        
+      setWs(echo);
+      }
+      
+    }
+  } , [selectedTable]);
+
+
+  const handleUpdateTableCart = (tableUuid, cart) => { 
+
+    var newCashierCartList = [...cashierCartList]; 
+    let currentCart = newCashierCartList.find(item => item.table.uuid === tableUuid);
+
+    if(cart === 'null'){
+      newCashierCartList = newCashierCartList.filter(item => item.table.uuid !== tableUuid);
+      setCashierCartList(newCashierCartList);
+      return;
+
+    }
+    if(currentCart){
+      currentCart = JSON.parse(cart);
+
+    }else{
+      newCashierCartList = [...newCashierCartList, JSON.parse(cart)];
+    }
+    console.log("update state back to list")
+    console.log(newCashierCartList);
+
+
+    setCashierCartList(newCashierCartList);
+  }
+
+
+
+  // useEffect(() => {
+
+
+  //   if(!selectedTable) return;
+  //   const channel = `ws.stores.${store_uuid}.branches.${branch_uuid}.tables.${selectedTable.uuid}`;
+
+  //   if (!ws) {
+  //     let c = window.Echo.channel(channel);
+  //     setWs(c);
+  //     c.subscribed(() => {
+  //       console.log('Now listening to events from channel: ' + channel);
+  //       let ws = new WebSocket(`ws://localhost:6001/app/apollo13?protocol=7&client=js&version=7.5.0&flash=false`);
+
+  //       ws.onopen = function (event) {
+  //         ws.send(JSON.stringify(
+  //           {
+  //             event: 'bkrm:not-temporary_table_fborder_updated',
+  //             token: localStorage.getItem("token"),
+  //             payload: {
+  //               table_uuid: selectedTable.uuid,
+  //               temporary_fborder: '[food:2]'
+  //             },
+  //           }), []);
+  //       }
+  //     });
+  //     c.listen("TemporaryTableOrderUpdatedEvent", (data) => {
+  //       console.log("WS got: " + JSON.stringify(data));
+  //       // handleReceiveNewMessage(data);
+  //     }
+  //     );
+
+  //   }
+  // }, [selectedTable]);
+
   useEffect(() => {
     updateTotalAmount();
   }, [isUpdateTotalAmount]);
 
 
+  const [clone,setClone] = useState(false); 
+
+
+  const loadState = async () => {
+    try{
+      const response = await stateApi.getState(store_uuid, branch_uuid); 
+      if(response.message === "Success"){
+        setCashierCartList(response.data);
+      }
+
+    console.log("My state" + JSON.stringify(response));
+    }catch(e){
+      console.log("error when calling state"); 
+      console.log(e);
+    }
+  }
+  useEffect(() => { 
+
+
+    loadState();
+  } , [])
+
+
+  
+
 
   const updateTotalAmount = () => {
     if(selectedTable === null) return;
-    let total = 0;
+    
 
     var newCashierCartList = [...cashierCartList];
 
     let currentCart = newCashierCartList.find(item => item.table.uuid === selectedTable.uuid);
     if(!currentCart) return;
+    let total = 0;
     currentCart.cartItem.forEach((item) => {
       total += item.unit_price * item.quantity;
     });
@@ -300,9 +480,6 @@ const Cashier = (props) => {
 
     let currentCart = newCashierCartList.find(item => item.table.uuid === selectedTable.uuid);
 
-    //console.log("current cart" + JSON.stringify(currentCart));
-    //console.log("current value" + JSON.stringify(selectedOption));
-
     let itemIndex = currentCart.cartItem.findIndex(
       (item) => item.uuid === itemUuid
     );
@@ -316,18 +493,43 @@ const Cashier = (props) => {
     //   newQuantity = "";
     // }
     if (newQuantity === 0 && !item.has_batches) {
+
+      console.log("new quantity = 0");
+
       handleDeleteItemCart(itemUuid);
       return;
     }
     if (newQuantity < 0) {
+      console.log("quantity < 0");
       return;
     }
 
     //let newCartList = [...cartList];
+    var oldQuantity  = currentCart.cartItem[itemIndex].quantity; 
     currentCart.cartItem[itemIndex].quantity = newQuantity;
+    currentCart.total_amount +=  Number(currentCart.cartItem[itemIndex].unit_price * (newQuantity - oldQuantity));
+    currentCart.paid_amount =  currentCart.total_amount;
+
     //setCartList(newCartList);
-    setCashierCartList(newCashierCartList);
-    setIsUpdateTotalAmount(!isUpdateTotalAmount);
+    // handleUpdateState("UpdateItemQuantity", {
+    //   cart : currentCart,
+    //   item : item,
+    //   newQuantity : newQuantity
+    // })
+
+    console.log("update right ?" + JSON.stringify(currentCart));
+
+    sendData({
+      event: 'bkrm:temporary_fborder_request_update_event',
+      token: localStorage.getItem("token"),
+      payload: {
+        table_uuid: selectedTable.uuid,
+        temporary_fborder: JSON.stringify(currentCart)
+      },
+    });
+    //setCashierCartList(newCashierCartList);
+    //setClone(!clone);
+    // setIsUpdateTotalAmount(!isUpdateTotalAmount);
   };
 
 
@@ -339,15 +541,58 @@ const Cashier = (props) => {
     let itemIndex = currentCart.cartItem.findIndex(
       (item) => item.uuid === itemUuid
     );
+
+    let item = currentCart.cartItem.find(
+      (item) => item.uuid === itemUuid
+    );
+
+
     currentCart.cartItem.splice(itemIndex, 1);
     if(currentCart.cartItem.length === 0){
-      //delete cart if there are no items left
-      var cartIndex = newCashierCartList.findIndex(item => item.table.uuid === selectedTable.uuid);
-      newCashierCartList.splice(cartIndex,1);
+      // Delete the whole cart
+      sendData({
+        event: 'bkrm:temporary_fborder_request_update_event',
+        token: localStorage.getItem("token"),
+        payload: {
+          table_uuid: selectedTable.uuid,
+          temporary_fborder: JSON.stringify(null)
+        },
+      });
+      return; 
     }
 
-    setCashierCartList(newCashierCartList);
-    setIsUpdateTotalAmount(!isUpdateTotalAmount);
+    //Update total amount again 
+    currentCart.total_amount -= Number(item.unit_price * item.quantity);
+    currentCart.paid_amount  =  currentCart.total_amount ;
+
+    console.log("delete cart" + JSON.stringify(currentCart));
+    sendData({
+      event: 'bkrm:temporary_fborder_request_update_event',
+      token: localStorage.getItem("token"),
+      payload: {
+        table_uuid: selectedTable.uuid,
+        temporary_fborder: JSON.stringify(currentCart)
+      },
+    });
+    // if(currentCart.cartItem.length === 0){
+    //   //delete cart if there are no items left
+    //   var cartIndex = newCashierCartList.findIndex(item => item.table.uuid === selectedTable.uuid);
+    //   newCashierCartList.splice(cartIndex,1);
+
+    //   // handleUpdateState("DeleteCart", {
+    //   //   cart : currentCart
+    //   // })
+    // }else{
+    //   // handleUpdateState("DeleteItemFromCart", {
+    //   //   cart : currentCart,
+    //   //   item : item
+    //   // })
+    // }
+
+
+    //setCashierCartList(newCashierCartList);
+    //setClone(!clone);
+    // setIsUpdateTotalAmount(!isUpdateTotalAmount);
   };
 
 
@@ -365,6 +610,7 @@ const Cashier = (props) => {
 
     let currentCart = newCashierCartList.find(item => item.table.uuid === selectedTable.uuid);
 
+    var cartCreated = false; 
 
     if(!currentCart){
       // new item for the table -> create a new cart
@@ -373,16 +619,18 @@ const Cashier = (props) => {
         reservation : null,
         customer: null,
         cartItem: [],
-        total_amount: "0",
-        paid_amount: "0",
-        discount: "0",
+        total_amount: 0,
+        paid_amount: 0 ,
+        discount: 0 ,
         payment_method: "cash",
         delivery: false,
-        scores: "0",
-        discountDetail: { value: "0", type: "VND" },
+        scores: 0,
+        discountDetail: { value: 0, type: "VND" },
         selectedPromotion: null,
         otherFee: 0,
       }
+
+      cartCreated = true;
 
       
 
@@ -403,9 +651,6 @@ const Cashier = (props) => {
     );
 
     if (!item) {
-
-
-
       let newCartItem = {
         id: currentCart.cartItem.length,
         uuid: selectedOption.uuid,
@@ -427,18 +672,31 @@ const Cashier = (props) => {
         }),
       };
 
-
-
       currentCart.cartItem.push(newCartItem);
-      setCashierCartList(newCashierCartList);
-      setIsUpdateTotalAmount(!isUpdateTotalAmount);
+      currentCart.total_amount = currentCart.cartItem.reduce(
+        (accumulator, currentValue) => accumulator + Number(currentValue.unit_price),
+        0
+      );
+      currentCart.paid_amount = currentCart.total_amount;
+
+      //setIsUpdateTotalAmount(!isUpdateTotalAmount);
+      sendData({
+        event: 'bkrm:temporary_fborder_request_update_event',
+        token: localStorage.getItem("token"),
+        payload: {
+          table_uuid: selectedTable.uuid,
+          temporary_fborder: JSON.stringify(currentCart)
+        },
+      });
+      //setClone(!clone)
+      
       return;
     }
 
 
-    console.log("fff");
+
     if (!item.has_batches) {
-      console.log("heeheh");
+
       handleChangeItemQuantity(
         selectedOption.uuid,
         currentCart.cartItem[itemIndex].quantity + 1
@@ -497,7 +755,10 @@ const Cashier = (props) => {
           );
         //setTotalRows(response.total_rows);
 
-        if(response.message === "Successfully fetched tables"){          
+        if(response.message === "Successfully fetched tables"){
+
+           
+          
           setTables(prev => {
             
             var fetchedTables  = response.data.tables.map(table => {
@@ -511,7 +772,7 @@ const Cashier = (props) => {
             });
             
             return [
-              ...prev, 
+              // ...prev, 
               ...fetchedTables
 
             ]
@@ -566,15 +827,15 @@ const Cashier = (props) => {
     console.log("selected" + JSON.stringify(selectedTable));
   }, [selectedTable]);
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    if(selectedTable === null){
-      return;
-    }
-    let currentCart = cashierCartList.find(item => item.table.uuid === selectedTable.uuid);
+  //   if(selectedTable === null){
+  //     return;
+  //   }
+  //   let currentCart = cashierCartList.find(item => item.table.uuid === selectedTable.uuid);
 
-    console.log("newCart" + JSON.stringify(currentCart));
-  }, [cashierCartList]);
+  //   console.log("newCart" + JSON.stringify(currentCart));
+  // }, [cashierCartList]);
 
 
   const handleChangeIndex = (event, newIndex) => {
@@ -592,6 +853,7 @@ const Cashier = (props) => {
       {/* 1) Menu on the left */}
 
       <Grid item xs={12} sm={8}>
+        
         <Card className={classes.root}>
           <Box style={{ minHeight: "82vh", paddingBottom: 0 }}>
             <AppBar
@@ -622,6 +884,18 @@ const Cashier = (props) => {
                   setProducts = {setProducts}
                   handleSearchBarSelect = {handleSearchBarSelect}
                 />
+
+<Button
+          onClick={() => {
+            if(ws){
+              console.log("cancel connection");
+              ws.disconnect();
+            }
+          }}
+        >
+
+          Cancel connection
+        </Button>
               </Toolbar>
             </AppBar>
             <TabPanel value={index} index={0}>
@@ -631,6 +905,10 @@ const Cashier = (props) => {
                 selectedTable = {selectedTable}
                 setSelectedTable = {setSelectedTable}
                 handleAddCell = {handleAddCell}
+                ws = {ws}
+                setWs = {setWs}
+                socket = {socket}
+                setSocket = {setSocket}
 
               
               />
@@ -688,7 +966,7 @@ const Cashier = (props) => {
                         </TableRow>
                       </TableHead> */}
                       <TableBody>
-                      {cashierCartList.find(item => item.table.uuid === selectedTable.uuid)?.cartItem?.map((row, index) => {
+                      {!cashierCartList ? [] :  cashierCartList.find(item => item.table.uuid === selectedTable.uuid)?.cartItem?.map((row, index) => {
                         return (
                           <CartRow
                             key={`${row.uuid}_index`}

@@ -57,7 +57,11 @@ function CashierTableView(props) {
       tables,
       selectedTable,
       setSelectedTable,
-      handleAddCell 
+      handleAddCell,
+      ws,
+      setWs,
+      socket,
+      setSocket
     } = props;
 
     const info = useSelector((state) => state.info);
@@ -80,7 +84,21 @@ function CashierTableView(props) {
             return(
               <Grid item>
               <Card  className={clsx(classes.hoverCard,classes.item,classes.colorCard)} style={{ width:120, borderRadius:7,backgroundColor: selectedTable?.uuid === item.uuid ? theme.palette.primary.light : null }} >
-                <CardActionArea  onClick={() => setSelectedTable(item)}>
+                <CardActionArea  onClick={() => {
+                  setSelectedTable(item);
+                  if(ws){
+                    console.log("close connection");
+                    ws.disconnect();
+                  }
+
+                  if(socket){
+                    console.log("close socket connection"); 
+                    socket.close(); 
+                  }
+                  
+                  setWs(null);
+                  setSocket(null); 
+                }}>
                     <CardContent style={{margin:-5}}>
                         <Typography gutterBottom  style={{color:'#000', fontWeight:500, fontSize:Number(12)}}> {item.name} </Typography>
                         <Grid container alignItem='center'justifyContent='space-between'>

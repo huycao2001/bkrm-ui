@@ -196,7 +196,7 @@ const InventoryDetail = (props) => {
   };
 
   const [openDetailInventory, setOpenDetailInventory] = useState(false);
-  console.log("productDetail.img_urls", productDetail);
+  //console.log("productDetail.img_urls", productDetail);
 
   let imageList = row.img_urls ? JSON.parse(row.img_urls) : null;
   imageList = Array.isArray(imageList) ? imageList : [imageList];

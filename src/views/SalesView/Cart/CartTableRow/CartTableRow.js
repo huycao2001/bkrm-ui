@@ -57,7 +57,7 @@ export const CartRow = (props) => {
     typeShow,
     showImage
   } = props;
-  console.log("cart table row", row)
+  //console.log("cart table row", row)
   const updateQuantity = (newQuantity) => {
     handleChangeItemQuantity(row.uuid, newQuantity);
   };

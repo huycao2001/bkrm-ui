@@ -101,6 +101,12 @@ const productApi = {
     const url = `stores/${storeUuid}/branches/${branchUuid}/transferInventory`;
     return axiosClient.post(url, body);
   },
+
+
+  getUOMs: (storeUuid, productUuid) => {
+    const url = `stores/${storeUuid}/products/${productUuid}/unit-of-measurements`;
+    return axiosClient.get(url);
+  },
   
 };
 export default productApi;
