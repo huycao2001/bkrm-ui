@@ -340,8 +340,8 @@ const AddReservation = (props) => {
                     </Select>
                 </FormControl>
 
-                {(tableID != "") ? <Typography className={classes.typography}>Số ghế của bàn: {tables.find(table => table.uuid == tableID).seats}</Typography> : <></>}
-                {(tableID != "") ? <Typography className={classes.typography}>Nhóm bàn: {tableGroupList[tables.find(table => table.uuid == tableID).table_group_id - 1].name}</Typography> : <></>}
+                {/* {(tableID != "") ? <Typography className={classes.typography}>Số ghế của bàn: {tables.find(table => table.uuid == tableID).seats}</Typography> : <></>} */}
+                {/* {(tableID != "") ? <Typography className={classes.typography}>Nhóm bàn: {tableGroupList[tables.find(table => table.uuid == tableID).table_group_id - 1].name}</Typography> : <></>} */}
 
             </DialogContent>
             <DialogActions>
