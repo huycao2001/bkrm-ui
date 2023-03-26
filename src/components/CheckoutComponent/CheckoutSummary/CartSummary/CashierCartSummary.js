@@ -505,30 +505,42 @@ const CashierCartSummary = (props) => {
             </FormControl>
           </Grid>
   
-          {/* <Grid
+          <Grid
                 container
                 direction="row"
-                justifyContent="flex-end"
+                justifyContent="space-between"
                 alignItems="center"
+                spacing = {2}
+                style = {{marginTop : "10px"}}
+        
               >
-                <FormControlLabel
-                  labelPlacement="start"
-                  control={
-                    <Checkbox checked={cartData.delivery} onChange={(e)=>handleCheckDelivery(e.target.checked)} />
-                  }
-                  label="Giao hàng"
-                />
-              </Grid> */}
-          <Button
-            variant="contained"
-            fullWidth
-            color="primary"
-            style={{ marginTop: !mode ? 60 : 0 }}
-            onClick={handleConfirm}
-            disabled={props.disable}
-          >
-            Thanh toán
-          </Button>
+                <Button
+                    variant="contained"
+                    
+                    color="primary"
+                    style={{ marginTop: !mode ? 60 : 0 , width : "48%"}}
+                    onClick={handleConfirm}
+                    disabled={props.disable}
+                >
+                    Thanh toán
+                </Button>
+
+
+                <Button
+                    variant="contained"
+                    fullWidth
+                    color="secondary"
+                    style={{ width : "48%"}}
+
+                    onClick={() =>{
+                        console.log("ddd")
+                    }}
+                    disabled={props.disable}
+                >
+                    Thông báo cho bếp
+                </Button>
+              </Grid>
+          
         </Grid>
       </Box>
     );
