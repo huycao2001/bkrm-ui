@@ -67,7 +67,7 @@ const MenuProduct = ({products, setProducts, handleSearchBarSelect, isCart, sele
       const color = theme.customization.mode === "Light"  ? '#000' : '#fff'
       return (
         <>
-        <TableContainer style={{maxHeight: '64vh', minHeight:'60vh'}} >
+        <TableContainer style={{maxHeight: '61vh', minHeight:'60vh'}} >
         <Table size={'small'} stickyHeader >
             <TableHeader
                 classes={classes}

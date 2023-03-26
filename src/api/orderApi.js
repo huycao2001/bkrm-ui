@@ -61,5 +61,19 @@ const orderApi = {
       details: JSON.stringify(newDetails),
     });
   },
+
+
+  // fb order 
+  addFBOrder : (storeUuid, branchUuid, tableUuid ,body) => {
+    const url = `/stores/${storeUuid}/branches/${branchUuid}/tables/${tableUuid}/order`
+    return axiosClient.post(url, body);
+  },
+
+  payFBOrder : (storeUuid, branchUuid, fbOrderUuid ,body) => {
+    const url = `/stores/${storeUuid}/branches/${branchUuid}/fb_orders/${fbOrderUuid}/pay`
+    return axiosClient.put(url, body);
+  },
+
+
 };
 export default orderApi;

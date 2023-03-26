@@ -12,6 +12,8 @@ import useStyles from "../../../components/TableCommon/style/mainViewStyle";
 import { CartRow } from "../../SalesView/Cart/CartTableRow/CartTableRow";
 import CartSummary from "../../../components/CheckoutComponent/CheckoutSummary/CartSummary/NewCartSummary";
 
+import CashierCartSummary from "../../../components/CheckoutComponent/CheckoutSummary/CartSummary/CashierCartSummary";
+
 import LoadingIndicator from "../../../components/LoadingIndicator/LoadingIndicator";
 import { trackPromise } from "react-promise-tracker";
 import {
@@ -68,6 +70,7 @@ import stateApi from "../../../api/stateApi";
 import Echo from "laravel-echo";
 import Pusher from "pusher-js";
 import { ContactSupportOutlined } from "@material-ui/icons";
+import orderApi from "../../../api/orderApi";
 
 
 
@@ -217,6 +220,79 @@ const Cashier = (props) => {
     }
 
 
+  }
+
+
+  const handleAddNewFBOrderAndPayment = async (items) => { 
+    var newCashierCartList = [...cashierCartList]; 
+    var currentCart = newCashierCartList.find(item => item.table.uuid === selectedTable.uuid);
+    
+    if(currentCart){
+      try{
+
+
+        var items = currentCart.cartItem.map(item => {
+          return {
+            product_uuid : item.uuid,
+            ordered_quantity : item.quantity
+          }
+        })
+
+        var body = {
+          items : items,
+          note : "testing"
+        }
+
+        const response = await orderApi.addFBOrder(store_uuid, branch_uuid, selectedTable.uuid, body); 
+        if(response.message === "Order created successfully"){
+          dispatch(statusAction.successfulStatus("Tạo hóa đơn thành công"));
+          const fb_order_id = response.data.fb_order.uuid;
+          console.log("fb order is " + fb_order_id);  
+          // Pay the order
+          var payload = {
+            "customer_uuid": null,
+            "paid_date": null,
+            "creation_date": null,
+            "status": "closed",
+            "total_amount": currentCart.total_amount,
+            "paid_amount": currentCart.paid_amount,
+            "discount": "0",
+            "payment_method": "cash",
+            "tax": "0",
+            "shipping": "0",
+            "is_customer_order": false
+        }
+          const paymentResponse = await orderApi.payFBOrder(store_uuid, branch_uuid, fb_order_id, payload ); 
+
+          if(paymentResponse.message === "Order created successfully"){
+            dispatch(statusAction.successfulStatus("Thanh toán thành công"));
+            // Clear the cart
+            sendData({
+              event: 'bkrm:temporary_fborder_request_update_event',
+              token: localStorage.getItem("token"),
+              payload: {
+                table_uuid: selectedTable.uuid,
+                temporary_fborder: JSON.stringify(null)
+              },
+            });
+
+          }else{
+            dispatch(statusAction.failedStatus(paymentResponse.message));
+
+          }
+
+        }else{
+          dispatch(statusAction.failedStatus("Tạo hóa đơn thất bại"));
+
+        }
+      }
+      catch(e){
+        dispatch(statusAction.failedStatus("Tạo hóa đơn thất bại, vui lòng check lỗi"));
+        console.log("Error when creating FB order : " + e); 
+      }
+    }
+  
+  
   }
 
 
@@ -370,39 +446,7 @@ const Cashier = (props) => {
 
 
 
-  // useEffect(() => {
 
-
-  //   if(!selectedTable) return;
-  //   const channel = `ws.stores.${store_uuid}.branches.${branch_uuid}.tables.${selectedTable.uuid}`;
-
-  //   if (!ws) {
-  //     let c = window.Echo.channel(channel);
-  //     setWs(c);
-  //     c.subscribed(() => {
-  //       console.log('Now listening to events from channel: ' + channel);
-  //       let ws = new WebSocket(`ws://localhost:6001/app/apollo13?protocol=7&client=js&version=7.5.0&flash=false`);
-
-  //       ws.onopen = function (event) {
-  //         ws.send(JSON.stringify(
-  //           {
-  //             event: 'bkrm:not-temporary_table_fborder_updated',
-  //             token: localStorage.getItem("token"),
-  //             payload: {
-  //               table_uuid: selectedTable.uuid,
-  //               temporary_fborder: '[food:2]'
-  //             },
-  //           }), []);
-  //       }
-  //     });
-  //     c.listen("TemporaryTableOrderUpdatedEvent", (data) => {
-  //       console.log("WS got: " + JSON.stringify(data));
-  //       // handleReceiveNewMessage(data);
-  //     }
-  //     );
-
-  //   }
-  // }, [selectedTable]);
 
   useEffect(() => {
     updateTotalAmount();
@@ -467,6 +511,21 @@ const Cashier = (props) => {
     let currentCart = newCashierCartList.find(item => item.table.uuid === selectedTable.uuid);
     currentCart.paid_amount = amount; 
     setCashierCartList(newCashierCartList);
+  };
+
+
+  const handleUpdatePaymentMethod = (method) => {
+    var newCashierCartList = [...cashierCartList];
+    let currentCart = newCashierCartList.find(item => item.table.uuid === selectedTable.uuid);
+    if(currentCart){
+      currentCart.payment_method = method;
+      setCashierCartList(newCashierCartList);
+    }else{
+      dispatch(statusAction.failedStatus("Cart không tồn tại"))
+    }
+
+    
+
   };
 
 
@@ -618,6 +677,7 @@ const Cashier = (props) => {
         table : selectedTable,
         reservation : null,
         customer: null,
+        fb_order : null, 
         cartItem: [],
         total_amount: 0,
         paid_amount: 0 ,
@@ -631,13 +691,6 @@ const Cashier = (props) => {
       }
 
       cartCreated = true;
-
-      
-
-      // setCashierCartList([
-      //   currentCart,
-      //   ...cashierCartList
-      // ]);
       newCashierCartList = [currentCart , ...newCashierCartList];
     }
     //console.log("current cart" + JSON.stringify(currentCart));
@@ -852,7 +905,7 @@ const Cashier = (props) => {
     >
       {/* 1) Menu on the left */}
 
-      <Grid item xs={12} sm={8}>
+      <Grid item xs={12} sm={7}>
         
         <Card className={classes.root}>
           <Box style={{ minHeight: "82vh", paddingBottom: 0 }}>
@@ -916,10 +969,10 @@ const Cashier = (props) => {
         </Card>
       </Grid>
 
-      <Grid item xs={12} sm={4} className={classes.root}>
+      <Grid item xs={12} sm={5} className={classes.root}>
         <Card className={classes.root}>
-          <Box style={{ padding: 0, minHeight: "82vh" }}>
-            <CartSummary
+          <Box style={{ padding: 0, maxHeight: "82vh", overflow : "scroll" }}>
+            <CashierCartSummary
               
               
               disable = {false}
@@ -931,6 +984,8 @@ const Cashier = (props) => {
               currentBranch = {branch}
               handleSearchCustomer={null}
               handleUpdatePaidAmount = {handleUpdatePaidAmount}
+              handleUpdatePaymentMethod={handleUpdatePaymentMethod}
+              handleConfirm = {handleAddNewFBOrderAndPayment}
               mode = {true}
 
               customers={[]}
@@ -979,7 +1034,7 @@ const Cashier = (props) => {
                       </TableBody>
                     </Table>
                   </TableContainer>}
-            </CartSummary>
+            </CashierCartSummary>
 
           </Box>
         </Card>
