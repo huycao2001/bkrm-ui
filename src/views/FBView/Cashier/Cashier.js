@@ -184,6 +184,9 @@ const Cashier = (props) => {
 
   const [products, setProducts] = useState([]);
 
+  //const [reload, setReload] = useState(false);
+
+
   // const [tables, setTables] = useState([{
   //   uuid : generateUUID(),
   //   seats : 0, 
@@ -229,8 +232,6 @@ const Cashier = (props) => {
     
     if(currentCart){
       try{
-
-
         var items = currentCart.cartItem.map(item => {
           return {
             product_uuid : item.uuid,
@@ -248,38 +249,60 @@ const Cashier = (props) => {
           dispatch(statusAction.successfulStatus("Tạo hóa đơn thành công"));
           const fb_order_id = response.data.fb_order.uuid;
           console.log("fb order is " + fb_order_id);  
-          // Pay the order
-          var payload = {
-            "customer_uuid": null,
-            "paid_date": null,
-            "creation_date": null,
-            "status": "closed",
-            "total_amount": currentCart.total_amount,
-            "paid_amount": currentCart.paid_amount,
-            "discount": "0",
-            "payment_method": "cash",
-            "tax": "0",
-            "shipping": "0",
-            "is_customer_order": false
-        }
-          const paymentResponse = await orderApi.payFBOrder(store_uuid, branch_uuid, fb_order_id, payload ); 
+          // Prepare the order
 
-          if(paymentResponse.message === "Order created successfully"){
-            dispatch(statusAction.successfulStatus("Thanh toán thành công"));
-            // Clear the cart
-            sendData({
-              event: 'bkrm:temporary_fborder_request_update_event',
-              token: localStorage.getItem("token"),
-              payload: {
-                table_uuid: selectedTable.uuid,
-                temporary_fborder: JSON.stringify(null)
-              },
-            });
+          var prepareDishes = { 
+            items : currentCart.cartItem.map(item => {
+              return {
+                product_uuid : item.uuid,
+                quantity_to_prepare : item.quantity
+              }
+            })
+          }
+          const prepareRes = await orderApi.prepareFBOrder(store_uuid, branch_uuid, fb_order_id, prepareDishes); 
+          if(prepareRes.message === "success"){
+              // Pay the order
+            var payload = {
+              "customer_uuid": null,
+              "paid_date": null,
+              "creation_date": null,
+              "status": "closed",
+              "total_amount": currentCart.total_amount,
+              "paid_amount": currentCart.paid_amount,
+              "discount": "0",
+              "payment_method": "cash",
+              "tax": "0",
+              "shipping": "0",
+              "is_customer_order": false
+          }
+            const paymentResponse = await orderApi.payFBOrder(store_uuid, branch_uuid, fb_order_id, payload ); 
 
+            if(paymentResponse.message === "Order created successfully"){
+              dispatch(statusAction.successfulStatus("Thanh toán thành công"));
+              // Clear the cart
+              sendData({
+                event: 'bkrm:temporary_fborder_request_update_event',
+                token: localStorage.getItem("token"),
+                payload: {
+                  table_uuid: selectedTable.uuid,
+                  temporary_fborder: JSON.stringify(null)
+                },
+              });
+
+              loadProducts();
+
+            }else{
+              dispatch(statusAction.failedStatus(paymentResponse.message));
+
+            }
           }else{
-            dispatch(statusAction.failedStatus(paymentResponse.message));
+            dispatch(statusAction.failedStatus("Chuẩn bị nguyên liệu thất bại"));
 
           }
+
+
+
+          
 
         }else{
           dispatch(statusAction.failedStatus("Tạo hóa đơn thất bại"));

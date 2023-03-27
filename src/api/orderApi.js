@@ -69,6 +69,12 @@ const orderApi = {
     return axiosClient.post(url, body);
   },
 
+
+  prepareFBOrder : (storeUuid, branchUuid, fbOrderUuid ,body) => {
+    const url = `/stores/${storeUuid}/branches/${branchUuid}/fb_orders/${fbOrderUuid}/prepare`
+    return axiosClient.put(url, body);
+  },
+
   payFBOrder : (storeUuid, branchUuid, fbOrderUuid ,body) => {
     const url = `/stores/${storeUuid}/branches/${branchUuid}/fb_orders/${fbOrderUuid}/pay`
     return axiosClient.put(url, body);
