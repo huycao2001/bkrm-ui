@@ -26,6 +26,7 @@ import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import ConfirmPopUp from "../../../ConfirmPopUp/ConfirmPopUp";
 import { useSelector } from "react-redux";
 
+import cashierEmptyCart from "../../../../assets/img/icon/empty-cart.png";
 import AddCustomer from "../../../../views/ManagerView/Customer/AddCustomer/AddCustomer";
 import giftBox from "../../../../assets/img/icon/giftbox.png";
 // import giftBox from "../../../../assets/img/icon/gift.png";
@@ -546,9 +547,14 @@ const CashierCartSummary = (props) => {
     );
   }else{
     return(
-      <Box style={{ padding: 30, minHeight: "80vh" }}>
-          Chưa có item trong cart
-      </Box>
+      <Box style={{ minHeight: "80vh", display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+  <img src={cashierEmptyCart} style={{ width: '30%', height: 'auto' }} alt="Image description" />
+  <div style={{ textAlign: 'center', marginTop: 20, marginLeft : 30 }}>
+    <b>Giỏ hàng đang trống !</b>
+  </div>
+</Box>
+
+
     );
   }
 
