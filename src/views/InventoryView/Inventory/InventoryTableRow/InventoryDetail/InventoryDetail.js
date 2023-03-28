@@ -13,6 +13,7 @@ import {
   ListItemIcon,
   ListItemText,
   IconButton,
+  Tooltip
 } from "@material-ui/core";
 import Box from "@mui/material/Box";
 import "@fontsource/roboto/300.css";
@@ -42,6 +43,9 @@ import { Carousel } from "react-responsive-carousel";
 import { useDispatch, useSelector } from "react-redux";
 import UpdateInventory from "./UpdateInventory/UpdateInventory";
 import ConfirmPopUp from "../../../../../components/ConfirmPopUp/ConfirmPopUp";
+import UOMPopup from "../../../../../components/UOMPopup/UOMPopup";
+
+
 import { statusAction } from "../../../../../store/slice/statusSlice";
 import {
   ThousandFormat,
@@ -133,6 +137,10 @@ const InventoryDetail = (props) => {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [thisReload, setThisReload] = useState(false);
+
+
+  const [openUOMPopup, setOpenUOMPopup] = useState(false);
+
   const dispatch = useDispatch();
 
   const [productDetail, setProductDetail] = useState({
@@ -322,6 +330,20 @@ const InventoryDetail = (props) => {
           </Typography>
         }
       />
+
+      {row.unit_of_measurement_categories && <UOMPopup
+        openUOMPopup = {openUOMPopup}
+        handleCloseUOMPopup = {() => {
+          setOpenUOMPopup(false); 
+        }}
+        //UOMList = {row.unit_of_measurement_categories}
+        product ={row}
+    
+      />}
+
+
+
+
       <Box margin={0} sx={{ mt: 3, mb: 2 }}>
         <Grid container direction="row" justifyContent="flex-start">
           <Grid item xs={12} sm={3}>
@@ -746,7 +768,7 @@ const InventoryDetail = (props) => {
                       </StyledTableCell>
 
                       <StyledTableCell component="th" scope="row">
-                        {"Cái"}
+                        {ingredient.quantity_per_unit}
                       </StyledTableCell>
                       <StyledTableCell component="th" scope="row">
                         <ThousandFormat value = {ingredient.standard_price}/>
@@ -768,6 +790,29 @@ const InventoryDetail = (props) => {
               justifyContent={"flex-end"}
               style={{ marginTop: 20 }}
             >
+
+            {row.unit_of_measurement_categories.length > 0  ? 
+              <Tooltip title = "Sản phẩm có nhiều đơn vị quy đổi">
+
+                <Button
+                  variant="contained"
+                  size="small"
+                  color="primary"
+                  startIcon={<DeleteIcon />}
+                  style={{ marginLeft: 15 }}
+                  onClick={() => {
+                    setOpenUOMPopup(true);
+                  }}
+                >
+                  Đơn vị quy đổi
+              </Button>
+
+              </Tooltip>
+            
+            : null
+            }
+
+
               <Button
                 variant="contained"
                 size="small"
@@ -792,6 +837,9 @@ const InventoryDetail = (props) => {
               >
                 Xoá
               </Button>
+
+
+              
 
               <IconButton
                 aria-label="more"

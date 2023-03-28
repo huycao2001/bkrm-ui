@@ -315,6 +315,14 @@ const AddInventory = (props) => {
 
         if(ingredients.length){
           var ingredients_list = ingredients.map((item) => {
+
+
+            if(item.uom){
+              return {
+                product_uuid : item.uom, 
+                quantity_required : item.quantity_required
+              }
+            }
             return {
               product_uuid : item.uuid,
               quantity_required : item.quantity_required
@@ -342,7 +350,10 @@ const AddInventory = (props) => {
         bodyFormData.append("unit_of_measurement_categories", JSON.stringify(unit_of_measurement_categories));
       }
 
-      await productApi.createProduct(store_uuid, bodyFormData);
+      const response = await productApi.createProduct(store_uuid, bodyFormData);
+
+
+      console.log("check " + bodyFormData.get("recipe")); 
       dispatch(statusAction.successfulStatus("Tạo sản phẩm thành công"));
       if(props.setReload){
         props.setReload();
@@ -1309,12 +1320,21 @@ const AddInventory = (props) => {
               else if(ingredients.length ){
                 //dispatch(statusAction.failedStatus("Vui lòng nhập giá vốn"));
 
-                var total_standard_price = ingredients.reduce(
-                  (accumulator, currentValue) => accumulator + currentValue.quantity_required * currentValue.standard_price,
-                  0
-                );
+                var total_standard_price = 0;
+
+              ingredients.forEach(function(ingredient) {
+                if(ingredient.uom){
+                  total_standard_price += (ingredient.quantity_required * ingredient.standard_price)/ingredient.conversion;
+                  return;
+                }
+                total_standard_price += ingredient.quantity_required * ingredient.standard_price;
+              });
 
                 if(productFormik.values.importedPrice < total_standard_price){
+                  console.log("a1 " + productFormik.values.importedPrice );
+                  console.log("a1 " + total_standard_price );
+
+
                   setOpenConfirmPopup(true)
                 }else{
                   addProductHandler();
