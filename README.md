@@ -2,6 +2,20 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+
+## DEPLOY
+- Change baseURL: 'https://be.cuahangcuatoi.net/api' in axiosClient.js
+- Build image and then push this image to dockerhub
+```docker build --platform linux/amd64 -t your_docker_hub/bkrm-ui .```
+```docker push your_docker_hub/bkrm-ui```
+- SSH to server (WARNING: Please do not stop any container 80, 81, 8000, 8080)
+- Stop any container run on port 9001
+- Pull this image on server and run it on port 9001 of the remote server (must be port 9001, it is configured to point to the domain name https://bkrm.cuahangcuatoi.net)
+```docker pull your_docker_hub/bkrm-ui```
+```docker run -d -p 9001:8000 your_docker_hub/bkrm-ui```
+
+- URL: https://bkrm.cuahangcuatoi.net
+
 ## Available Scripts
 
 In the project directory, you can run:
