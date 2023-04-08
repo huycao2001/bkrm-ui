@@ -4,7 +4,7 @@ import store from "../store/index";
 import { authActions } from "../store/slice/authSlice"
 import { statusAction } from "../store/slice/statusSlice"
 const axiosClient = axios.create({
-  baseURL: 'https://be.cuahangcuatoi.net/api',
+  baseURL: process.env.REACT_APP_LOCAL_DOMAIN,
   // baseURL : "http://localhost:8000/api",
   headers: {
     "content-type": "application/json",
