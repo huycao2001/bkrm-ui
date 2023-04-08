@@ -64,8 +64,13 @@ const orderApi = {
 
 
   // fb order 
-  addFBOrder : (storeUuid, branchUuid, tableUuid ,body) => {
+  createFBOrder : (storeUuid, branchUuid, tableUuid ,body) => {
     const url = `/stores/${storeUuid}/branches/${branchUuid}/tables/${tableUuid}/order`
+    return axiosClient.post(url, body);
+  },
+
+  createFBTakeawayOrder : (storeUuid, branchUuid, body) => {
+    const url = `/stores/${storeUuid}/branches/${branchUuid}/takeaway/order`
     return axiosClient.post(url, body);
   },
 

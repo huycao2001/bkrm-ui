@@ -208,22 +208,7 @@ const Cashier = (props) => {
   const[cashierCartList, setCashierCartList] = useState([]);
 
 
-  const handleUpdateState = async (type, payload) => {
-    try{
-      const response = await stateApi.updateState(store_uuid, branch_uuid, {
-        eventType : type,
-        payload : payload
-      });
 
-      if(response.message){
-        dispatch(statusAction.successfulStatus(response.message));
-      }
-    }catch(e){
-      dispatch(statusAction.failedStatus("somthing went wrong"))
-    }
-
-
-  }
 
 
   const handleAddNewFBOrderAndPayment = async (items) => { 
@@ -244,13 +229,21 @@ const Cashier = (props) => {
           note : "testing"
         }
 
-        const response = await orderApi.addFBOrder(store_uuid, branch_uuid, selectedTable.uuid, body); 
+        // First create the order
+        var response = null;
+        if(selectedTable.type === "away"){
+          console.log("create take away")
+          response = await orderApi.createFBTakeawayOrder(store_uuid, branch_uuid, body)
+        }else{
+          response = await orderApi.createFBOrder(store_uuid, branch_uuid, selectedTable.uuid, body)
+        }
+        
         if(response.message === "Order created successfully"){
           dispatch(statusAction.successfulStatus("Tạo hóa đơn thành công"));
           const fb_order_id = response.data.fb_order.uuid;
           console.log("fb order is " + fb_order_id);  
-          // Prepare the order
-
+          
+          // Prepare the dishes in the order
           var prepareDishes = { 
             items : currentCart.cartItem.map(item => {
               return {
@@ -279,15 +272,25 @@ const Cashier = (props) => {
 
             if(paymentResponse.message === "Order created successfully"){
               dispatch(statusAction.successfulStatus("Thanh toán thành công"));
+              
               // Clear the cart
-              sendData({
-                event: 'bkrm:temporary_fborder_request_update_event',
-                token: localStorage.getItem("token"),
-                payload: {
-                  table_uuid: selectedTable.uuid,
-                  temporary_fborder: JSON.stringify(null)
-                },
-              });
+              if(selectedTable.type === "away"){
+                console.log("clear away ? ")
+                var newCashierCartList = [...cashierCartList]; 
+                var currentCartIndex = newCashierCartList.findIndex(item => item.uuid === selectedTable.uuid); 
+                newCashierCartList.splice(currentCartIndex,1); 
+                setCashierCartList(newCashierCartList)
+              }else{
+                sendData({
+                  event: 'bkrm:temporary_fborder_request_update_event',
+                  token: localStorage.getItem("token"),
+                  payload: {
+                    table_uuid: selectedTable.uuid,
+                    temporary_fborder: JSON.stringify(null)
+                  },
+                });
+              }
+
 
               loadProducts();
 
@@ -348,9 +351,6 @@ const Cashier = (props) => {
     var newCashierCartList = [...cashierCartList]; 
     newCashierCartList.filter(cart => cart.table.uuid != tableUuid);
 
-    handleUpdateState("DeleteDeliveryCart", {
-      tableUuid : tableUuid
-    });
     //setCashierCartList(newCashierCartList);
     setClone(!clone);
 
@@ -477,28 +477,6 @@ const Cashier = (props) => {
 
 
   const [clone,setClone] = useState(false); 
-
-
-  const loadState = async () => {
-    try{
-      const response = await stateApi.getState(store_uuid, branch_uuid); 
-      if(response.message === "Success"){
-        setCashierCartList(response.data);
-      }
-
-    console.log("My state" + JSON.stringify(response));
-    }catch(e){
-      console.log("error when calling state"); 
-      console.log(e);
-    }
-  }
-  useEffect(() => { 
-
-
-    loadState();
-  } , [])
-
-
   
 
 
@@ -592,15 +570,13 @@ const Cashier = (props) => {
     currentCart.total_amount +=  Number(currentCart.cartItem[itemIndex].unit_price * (newQuantity - oldQuantity));
     currentCart.paid_amount =  currentCart.total_amount;
 
-    //setCartList(newCartList);
-    // handleUpdateState("UpdateItemQuantity", {
-    //   cart : currentCart,
-    //   item : item,
-    //   newQuantity : newQuantity
-    // })
-
     console.log("update right ?" + JSON.stringify(currentCart));
 
+
+    if(selectedTable.type === "away"){
+      setCashierCartList(newCashierCartList);
+      return;
+    }
     sendData({
       event: 'bkrm:temporary_fborder_request_update_event',
       token: localStorage.getItem("token"),
@@ -632,14 +608,23 @@ const Cashier = (props) => {
     currentCart.cartItem.splice(itemIndex, 1);
     if(currentCart.cartItem.length === 0){
       // Delete the whole cart
-      sendData({
-        event: 'bkrm:temporary_fborder_request_update_event',
-        token: localStorage.getItem("token"),
-        payload: {
-          table_uuid: selectedTable.uuid,
-          temporary_fborder: JSON.stringify(null)
-        },
-      });
+      if(selectedTable.type === "away"){
+        var currentCartIndex = newCashierCartList.findIndex(item => item.table.uuid === selectedTable.uuid);
+        newCashierCartList.splice(currentCartIndex, 1); 
+        setCashierCartList(newCashierCartList)
+      }
+      else{
+        sendData({
+          event: 'bkrm:temporary_fborder_request_update_event',
+          token: localStorage.getItem("token"),
+          payload: {
+            table_uuid: selectedTable.uuid,
+            temporary_fborder: JSON.stringify(null)
+          },
+        });
+      }
+
+
       return; 
     }
 
@@ -648,6 +633,11 @@ const Cashier = (props) => {
     currentCart.paid_amount  =  currentCart.total_amount ;
 
     console.log("delete cart" + JSON.stringify(currentCart));
+
+    if(selectedTable.type === "away"){
+      setCashierCartList(newCashierCartList);
+      return;
+    }
     sendData({
       event: 'bkrm:temporary_fborder_request_update_event',
       token: localStorage.getItem("token"),
@@ -656,25 +646,7 @@ const Cashier = (props) => {
         temporary_fborder: JSON.stringify(currentCart)
       },
     });
-    // if(currentCart.cartItem.length === 0){
-    //   //delete cart if there are no items left
-    //   var cartIndex = newCashierCartList.findIndex(item => item.table.uuid === selectedTable.uuid);
-    //   newCashierCartList.splice(cartIndex,1);
 
-    //   // handleUpdateState("DeleteCart", {
-    //   //   cart : currentCart
-    //   // })
-    // }else{
-    //   // handleUpdateState("DeleteItemFromCart", {
-    //   //   cart : currentCart,
-    //   //   item : item
-    //   // })
-    // }
-
-
-    //setCashierCartList(newCashierCartList);
-    //setClone(!clone);
-    // setIsUpdateTotalAmount(!isUpdateTotalAmount);
   };
 
 
@@ -749,13 +721,20 @@ const Cashier = (props) => {
       };
 
       currentCart.cartItem.push(newCartItem);
-      currentCart.total_amount = currentCart.cartItem.reduce(
-        (accumulator, currentValue) => accumulator + Number(currentValue.unit_price),
-        0
-      );
+      // currentCart.total_amount = currentCart.cartItem.reduce(
+      //   (accumulator, currentValue) => accumulator + Number(currentValue.unit_price),
+      //   0
+      // );
+
+      currentCart.total_amount += Number(newCartItem.unit_price);
       currentCart.paid_amount = currentCart.total_amount;
 
       //setIsUpdateTotalAmount(!isUpdateTotalAmount);
+
+      if(selectedTable.type === "away"){
+        setCashierCartList(newCashierCartList);
+        return ;
+      }
       sendData({
         event: 'bkrm:temporary_fborder_request_update_event',
         token: localStorage.getItem("token"),
