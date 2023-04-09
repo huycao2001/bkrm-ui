@@ -669,7 +669,7 @@ const Cashier = (props) => {
     if(!currentCart){
       // new item for the table -> create a new cart
       currentCart = {
-        table : selectedTable,
+        table : selectedTable, // mang di
         reservation : null,
         customer: null,
         fb_order : null, 

@@ -63,13 +63,13 @@ function InvoiceReturnPopUp(props) {
       // returnQuantity: detail.quantity,
       returnQuantity: 0,
       returnPrice: detail.unit_price,
-      selectedBatches: JSON.parse(detail.batches)?.map((batch) => ({
+      selectedBatches: detail.batches ?  JSON.parse(detail.batches)?.map((batch) => ({
         ...batch,
         max_return_quantity:
           batch.additional_quantity - batch.returned_quantity,
         returned_quantity: 0,
-      })),
-      order_batches: JSON.parse(detail.batches),
+      })) : [],
+      order_batches: detail.batches ? JSON.parse(detail.batches) : [],
     })),
     payment_method: 'cash',
     paid_amount: '0',
@@ -101,6 +101,14 @@ function InvoiceReturnPopUp(props) {
   useEffect(() => {
     updateTotalAmount();
   }, [isUpdateTotalAmount]);
+
+
+
+
+  console.log("refund " + JSON.stringify(refund));
+
+
+
 
   const updateTotalAmount = () => {
     let total = 0;
@@ -374,7 +382,7 @@ function CartReturnTableRow({ detail, handleProductPriceChange, handleItemQuanti
         />
       </TableCell> */}
             <TableCell align="left" padding="none">
-        {detail.selectedBatches.length ? (
+        {detail?.selectedBatches.length ? (
           detail.selectedBatches.map((batch, index) => (
             <div
               style={{
