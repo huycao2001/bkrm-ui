@@ -26,6 +26,8 @@ import {
   Button,
 } from "@material-ui/core";
 
+// import ChangeCartBtn from "../../../../components/CheckoutComponent/ChangeCartBtn/ChangeCartBtn";
+
 import React, { useRef, useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -87,17 +89,9 @@ const CashierMenu = (props) => {
             <Typography variant="h3"> Bán hàng </Typography>
             
             {/* 1.1.2. Btn Channge Cart */}
-            {/* <ChangeCartBtn
-              selectedIndex={selectedIndex}
-              anchorEl={anchorEl}
-              cartList={cartList}
-              handleClick={handleClick}
-              handleClose={handleClose}
-              handleChoose={handleChoose}
-              handleDelete={handleDelete}
-              handleAdd={handleAdd}
-              isCart={true}
-            /> */}
+            <IconButton>
+              <AddIcon/>
+            </IconButton>
 
             {info.role === "owner" ? (
               <Grid item>

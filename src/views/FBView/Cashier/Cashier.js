@@ -208,6 +208,15 @@ const Cashier = (props) => {
   const[cashierCartList, setCashierCartList] = useState([]);
 
 
+  const [anchorEl, setAnchorEl] = React.useState(null); // For takeaway cart
+
+  const [selectedTakeAwayCart, setSelectedTakeAwayCart] = React.useState(null);
+
+
+
+  useEffect(()=>{
+    console.log("selected " )
+  })
 
 
 
@@ -322,6 +331,9 @@ const Cashier = (props) => {
   }
 
 
+
+
+  
   const handleAddCell = () => { 
     let newTable = {
       uuid : generateUUID(),
@@ -338,6 +350,52 @@ const Cashier = (props) => {
         ...prev
       ]
     });
+  }
+
+
+  const handleAddTakeAwayCart = () => {
+
+    console.log("?????")
+    const newCart = {
+      uuid : generateUUID(), 
+      table : selectedTable, // mang di
+      reservation : null,
+      customer: null,
+      type : "away",
+      fb_order : null, 
+      cartItem: [],
+      total_amount: 0,
+      paid_amount: 0 ,
+      discount: 0 ,
+      payment_method: "cash",
+      delivery: false,
+      scores: 0,
+      discountDetail: { value: 0, type: "VND" },
+      selectedPromotion: null,
+      otherFee: 0,
+    }
+
+
+    const newCashierCartList = [...cashierCartList, newCart];
+    setCashierCartList(newCashierCartList); 
+    setSelectedTakeAwayCart(newCart.uuid);
+  }
+
+
+
+
+  const handleDeleteTakeAwayCart = (cart_uuid) => {
+    var newCashierCartList = [...cashierCartList];
+    newCashierCartList = newCashierCartList.filter(cart => {
+      return cart.uuid !== cart_uuid; 
+    })
+    
+    setCashierCartList(newCashierCartList); 
+  }
+
+
+  const handleChooseTakeAwayCart = (cart_uuid) => {
+    setSelectedTakeAwayCart(cart_uuid);
   }
 
 
@@ -389,7 +447,9 @@ const Cashier = (props) => {
       const echo = new Echo({
         broadcaster: 'pusher',
         key: 'apollo13',
-        wsHost: window.location.hostname,
+        // wsHost: window.location.hostname,
+        wsHost: "localhost",
+
         wsPort: 6001,
         wssPort: 6001,
         forceTLS: false,
@@ -538,7 +598,12 @@ const Cashier = (props) => {
 
     var newCashierCartList = [...cashierCartList];
 
-    let currentCart = newCashierCartList.find(item => item.table.uuid === selectedTable.uuid);
+    let currentCart = newCashierCartList.find(item => {
+      if(selectedTakeAwayCart){
+        return item.table.uuid === selectedTable.uuid && item.uuid === selectedTakeAwayCart
+      }
+      return item.table.uuid === selectedTable.uuid
+    });
 
     let itemIndex = currentCart.cartItem.findIndex(
       (item) => item.uuid === itemUuid
@@ -594,7 +659,12 @@ const Cashier = (props) => {
 
   const handleDeleteItemCart = (itemUuid) => {
     var newCashierCartList = [...cashierCartList];
-    let currentCart = newCashierCartList.find(item => item.table.uuid === selectedTable.uuid);
+    let currentCart = newCashierCartList.find(item => {
+      if(selectedTakeAwayCart){
+        return item.table.uuid === selectedTable.uuid && item.uuid === selectedTakeAwayCart
+      }
+      return item.table.uuid === selectedTable.uuid
+    });
 
     let itemIndex = currentCart.cartItem.findIndex(
       (item) => item.uuid === itemUuid
@@ -662,16 +732,25 @@ const Cashier = (props) => {
     // Find the current cart of which table
     var newCashierCartList = [...cashierCartList];
 
-    let currentCart = newCashierCartList.find(item => item.table.uuid === selectedTable.uuid);
+    console.log("why" + selectedTakeAwayCart)
+
+    let currentCart = newCashierCartList.find(item => {
+      if(selectedTakeAwayCart){
+        return item.table.uuid === selectedTable.uuid && item.uuid === selectedTakeAwayCart
+      }
+      return item.table.uuid === selectedTable.uuid
+    });
 
     var cartCreated = false; 
 
     if(!currentCart){
       // new item for the table -> create a new cart
       currentCart = {
+        uuid : generateUUID(), 
         table : selectedTable, // mang di
         reservation : null,
         customer: null,
+        type : selectedTable.type === "away" ? "away" : "table", 
         fb_order : null, 
         cartItem: [],
         total_amount: 0,
@@ -733,6 +812,7 @@ const Cashier = (props) => {
 
       if(selectedTable.type === "away"){
         setCashierCartList(newCashierCartList);
+        setSelectedTakeAwayCart(currentCart.uuid);
         return ;
       }
       sendData({
@@ -964,7 +1044,13 @@ const Cashier = (props) => {
                   products = {products}
                   setProducts = {setProducts}
                   handleSearchBarSelect = {handleSearchBarSelect}
-                  selectedCart = {selectedTable ? (cashierCartList.find(item => item.table.uuid === selectedTable.uuid)?.cartItem || []) : [] }
+                  selectedCart = {selectedTable ? (cashierCartList.find(item => {
+                    if(selectedTakeAwayCart){
+                      return item.table.uuid === selectedTable.uuid && item.uuid === selectedTakeAwayCart
+                    }
+
+                    return item.table.uuid === selectedTable.uuid;
+                  })?.cartItem || []) : [] }
                 />
             </TabPanel>
           </Box>
@@ -978,7 +1064,14 @@ const Cashier = (props) => {
               
               
               disable = {false}
-              cartData = {selectedTable ? cashierCartList.find(item => item.table.uuid === selectedTable.uuid) :initCart}
+              cartData = {selectedTable ? cashierCartList.find(item => {
+                
+                if(selectedTable.type === "away"){
+                  console.log("new" + selectedTakeAwayCart);
+                  return item.table.uuid === selectedTable.uuid && item.uuid === selectedTakeAwayCart;
+                }
+                return item.table.uuid === selectedTable.uuid;
+              }) :initCart}
               handleSelectCustomer = {(item) =>{
                 console.log(item)
               }}
@@ -994,6 +1087,15 @@ const Cashier = (props) => {
               selectedTable = {selectedTable}
               setSelectedTable = {selectedTable}
               handleDeleteCell = {handleDeleteCell}
+
+              // For takeaway carts
+              handleAddTakeAwayCart={handleAddTakeAwayCart}
+              handleChooseTakeAwayCart={handleChooseTakeAwayCart}
+              handleDeleteTakeAwayCart={handleDeleteTakeAwayCart}
+              takeAwayanchorEl={anchorEl}
+              setTakeAwayAnchorEl={setAnchorEl}
+              selectedTakeAwayCart={selectedTakeAwayCart}
+              takeAwayCarts = {cashierCartList.filter(cart => cart.type === "away")}
             >
               {selectedTable !== null && <TableContainer
                     style={{
@@ -1013,7 +1115,12 @@ const Cashier = (props) => {
                         </TableRow>
                       </TableHead> */}
                       <TableBody>
-                      {!cashierCartList ? [] :  cashierCartList.find(item => item.table.uuid === selectedTable.uuid)?.cartItem?.map((row, index) => {
+                      {!cashierCartList ? [] :  cashierCartList.find(item => {
+                        if(selectedTable.type === "away"){
+                          return item.table.uuid === selectedTable.uuid && item.uuid === selectedTakeAwayCart;
+                        }
+                        return item.table.uuid === selectedTable.uuid;
+                      })?.cartItem?.map((row, index) => {
                         return (
                           <CartRow
                             key={`${row.uuid}_index`}

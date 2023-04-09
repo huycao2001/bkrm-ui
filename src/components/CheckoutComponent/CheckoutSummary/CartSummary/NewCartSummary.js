@@ -197,11 +197,7 @@ const CartSummary = (props) => {
                   handleDeleteCell(selectedTable.uuid);
                   setOpenDeleteCartPopup(false);
                 }}
-                message ={
-                    <Typography>
-                        Bạn có chắc chắn là muốn xóa đơn hàng này ?
-                    </Typography>
-                }
+                message ="Bạn có chắc chắn là muốn xóa đơn hàng này ?"
             />}
 
 

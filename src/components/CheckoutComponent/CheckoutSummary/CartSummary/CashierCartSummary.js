@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useTheme, makeStyles, createStyles } from "@material-ui/core/styles";
 import {
   Grid,
@@ -18,9 +18,14 @@ import {
   ButtonBase,
   Avatar,
   Popover,
-  Divider
+  Divider,
+  IconButton
 } from "@material-ui/core";
-import { calculateTotalQuantity } from "../../../../components/TableCommon/util/sortUtil"
+import { calculateTotalQuantity } from "../../../../components/TableCommon/util/sortUtil";
+
+import CashierChangeCartBtn from "../../CashierChangeCartBtn/CashierChangeCartBtn";
+
+import AddIcon from '@material-ui/icons/Add';
 import Popper from '@material-ui/core/Popper';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import ConfirmPopUp from "../../../ConfirmPopUp/ConfirmPopUp";
@@ -92,7 +97,17 @@ const CashierCartSummary = (props) => {
     handleUpdateDiscountDetail,
     selectedTable,
     setSelectedTable,
-    handleDeleteCell
+    handleDeleteCell,
+
+
+    //For takeaway carts
+    handleAddTakeAwayCart,
+    handleChooseTakeAwayCart,
+    handleDeleteTakeAwayCart,
+    takeAwayanchorEl,
+    setTakeAwayAnchorEl,
+    selectedTakeAwayCart,
+    takeAwayCarts
   } = props;
 
   const theme = useTheme();
@@ -103,6 +118,11 @@ const CashierCartSummary = (props) => {
   };
   const dispatch = useDispatch();
 
+
+
+  useEffect(()=>{
+    console.log("cart data" + JSON.stringify(cartData) )
+  }, [cartData])
 
   //mode 2: popup
   const [openPopUp, setOpenPopUp] = React.useState(false);
@@ -218,11 +238,43 @@ const CashierCartSummary = (props) => {
               alignItems="flex-start"
             >
               <Typography variant="h5">Chi nhánh : {currentBranch.name}</Typography>
+
+
+              {selectedTable?.type === "away" ? 
+                <Grid
+                  container
+                  item
+                  direction ="row"
+                  justifyContent="flex-start"
+                  // style={{padding : "2px"}}
+                >
+
+                <Typography variant="h5">{selectedTable.name}</Typography>
+                
+                <CashierChangeCartBtn
+                  selectedTakeAwayCart = {selectedTakeAwayCart}
+                  handleClick={(event) => {
+                    setTakeAwayAnchorEl(event.currentTarget);
+                  }}
+                  handleClose={(event) => {
+                    setTakeAwayAnchorEl(null);
+                  }}
+
+                  handleAdd={handleAddTakeAwayCart}
+                  handleChoose={handleChooseTakeAwayCart}
+                  handleDelete={handleDeleteTakeAwayCart}
+                  cartList ={takeAwayCarts}
+                  anchorEl = {takeAwayanchorEl}
+                  isCart={true}
+                
+                />
+
+                </Grid> :
+                <Typography variant="h5">{selectedTable?.name}</Typography>
+                
+                
+                }
               
-              {selectedTable && <Typography variant="h5">{selectedTable.name}</Typography>}
-
-              {cartData && <Typography variant="h5">{cartData.fb_order ? cartData.fb_order : "chua tao hoa don"}</Typography>}
-
               
               
               {selectedTable?.type && <Button 
@@ -239,6 +291,9 @@ const CashierCartSummary = (props) => {
               >
                 Xóa đơn hàng
               </Button> }
+
+
+
             </Grid>
   
             <Grid item xs={4} container direction="column" alignItems="flex-end">
@@ -548,11 +603,11 @@ const CashierCartSummary = (props) => {
   }else{
     return(
       <Box style={{ minHeight: "80vh", display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-  <img src={cashierEmptyCart} style={{ width: '30%', height: 'auto' }} alt="Image description" />
-  <div style={{ textAlign: 'center', marginTop: 20, marginLeft : 30 }}>
-    <b>Giỏ hàng đang trống !</b>
-  </div>
-</Box>
+        <img src={cashierEmptyCart} style={{ width: '30%', height: 'auto' }} alt="Image description" />
+        <div style={{ textAlign: 'center', marginTop: 20, marginLeft : 30 }}>
+          <b>Giỏ hàng đang trống !</b>
+        </div>
+    </Box>
 
 
     );
