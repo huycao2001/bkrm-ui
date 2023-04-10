@@ -187,14 +187,7 @@ const Cashier = (props) => {
   //const [reload, setReload] = useState(false);
 
 
-  // const [tables, setTables] = useState([{
-  //   uuid : generateUUID(),
-  //   seats : 0, 
-  //   name : "Mang đi",
-  //   type : "away",
-  //   status : "empty",
-  //   table_group_name : "Bán mang đi"
-  // }]);
+  const [isLoadingTables, setIsLoadingTables] = useState(false); 
 
 
   const [tables, setTables] = useState([]);
@@ -355,7 +348,7 @@ const Cashier = (props) => {
 
   const handleAddTakeAwayCart = () => {
 
-    console.log("?????")
+
     const newCart = {
       uuid : generateUUID(), 
       table : selectedTable, // mang di
@@ -388,7 +381,15 @@ const Cashier = (props) => {
     var newCashierCartList = [...cashierCartList];
     newCashierCartList = newCashierCartList.filter(cart => {
       return cart.uuid !== cart_uuid; 
-    })
+    });
+
+    // Check if theres any takeaway cart left
+    var awayCart = newCashierCartList.find(cart => cart.type === "away"); 
+
+    if(awayCart){
+      setSelectedTakeAwayCart(awayCart.uuid); 
+    }
+
     
     setCashierCartList(newCashierCartList); 
   }
@@ -877,6 +878,7 @@ const Cashier = (props) => {
   useEffect(() => {
     const loadTables = async () => {
       try {
+        setIsLoadingTables(true);
         const response = 
           await trackPromise(
             fbTableApi.getTablesOfBranch(
@@ -889,6 +891,7 @@ const Cashier = (props) => {
             )
           );
         //setTotalRows(response.total_rows);
+        
 
         if(response.message === "Successfully fetched tables"){
 
@@ -912,39 +915,15 @@ const Cashier = (props) => {
 
             ]
           });
-          //initiate order for each table
-          // var fborders = newTables.map(tableItem => {
-          //   return     {
-          //     table : {
-          //       uuid : tableItem.uuid,
-          //       seats : tableItem.seats,
-          //       name : tableItem.name, 
-          //       status : tableItem.status, 
-          //       table_group_name : tableItem.table_group_name
-          //     },
-          //     reservation : null,
-          //     customer: null,
-          //     cartItem: [],
-          //     total_amount: "0",
-          //     paid_amount: "0",
-          //     discount: "0",
-          //     payment_method: "cash",
-          //     delivery: false,
-          //     scores: "0",
-          //     discountDetail: { value: "0", type: "VND" },
-          //     selectedPromotion: null,
-          //     otherFee: 0,
-          //   }
-          // }); 
 
-          // console.log("fborders" + JSON.stringify(fborders));
-
-          // setCashierCartList(fborders);
-
-
+          setIsLoadingTables(false); 
+        }else{
+          // dispatch(statusAction.failedStatus(""))
+          setIsLoadingTables(false); 
         }
         //console.log("tables" + JSON.stringify(newTables));
       } catch (error) {
+        setIsLoadingTables(false)
         console.log(error);
       }
     };
@@ -1025,7 +1004,7 @@ const Cashier = (props) => {
             </AppBar>
             <TabPanel value={index} index={0}>
               
-              <CashierTableView
+              {isLoadingTables === false ? <CashierTableView
                 tables = {tables}
                 selectedTable = {selectedTable}
                 setSelectedTable = {setSelectedTable}
@@ -1036,7 +1015,12 @@ const Cashier = (props) => {
                 setSocket = {setSocket}
 
               
-              />
+              /> : 
+              
+              <Box style={{maxHeight: '64vh', minHeight:'60vh'}}>
+                  <LoadingIndicator/>
+              </Box>
+              }
             </TabPanel>
 
             <TabPanel value={index} index={1}>
