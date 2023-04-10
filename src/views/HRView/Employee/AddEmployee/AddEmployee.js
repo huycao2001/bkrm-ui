@@ -58,19 +58,37 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
-let permissionChoices = [
-  { id: 1, name: "inventory", description: "Kho hàng" },
-  { id: 2, name: "employee", description: "Nhân sự" },
-  { id: 3, name: "sales", description: "Bán hàng" },
-  // { id: 4, name: "product", description: "Sản phẩm" },
-  { id: 5, name: "report", description: "Quản lý" },
-];
+
+
+
+
+// let FBpermissionChoices = ;
 
 const AddEmployee = (props) => {
   const { handleClose, open,setOpen} = props;
 
   // tam thoi
   const statusState = "Success";
+
+
+  // redux
+  const info = useSelector((state) => state.info);
+  const store_uuid = info.store.uuid;
+
+  const store_type = info.store.store_type;
+
+  const permissionChoices =  store_type === "grocery" ? [
+    { id: "inventory_clerk", name: "inventory", description: "Kho hàng" },
+    { id: "hr", name: "employee", description: "Nhân sự" },
+    { id: "sales_clerk", name: "sales", description: "Bán hàng" },
+    // { id: 4, name: "product", description: "Sản phẩm" },
+    { id: "accountant", name: "report", description: "Quản lý" },
+  ] : 
+  [
+    { id: "table_clerk", name: "table", description: "Bồi bàn" },
+    { id: "chef", name: "kitchen", description: "Bếp" },
+    { id: "cashier", name: "sales", description: "Thu ngân" }
+  ];
 
   const [userNameError, setUserNameError] = React.useState(false);
   const [clicked, setClicked] =useState(false)
@@ -93,6 +111,9 @@ const AddEmployee = (props) => {
   const [image, setImage] = React.useState("");
   const [imageToShow, setImageToShow] = React.useState("")
 
+
+
+
   const formik = useFormik({
     initialValues: {
       uuid: "",
@@ -113,7 +134,7 @@ const AddEmployee = (props) => {
     validationSchema: Yup.object().shape({
       name: Yup.string().required("Bắt buộc!"),
       user_name: Yup.string().required("Bắt buộc!"),
-      phone: Yup.string()
+      phone: Yup.string().required("Bắt buộc!")
       .length(10, "Số điện thoại không chính xác")
       // .required("Nhập số điện thoại")
       .matches(/^\d+$/, "Số điển thoại không chính xác"),
@@ -122,10 +143,33 @@ const AddEmployee = (props) => {
       branches: Yup.array().min(1, "Ít nhất một chi nhánh"),
       permissions: Yup.array().min(1, "Ít nhất một chức năng"),
       email: Yup.string().email("Email không chính xác"),
+      id_card_num: Yup.string().required("Bắt buộc"),
+
     
     }),
 
     onSubmit: async (values, actions) => {
+
+      var payload = {
+        name : formik.values.name,
+        user_name : formik.values.user_name, 
+        phone : formik.values.phone,
+        email : formik.values.email,
+        password : formik.values.password,
+        password_confirmation : formik.values.password,
+        branches : formik.values.branches,
+        roles : formik.values.permissions,
+        salary : formik.values.salary,
+        salary_type : formik.values.salary_type , 
+        id_card_num: formik.values.id_card_num,
+        gender: formik.values.gender,
+        date_of_birth: formik.values.date_of_birth,
+        address: formik.values.address,
+        status : "active"
+      };
+
+      console.log("payload " + JSON.stringify(payload))
+
       let formData = new FormData();
 
       for (let value in values) {
@@ -153,7 +197,8 @@ const AddEmployee = (props) => {
         setClicked(true)
         const response = await employeeApi.createEmployee(
           store_uuid,
-          formData
+          // formData
+          payload
         );
         setOpen(false)
         handleClose("Success");
@@ -166,9 +211,8 @@ const AddEmployee = (props) => {
     },
   });
 
-  // redux
-  const info = useSelector((state) => state.info);
-  const store_uuid = info.store.uuid;
+
+
 
   function getColorSelected (selectedData,item  ){
     return selectedData.includes(item) ?  theme.customization.primaryColor[50]:null 
@@ -194,6 +238,12 @@ const AddEmployee = (props) => {
     },[formik.values.user_name])
 
    
+    useEffect(()=>{
+      console.log("permissions " + formik.values.permissions)
+    }, [formik.values.permissions])
+
+
+
   return (
     <Dialog
       open={open}

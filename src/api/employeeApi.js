@@ -1,11 +1,13 @@
 import axiosClient from "./axiosClient";
 const employeeApi = {
   createEmployee: (storeUuid, formData) => {
-    const config = {
-      headers: { "content-type": "multipart/form-data" },
-    };
+    // const config = {
+    //   headers: { "content-type": "multipart/form-data" },
+    // };
     const url = `stores/${storeUuid}/employees`;
-    return axiosClient.post(url, formData, config);
+    // return axiosClient.post(url, formData, config);
+    return axiosClient.post(url, formData);
+
   },
   getEmployees: (storeUuid, query) => {
     const url = `/stores/${storeUuid}/employees`;

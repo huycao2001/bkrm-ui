@@ -733,7 +733,7 @@ const Cashier = (props) => {
     // Find the current cart of which table
     var newCashierCartList = [...cashierCartList];
 
-    console.log("why" + selectedTakeAwayCart)
+    // console.log("why" + selectedTakeAwayCart)
 
     let currentCart = newCashierCartList.find(item => {
       if(selectedTakeAwayCart){
