@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import FBTable from "./Table/Table";
 import Reservation from "./Reservation/Reservation";
 import Cashier from "./Cashier/Cashier";
+import Kitchen from "./Kitchen/Kitchen";
 const FBView = (props) => {
   const { path } = useRouteMatch();
   const permissions = useSelector((state) => state.info.user.permissions);
@@ -21,6 +22,7 @@ const FBView = (props) => {
       <Route exact path={`${path}/table`} component={FBTable} />
       <Route exact path={`${path}/reservation`} component={Reservation} />
       <Route exact path={`${path}/cashier`} component={Cashier} />
+      <Route exact path={`${path}/kitchen`} component={Kitchen} />
     </Switch>
   );
 };
