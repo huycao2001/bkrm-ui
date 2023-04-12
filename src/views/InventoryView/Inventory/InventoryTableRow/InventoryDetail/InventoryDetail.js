@@ -363,8 +363,10 @@ const InventoryDetail = (props) => {
                   <Carousel showThumbs={false}>
                     {imageList?.map((url) => (
                       <img
-                        key={url}
-                        src={url}
+                        // uh yeah this is just one of many places that will have to be changed
+                        // just prepend url with REACT_APP_SERVER_HOST env
+                        key={process.env.REACT_APP_SERVER_HOST + url}
+                        src={process.env.REACT_APP_SERVER_HOST + url}
                         height={xsScreen ? "100" : "170"}
                         width={xsScreen ? "100" : "170"}
                         // height= "170"
