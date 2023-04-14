@@ -447,12 +447,10 @@ const Cashier = (props) => {
     if (!ws) {
       const echo = new Echo({
         broadcaster: 'pusher',
-        key: 'apollo13',
-        // wsHost: window.location.hostname,
-        wsHost: "localhost",
-
-        wsPort: 6001,
-        wssPort: 6001,
+        key: process.env.REACT_APP_WEBSOCKET_APP_KEY,
+        wsHost: process.env.REACT_APP_PUSHER_HOST,
+        wsPort: process.env.REACT_APP_PUSHER_PORT,
+        wssPort: process.env.REACT_APP_PUSHER_PORT,
         forceTLS: false,
         disableStats: true,
         encrypted: false,
@@ -463,21 +461,11 @@ const Cashier = (props) => {
         //ws.stores.{$table->store->uuid}.branches.{$table->branch->uuid}.tables.{$table->uuid}
         var channel = `ws.stores.${store_uuid}.branches.${branch_uuid}.tables.${selectedTable.uuid}`
         echo
-        .channel(channel)
-        .subscribed(() => {
-          console.log('You are subscribed to ' + channel);
-          let iniSocket = new WebSocket(`ws://localhost:6001/app/apollo13?protocol=7&client=js&version=7.5.0&flash=false`);
-          iniSocket.onopen = function (event) {
-            iniSocket.send(JSON.stringify(
-              {
-                event: 'bkrm:not-temporary_table_fborder_updated',
-                token: localStorage.getItem("token"),
-                payload: {
-                  table_uuid: selectedTable.uuid,
-                  temporary_fborder: '[food:2]'
-                },
-              }), []);
-          }
+          .channel(channel)
+          .subscribed(() => {
+            console.log('You are subscribed to ' + channel);
+            const wsUrl = (process.env.REACT_APP_PUSHER_PORT == 443? 'wss' : 'ws') + `://${process.env.REACT_APP_PUSHER_HOST}:${process.env.REACT_APP_PUSHER_PORT}/app/${process.env.REACT_APP_WEBSOCKET_APP_KEY}`;
+            let iniSocket = new WebSocket(wsUrl);
 
           setSocket(iniSocket);
 
