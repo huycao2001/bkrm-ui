@@ -77,7 +77,7 @@ const orderApi = {
 
   prepareFBOrder : (storeUuid, branchUuid, fbOrderUuid ,body) => {
     const url = `/stores/${storeUuid}/branches/${branchUuid}/fb_orders/${fbOrderUuid}/prepare`
-    return axiosClient.put(url, body);
+    return axiosClient.post(url, body);
   },
 
   payFBOrder : (storeUuid, branchUuid, fbOrderUuid ,body) => {
