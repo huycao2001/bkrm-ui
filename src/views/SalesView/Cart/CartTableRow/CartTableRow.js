@@ -136,7 +136,7 @@ export const CartRow = (props) => {
       return 0;
     }
   };
-  console.log("imageType",imageType)
+
   var color = theme.customization.mode === "Light"? typeShow==='list'?'#000':null: null
   return (
     <>

@@ -69,7 +69,7 @@ import stateApi from "../../../api/stateApi";
 
 import Echo from "laravel-echo";
 import Pusher from "pusher-js";
-import { ContactSupportOutlined } from "@material-ui/icons";
+import { ContactSupportOutlined, LocationSearchingOutlined } from "@material-ui/icons";
 import orderApi from "../../../api/orderApi";
 
 
@@ -89,6 +89,10 @@ function generateUUID() { // Public Domain/MIT
       return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
   });
 }
+
+function isArray(a) {
+  return (!!a) && (a.constructor === Array);
+};
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -129,13 +133,13 @@ const initCart = {
   reservation : null,
   customer: null,
   cartItem: [],
-  total_amount: "0",
-  paid_amount: "0",
-  discount: "0",
+  total_amount: 0,
+  paid_amount: 0,
+  discount: 0,
   payment_method: "cash",
   delivery: false,
-  scores: "0",
-  discountDetail: { value: "0", type: "VND" },
+  scores: 0,
+  discountDetail: { value: 0, type: "VND" },
   selectedPromotion: null,
   otherFee: 0,
 };
@@ -207,9 +211,7 @@ const Cashier = (props) => {
 
 
 
-  useEffect(()=>{
-    console.log("selected " )
-  })
+
 
 
 
@@ -226,23 +228,29 @@ const Cashier = (props) => {
           }
         })
 
-        var body = {
-          items : items,
-          note : "testing"
-        }
+        var body = null;
 
         // First create the order
         var response = null;
         if(selectedTable.type === "away"){
           console.log("create take away")
+          body = {
+            items : items,
+            note : "away order",
+            fborder_uuid : currentCart.fb_order_uuid
+          }
           response = await orderApi.createFBTakeawayOrder(store_uuid, branch_uuid, body)
         }else{
+          body = {
+            items : items,
+            note : "normal table order"
+          }
           response = await orderApi.createFBOrder(store_uuid, branch_uuid, selectedTable.uuid, body)
         }
         
         if(response.message === "Order created successfully"){
           dispatch(statusAction.successfulStatus("Tạo hóa đơn thành công"));
-          const fb_order_id = response.data.fb_order.uuid;
+          const fb_order_id = currentCart.type === "away" ? currentCart.fb_order_uuid :  response.data.fb_order.uuid;
           console.log("fb order is " + fb_order_id);  
           
           // Prepare the dishes in the order
@@ -281,6 +289,7 @@ const Cashier = (props) => {
                 var newCashierCartList = [...cashierCartList]; 
                 var currentCartIndex = newCashierCartList.findIndex(item => item.uuid === selectedTable.uuid); 
                 newCashierCartList.splice(currentCartIndex,1); 
+                console.log("debug 286")
                 setCashierCartList(newCashierCartList)
               }else{
                 sendData({
@@ -370,6 +379,7 @@ const Cashier = (props) => {
 
 
     const newCashierCartList = [...cashierCartList, newCart];
+    console.log("debug 377")
     setCashierCartList(newCashierCartList); 
     setSelectedTakeAwayCart(newCart.uuid);
   }
@@ -390,7 +400,7 @@ const Cashier = (props) => {
       setSelectedTakeAwayCart(awayCart.uuid); 
     }
 
-    
+    console.log("debug 398")
     setCashierCartList(newCashierCartList); 
   }
 
@@ -495,13 +505,40 @@ const Cashier = (props) => {
   const handleUpdateTableCart = (tableUuid, cart) => { 
 
     var newCashierCartList = [...cashierCartList]; 
-    let currentCart = newCashierCartList.find(item => item.table.uuid === tableUuid);
+    let currentCart = newCashierCartList.find(item => {
+      // if(selectedTakeAwayCart){
+      //   return item.table.uuid === tableUuid && item.uuid === selectedTakeAwayCart; 
+      // }
+      return item.table.uuid === tableUuid
+    });
+
+    // let currentCart = newCashierCartList.find(item => {
+    //   if(selectedTakeAwayCart){
+    //     return item.table.uuid === selectedTable.uuid && item.uuid === selectedTakeAwayCart
+    //   }
+    //   return item.table.uuid === selectedTable.uuid
+    // });
+
 
     if(cart === 'null'){
       newCashierCartList = newCashierCartList.filter(item => item.table.uuid !== tableUuid);
+      console.log("debug 519")
       setCashierCartList(newCashierCartList);
       return;
 
+    }
+
+
+    if(selectedTable.type === "away"){
+      var carts = JSON.parse(cart);
+
+      // remove the current take away orders
+      newCashierCartList = newCashierCartList.filter(item => item.type !== "away"); 
+      newCashierCartList = [...newCashierCartList, ...carts]; 
+
+      console.log("why ? " + JSON.stringify(newCashierCartList));
+      setCashierCartList(newCashierCartList);
+      return;
     }
     if(currentCart){
       currentCart = JSON.parse(cart);
@@ -512,7 +549,7 @@ const Cashier = (props) => {
     console.log("update state back to list")
     console.log(newCashierCartList);
 
-
+    console.log("debug 547")
     setCashierCartList(newCashierCartList);
   }
 
@@ -520,35 +557,33 @@ const Cashier = (props) => {
 
 
 
-  useEffect(() => {
-    updateTotalAmount();
-  }, [isUpdateTotalAmount]);
+
 
 
   const [clone,setClone] = useState(false); 
   
 
 
-  const updateTotalAmount = () => {
-    if(selectedTable === null) return;
+  // const updateTotalAmount = () => {
+  //   if(selectedTable === null) return;
     
 
-    var newCashierCartList = [...cashierCartList];
+  //   var newCashierCartList = [...cashierCartList];
 
-    let currentCart = newCashierCartList.find(item => item.table.uuid === selectedTable.uuid);
-    if(!currentCart) return;
-    let total = 0;
-    currentCart.cartItem.forEach((item) => {
-      total += item.unit_price * item.quantity;
-    });
+  //   let currentCart = newCashierCartList.find(item => item.table.uuid === selectedTable.uuid);
+  //   if(!currentCart) return;
+  //   let total = 0;
+  //   currentCart.cartItem.forEach((item) => {
+  //     total += item.unit_price * item.quantity;
+  //   });
 
-    currentCart.total_amount = total;
-    currentCart.paid_amount = total;
+  //   currentCart.total_amount = Number(total);
+  //   currentCart.paid_amount = Number(total);
 
 
-    setCashierCartList(newCashierCartList);
+  //   setCashierCartList(newCashierCartList);
 
-  }
+  // }
 
 
   const handleUpdatePaidAmount = (amount) => {
@@ -558,8 +593,16 @@ const Cashier = (props) => {
 
     var newCashierCartList = [...cashierCartList];
 
-    let currentCart = newCashierCartList.find(item => item.table.uuid === selectedTable.uuid);
-    currentCart.paid_amount = amount; 
+    let currentCart = newCashierCartList.find(item => {
+      if(selectedTable.type === "away"){
+        if(selectedTakeAwayCart){
+          return item.table.uuid === selectedTable.uuid && item.uuid === selectedTakeAwayCart
+        }
+      }
+      return item.table.uuid === selectedTable.uuid
+    });
+    currentCart.paid_amount = Number(amount);
+    console.log("debug 592") 
     setCashierCartList(newCashierCartList);
   };
 
@@ -569,6 +612,7 @@ const Cashier = (props) => {
     let currentCart = newCashierCartList.find(item => item.table.uuid === selectedTable.uuid);
     if(currentCart){
       currentCart.payment_method = method;
+      console.log("debug 602")
       setCashierCartList(newCashierCartList);
     }else{
       dispatch(statusAction.failedStatus("Cart không tồn tại"))
@@ -622,13 +666,25 @@ const Cashier = (props) => {
     var oldQuantity  = currentCart.cartItem[itemIndex].quantity; 
     currentCart.cartItem[itemIndex].quantity = newQuantity;
     currentCart.total_amount +=  Number(currentCart.cartItem[itemIndex].unit_price * (newQuantity - oldQuantity));
-    currentCart.paid_amount =  currentCart.total_amount;
+    currentCart.paid_amount =  Number(currentCart.total_amount);
 
     console.log("update right ?" + JSON.stringify(currentCart));
 
 
     if(selectedTable.type === "away"){
-      setCashierCartList(newCashierCartList);
+      // setCashierCartList(newCashierCartList);
+      var takeAwayCarts = newCashierCartList.filter(item => item.type === "away"); 
+        console.log("take aways " + JSON.stringify(takeAwayCarts));
+        sendData({
+          event: 'bkrm:temporary_fborder_request_update_event',
+          token: localStorage.getItem("token"),
+          payload: {
+            table_uuid: selectedTable.uuid,
+            temporary_fborder: JSON.stringify(takeAwayCarts)
+          },
+        });
+      console.log("debug 673")
+      // setCashierCartList(newCashierCartList);
       return;
     }
     sendData({
@@ -668,9 +724,34 @@ const Cashier = (props) => {
     if(currentCart.cartItem.length === 0){
       // Delete the whole cart
       if(selectedTable.type === "away"){
-        var currentCartIndex = newCashierCartList.findIndex(item => item.table.uuid === selectedTable.uuid);
-        newCashierCartList.splice(currentCartIndex, 1); 
-        setCashierCartList(newCashierCartList)
+        if(selectedTakeAwayCart){
+          var currentCartIndex = newCashierCartList.findIndex(item => {
+            return item.table.uuid === selectedTable.uuid && item.uuid === selectedTakeAwayCart
+          });
+          newCashierCartList.splice(currentCartIndex, 1);
+          var takeAwayCarts = newCashierCartList.filter(item => item.type === "away"); 
+          console.log("take aways " + JSON.stringify(takeAwayCarts));
+          sendData({
+            event: 'bkrm:temporary_fborder_request_update_event',
+            token: localStorage.getItem("token"),
+            payload: {
+              table_uuid: selectedTable.uuid,
+              temporary_fborder: JSON.stringify(takeAwayCarts)
+            },
+          });
+          console.log("debug 729")
+          // setCashierCartList(newCashierCartList);
+
+          var awayCart = newCashierCartList.find(item => item.type === "away");
+          if(awayCart){
+            console.log("mlem" + JSON.stringify(awayCart));
+            setSelectedTakeAwayCart(awayCart.uuid);
+          }
+          else{
+            setSelectedTakeAwayCart(null)
+          }
+        }
+        
       }
       else{
         sendData({
@@ -689,12 +770,24 @@ const Cashier = (props) => {
 
     //Update total amount again 
     currentCart.total_amount -= Number(item.unit_price * item.quantity);
-    currentCart.paid_amount  =  currentCart.total_amount ;
+    currentCart.paid_amount  =  Number(currentCart.total_amount );
 
     console.log("delete cart" + JSON.stringify(currentCart));
 
     if(selectedTable.type === "away"){
-      setCashierCartList(newCashierCartList);
+      // setCashierCartList(newCashierCartList);
+      var takeAwayCarts = newCashierCartList.filter(item => item.type === "away"); 
+      console.log("take aways " + JSON.stringify(takeAwayCarts));
+      sendData({
+        event: 'bkrm:temporary_fborder_request_update_event',
+        token: localStorage.getItem("token"),
+        payload: {
+          table_uuid: selectedTable.uuid,
+          temporary_fborder: JSON.stringify(takeAwayCarts)
+        },
+      });
+      console.log("debug 776")
+      // setCashierCartList(newCashierCartList);
       return;
     }
     sendData({
@@ -725,12 +818,16 @@ const Cashier = (props) => {
 
     let currentCart = newCashierCartList.find(item => {
       if(selectedTakeAwayCart){
+        console.log("801");
         return item.table.uuid === selectedTable.uuid && item.uuid === selectedTakeAwayCart
       }
       return item.table.uuid === selectedTable.uuid
     });
 
+
     var cartCreated = false; 
+
+    console.log("current cart " + JSON.stringify(currentCart));
 
     if(!currentCart){
       // new item for the table -> create a new cart
@@ -740,7 +837,7 @@ const Cashier = (props) => {
         reservation : null,
         customer: null,
         type : selectedTable.type === "away" ? "away" : "table", 
-        fb_order : null, 
+        fb_order_uuid : selectedTable.type === "away" ? generateUUID() : null, 
         cartItem: [],
         total_amount: 0,
         paid_amount: 0 ,
@@ -794,13 +891,37 @@ const Cashier = (props) => {
       //   0
       // );
 
-      currentCart.total_amount += Number(newCartItem.unit_price);
-      currentCart.paid_amount = currentCart.total_amount;
+      // currentCart.total_amount += Number(newCartItem.unit_price);
+      // console.log("please " + JSON.stringify(currentCart.uuid));
+      // currentCart.paid_amount += Number(newCartItem.unit_price);
+      currentCart.total_amount = currentCart.cartItem.reduce(
+        (accumulator, currentValue) => accumulator + Number(currentValue.unit_price),
+        0
+      );
+
+      currentCart.paid_amount = currentCart.cartItem.reduce(
+        (accumulator, currentValue) => accumulator + Number(currentValue.unit_price),
+        0
+      );;
+
+      console.log( "current cart "+ JSON.stringify(currentCart) + " current paid " + currentCart.paid_amount);
 
       //setIsUpdateTotalAmount(!isUpdateTotalAmount);
 
       if(selectedTable.type === "away"){
-        setCashierCartList(newCashierCartList);
+        // setCashierCartList(newCashierCartList);
+        var takeAwayCarts = newCashierCartList.filter(item => item.type === "away"); 
+        console.log("take aways " + JSON.stringify(takeAwayCarts));
+        sendData({
+          event: 'bkrm:temporary_fborder_request_update_event',
+          token: localStorage.getItem("token"),
+          payload: {
+            table_uuid: selectedTable.uuid,
+            temporary_fborder: JSON.stringify(takeAwayCarts)
+          },
+        });
+        console.log("debug 909")
+        // setCashierCartList(newCashierCartList);
         setSelectedTakeAwayCart(currentCart.uuid);
         return ;
       }
@@ -861,6 +982,11 @@ const Cashier = (props) => {
     loadProducts();
   }, [store_uuid,branch_uuid])
 
+  useEffect(() => {
+      var cart = cashierCartList.find(item => item.uuid === selectedTakeAwayCart); 
+      if(cart) console.log("con me no uuid " + cart.uuid + " paid amount" + cart.paid_amount + " total " + cart.total_amount )
+  }, [selectedTakeAwayCart])
+
   //Load tables;
 
   useEffect(() => {
@@ -881,13 +1007,21 @@ const Cashier = (props) => {
         //setTotalRows(response.total_rows);
         
 
-        if(response.message === "Successfully fetched tables"){
-
-           
-          
+        if(response.message === "Successfully fetched tables"){          
           setTables(prev => {
             
             var fetchedTables  = response.data.tables.map(table => {
+
+              if(table.is_takeaway == 1){
+                return {
+                  uuid : table.uuid,
+                  seats : table.seats, 
+                  type : "away",
+                  name : table.name,
+                  status : table.status,
+                  table_group_name : table.table_group_name
+                }   
+              }
               return {
                 uuid : table.uuid,
                 seats : table.seats, 
@@ -1040,7 +1174,13 @@ const Cashier = (props) => {
                 
                 if(selectedTable.type === "away"){
                   console.log("new" + selectedTakeAwayCart);
-                  return item.table.uuid === selectedTable.uuid && item.uuid === selectedTakeAwayCart;
+                  if(selectedTakeAwayCart){
+                    return item.table.uuid === selectedTable.uuid && item.uuid === selectedTakeAwayCart;
+                  }else{
+                    console.log("no ? " + JSON.stringify(cashierCartList))
+                    return item.type === "away";
+                  }
+                  
                 }
                 return item.table.uuid === selectedTable.uuid;
               }) :initCart}
@@ -1089,7 +1229,11 @@ const Cashier = (props) => {
                       <TableBody>
                       {!cashierCartList ? [] :  cashierCartList.find(item => {
                         if(selectedTable.type === "away"){
-                          return item.table.uuid === selectedTable.uuid && item.uuid === selectedTakeAwayCart;
+                          if(selectedTakeAwayCart){
+                            return item.table.uuid === selectedTable.uuid && item.uuid === selectedTakeAwayCart;
+                          }
+                          return item.type == "away";
+                          
                         }
                         return item.table.uuid === selectedTable.uuid;
                       })?.cartItem?.map((row, index) => {
@@ -1103,7 +1247,8 @@ const Cashier = (props) => {
                             //mini={true}
                             imageType={false}
                             index={
-                              (cashierCartList.find(item => item.table.uuid === selectedTable.uuid)?.cartItem?.length || 0) - index
+                              // (cashierCartList.find(item => item.table.uuid === selectedTable.uuid)?.cartItem?.length || 0) - index
+                              index + 1
                             }
                             typeShow={'list'}
                             showImage={false}

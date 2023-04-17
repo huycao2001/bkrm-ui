@@ -103,7 +103,7 @@ function CashierTableView(props) {
                         <Typography gutterBottom style={{ color: '#000', fontWeight: 500, fontSize: Number(12) }}> {item.name} </Typography>
                         <Grid container alignItem='center' justifyContent='space-between'>
                           <Typography className={classes.alignCenter} style={{ color: '#000', fontWeight: '#000', fontSize: Number(12) }} >
-                            {item.table_group_name}
+                            {item.table_group_name ? item.table_group_name : "Nhóm bàn chung" }
                           </Typography>
 
 
@@ -116,7 +116,7 @@ function CashierTableView(props) {
               )
             })}
 
-
+{/* 
             <Tooltip title="Thêm 1 đơn mang đi">
               <IconButton
                 onClick={handleAddCell}
@@ -130,7 +130,7 @@ function CashierTableView(props) {
                 <AddIcon size="small" />
               </IconButton>
 
-            </Tooltip>
+            </Tooltip> */}
           </Grid>
 
 

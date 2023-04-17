@@ -250,6 +250,9 @@ const CashierCartSummary = (props) => {
                 >
 
                 <Typography variant="h5">{selectedTable.name}</Typography>
+
+                <Typography variant="h5">{cartData.uuid}</Typography>
+
                 
                 <CashierChangeCartBtn
                   selectedTakeAwayCart = {selectedTakeAwayCart}

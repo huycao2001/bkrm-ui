@@ -49,7 +49,7 @@ const ChangeCartBtn = (props) => {
                     selected={index === selectedIndex}
                 >
                     <Grid container direction="row" justifyContent="space-between"spacing={1}>
-                        <Grid container item onMouseDown={()=>handleChoose(index)} item xs={10}  >
+                        <Grid container item onMouseDown={()=>handleChoose(index)}  xs={10}  >
                             <Box style={{marginRight:10}}>#{index + 1}</Box>
                             {getTitle(cart)}         
                         </Grid>
