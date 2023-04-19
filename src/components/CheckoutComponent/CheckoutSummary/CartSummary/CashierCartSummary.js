@@ -86,6 +86,7 @@ const CashierCartSummary = (props) => {
     handleCheckDelivery,
     handleSearchCustomer,
     handleConfirm,
+    handleNotifyKitchen,
     selectedBranch,
     setSelectedBranch,
     customers,
@@ -591,9 +592,7 @@ const CashierCartSummary = (props) => {
                     color="secondary"
                     style={{ width : "48%"}}
 
-                    onClick={() =>{
-                        console.log("ddd")
-                    }}
+                    onClick={handleNotifyKitchen}
                     disabled={props.disable}
                 >
                     Thông báo cho bếp

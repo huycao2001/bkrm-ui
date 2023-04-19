@@ -213,8 +213,85 @@ const Cashier = (props) => {
 
 
 
+  const handleNotifyKitchen = async () => { 
+    var newCashierCartList = [...cashierCartList]; 
+    var currentCart = newCashierCartList.find(item => {
+      if(selectedTable.type === "away" && selectedTakeAwayCart){
+        return item.table.uuid === selectedTable.uuid && item.uuid === selectedTakeAwayCart;
+      }
+      return item.table.uuid === selectedTable.uuid;
+    });
 
 
+    if(currentCart){
+      try{
+
+        // Create the FBOrder for kitchen
+        var items = currentCart.cartItem.map(item => {
+          return {
+            product_uuid : item.uuid,
+            ordered_quantity : item.quantity
+          }
+        });
+
+        var body = null; 
+        var response = null;
+        if(selectedTable.type === "away"){
+          // Create take away fborder
+          body = {
+            items : items,
+            note : "away order",
+            fborder_uuid : currentCart.fb_order_uuid
+          }
+          response = await orderApi.createFBTakeawayOrder(store_uuid, branch_uuid, body)
+        }else{
+          // Create normal fborder
+          body = {
+            items : items,
+            note : "normal table order with table " + currentCart.table.name
+          }
+          response = await orderApi.createFBOrder(store_uuid, branch_uuid, selectedTable.uuid, body)
+        }
+
+        if(response.message === "Order created successfully"){
+          currentCart.kitchen_notified = true;
+          currentCart.fb_order_uuid = response.data.fb_order.uuid; 
+          dispatch(statusAction.successfulStatus("Đã thông báo cho bếp !"));
+          //Update state to BE
+          if(selectedTable.type === "away"){
+            var takeAwayCarts = newCashierCartList.filter(item => item.type === "away");
+            sendData({
+              event: 'bkrm:temporary_fborder_request_update_event',
+              token: localStorage.getItem("token"),
+              payload: {
+                table_uuid: selectedTable.uuid,
+                temporary_fborder: JSON.stringify(takeAwayCarts)
+              },
+            });
+
+          }else{
+            sendData({
+              event: 'bkrm:temporary_fborder_request_update_event',
+              token: localStorage.getItem("token"),
+              payload: {
+                table_uuid: selectedTable.uuid,
+                temporary_fborder: JSON.stringify(currentCart)
+              },
+            });
+          }
+        }else{
+          dispatch(statusAction.failedStatus(response.message));
+        }
+
+        
+      }catch(e){
+        dispatch(statusAction.failedStatus("Thông báo cho nhà bếp thất bại !"));
+        console.log("Error when creating FB order and notify for kitchen : " + e); 
+      }
+    }
+  }
+
+    
   const handleAddNewFBOrderAndPayment = async (items) => { 
     var newCashierCartList = [...cashierCartList]; 
     var currentCart = newCashierCartList.find(item => {
@@ -231,31 +308,33 @@ const Cashier = (props) => {
             product_uuid : item.uuid,
             ordered_quantity : item.quantity
           }
-        })
+        });
 
         var body = null;
 
         // First create the order
         var response = null;
-        if(selectedTable.type === "away"){
-          console.log("create take away")
-          body = {
-            items : items,
-            note : "away order",
-            fborder_uuid : currentCart.fb_order_uuid
+        if(!currentCart.kitchen_notified){
+          if(selectedTable.type === "away"){
+            dispatch(statusAction.successfulStatus("Chưa thông báo nên gọi api"));
+            body = {
+              items : items,
+              note : "away order",
+              fborder_uuid : currentCart.fb_order_uuid
+            }
+            response = await orderApi.createFBTakeawayOrder(store_uuid, branch_uuid, body)
+          }else{
+            body = {
+              items : items,
+              note : "normal table order"
+            }
+            response = await orderApi.createFBOrder(store_uuid, branch_uuid, selectedTable.uuid, body)
           }
-          response = await orderApi.createFBTakeawayOrder(store_uuid, branch_uuid, body)
-        }else{
-          body = {
-            items : items,
-            note : "normal table order"
-          }
-          response = await orderApi.createFBOrder(store_uuid, branch_uuid, selectedTable.uuid, body)
         }
         
-        if(response.message === "Order created successfully"){
-          dispatch(statusAction.successfulStatus("Tạo hóa đơn thành công"));
-          const fb_order_id = currentCart.type === "away" ? currentCart.fb_order_uuid :  response.data.fb_order.uuid;
+        if((response && response.message === "Order created successfully") || currentCart.kitchen_notified ){
+          // dispatch(statusAction.successfulStatus("Tạo hóa đơn thành công"));
+          const fb_order_id = currentCart.type === "away" ? currentCart.fb_order_uuid :  currentCart.kitchen_notified ? currentCart.fb_order_uuid : response.data.fb_order.uuid;
           console.log("fb order is " + fb_order_id);  
           
           // Prepare the dishes in the order
@@ -282,7 +361,7 @@ const Cashier = (props) => {
               "tax": "0",
               "shipping": "0",
               "is_customer_order": false
-          }
+            }
             const paymentResponse = await orderApi.payFBOrder(store_uuid, branch_uuid, fb_order_id, payload ); 
 
             if(paymentResponse.message === "Order created successfully"){
@@ -336,11 +415,11 @@ const Cashier = (props) => {
               loadProducts();
 
             }else{
-              dispatch(statusAction.failedStatus(paymentResponse.message));
+              dispatch(statusAction.failedStatus("Thanh toán hóa đơn thất bại " + paymentResponse.message));
 
             }
           }else{
-            dispatch(statusAction.failedStatus("Chuẩn bị nguyên liệu thất bại"));
+            dispatch(statusAction.failedStatus("Chuẩn bị món ăn thất bại " + prepareRes.message ));
 
           }
 
@@ -395,6 +474,7 @@ const Cashier = (props) => {
       customer: null,
       type : "away",
       fb_order_uuid : generateUUID(), 
+      kitchen_notified : false,
       cartItem: [],
       total_amount: 0,
       paid_amount: 0 ,
@@ -869,6 +949,7 @@ const Cashier = (props) => {
         customer: null,
         type : selectedTable.type === "away" ? "away" : "table", 
         fb_order_uuid : selectedTable.type === "away" ? generateUUID() : null, 
+        kitchen_notified : false,
         cartItem: [],
         total_amount: 0,
         paid_amount: 0 ,
@@ -1224,6 +1305,7 @@ const Cashier = (props) => {
               handleUpdatePaidAmount = {handleUpdatePaidAmount}
               handleUpdatePaymentMethod={handleUpdatePaymentMethod}
               handleConfirm = {handleAddNewFBOrderAndPayment}
+              handleNotifyKitchen = {handleNotifyKitchen}
               mode = {true}
 
               customers={[]}
