@@ -135,6 +135,116 @@ function Kitchen() {
             "imagePath": { imageSrc2 },
             "quantity": 2
         },
+        {
+            "id": 6,
+            "name": "Cocktail",
+            "status": "Mang về",
+            "time": "3 phút trước bởi Huy Cao",
+            "imagePath": { imageSrc2 },
+            "quantity": 2
+        },
+        {
+            "id": 7,
+            "name": "Cocktail",
+            "status": "Mang về",
+            "time": "3 phút trước bởi Huy Cao",
+            "imagePath": { imageSrc2 },
+            "quantity": 2
+        },
+        {
+            "id": 8,
+            "name": "Cocktail",
+            "status": "Mang về",
+            "time": "3 phút trước bởi Huy Cao",
+            "imagePath": { imageSrc2 },
+            "quantity": 2
+        },
+        {
+            "id": 9,
+            "name": "Cocktail",
+            "status": "Mang về",
+            "time": "3 phút trước bởi Huy Cao",
+            "imagePath": { imageSrc2 },
+            "quantity": 2
+        },
+        {
+            "id": 10,
+            "name": "Cocktail",
+            "status": "Mang về",
+            "time": "3 phút trước bởi Huy Cao",
+            "imagePath": { imageSrc2 },
+            "quantity": 2
+        },
+        {
+            "id": 11,
+            "name": "Cocktail",
+            "status": "Mang về",
+            "time": "3 phút trước bởi Huy Cao",
+            "imagePath": { imageSrc2 },
+            "quantity": 2
+        },
+        {
+            "id": 12,
+            "name": "Cocktail",
+            "status": "Mang về",
+            "time": "3 phút trước bởi Huy Cao",
+            "imagePath": { imageSrc2 },
+            "quantity": 2
+        },
+
+        {
+            "id": 13,
+            "name": "Cocktail",
+            "status": "Mang về",
+            "time": "3 phút trước bởi Huy Cao",
+            "imagePath": { imageSrc2 },
+            "quantity": 2
+        },
+
+        {
+            "id": 13,
+            "name": "Cocktail",
+            "status": "Mang về",
+            "time": "3 phút trước bởi Huy Cao",
+            "imagePath": { imageSrc2 },
+            "quantity": 2
+        },
+
+        {
+            "id": 14,
+            "name": "Cocktail",
+            "status": "Mang về",
+            "time": "3 phút trước bởi Huy Cao",
+            "imagePath": { imageSrc2 },
+            "quantity": 2
+        },
+
+        {
+            "id": 15,
+            "name": "Cocktail",
+            "status": "Mang về",
+            "time": "3 phút trước bởi Huy Cao",
+            "imagePath": { imageSrc2 },
+            "quantity": 2
+        },
+
+        {
+            "id": 16,
+            "name": "Cocktail",
+            "status": "Mang về",
+            "time": "3 phút trước bởi Huy Cao",
+            "imagePath": { imageSrc2 },
+            "quantity": 2
+        },
+
+        {
+            "id": 17,
+            "name": "Cocktail",
+            "status": "Mang về",
+            "time": "3 phút trước bởi Huy Cao",
+            "imagePath": { imageSrc2 },
+            "quantity": 2
+        },
     ]);
     const [waitingForSupply, setWaitingForSupply] = useState([]);
     function handleAddOne(index) {
@@ -207,26 +317,30 @@ function Kitchen() {
     const renderImageOption = () => {
         return (
             <>
-                <TableContainer style={{ overflowX: 'hidden', maxHeight: '70vh', minHeight: '60vh' }}>
+                <TableContainer style={{ overflowX: 'hidden', maxHeight: '62vh', minHeight: '60vh' }}>
                     <Grid container spacing={1}>
                         {waitingForCooking.map((item, index) => {
                             //let findedItem= findItem(item)
                             return (
                                 <Grid item xs={3} >
                                     <Box boxShadow={3}>
-                                        <Card style={{ height: 200 }}>
+                                        <Card style={{ height: "100%", paddiing : "10px" }}>
                                             <CardContent style={{ margin: -5 }}>
                                                 <Grid item xs={12} sm={12}>
-                                                    <Box sx={{ width: '100%', height: 200 }}>
+                                                    <Box sx={{ width: '100%', height: "100%" }}>
                                                         {/* <img src={item.imagePath.value} style={{ objectFit: 'cover', width: '100%', height: '60%' }}></img> */}
                                                         <Grid container justifyContent='center' >
                                                             <Grid item>
-                                                                <Typography variant="h2" component="h2" color="primary">
+                                                                <Typography variant="h3" component="h3" color="primary">
                                                                     {item.name}
                                                                 </Typography>
                                                             </Grid>
                                                         </Grid>
-                                                        <Grid container>
+                                                        <Grid 
+                                                            container
+                                                            direction="column" 
+
+                                                        >
                                                             <Grid item>
                                                                 <Typography variant='caption'>
                                                                     {item.status}
@@ -234,7 +348,7 @@ function Kitchen() {
                                                             </Grid>
                                                             <Grid item>
                                                                 <Typography variant='caption'>
-                                                                    {item.time}
+                                                                    "bàn 1"
                                                                 </Typography>
                                                             </Grid>
                                                             <Grid item>
@@ -316,7 +430,7 @@ function Kitchen() {
                     Đã xong/ chờ cung ứng
                 </Typography>
                 <Box bgcolor="white" p={0} height={600} paddingLeft={2} paddingTop={2} paddingRight={2} border={2} borderColor="primary.main" borderRadius={16}>
-                    <TableContainer style={{ overflowX: 'hidden', maxHeight: '78vh', minHeight: '60vh' }}>
+                    <TableContainer style={{ overflowX: 'hidden', maxHeight: '62vh', minHeight: '60vh' }}>
                         <Grid container spacing={1}>
                             {waitingForSupply.map((item, index) => {
                                 //let findedItem= findItem(item)
