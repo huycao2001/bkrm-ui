@@ -213,60 +213,63 @@ function Kitchen() {
                             //let findedItem= findItem(item)
                             return (
                                 <Grid item xs={3} >
-                                    <Card style={{ height: 320 }}>
-                                        <CardContent style={{ margin: -5 }}>
-                                            <Grid item xs={12} sm={12}>
-                                                <Box sx={{ width: '100%', height: 200 }}>
-                                                    <img src={item.imagePath.value} style={{ objectFit: 'cover', width: '100%', height: '60%' }}></img>
-                                                    <Grid container justifyContent='center' >
-                                                        <Grid item>
-                                                            <Typography variant="h2" component="h2" color="primary">
-                                                                {item.name}
-                                                            </Typography>
+                                    <Box boxShadow={3}>
+                                        <Card style={{ height: 200 }}>
+                                            <CardContent style={{ margin: -5 }}>
+                                                <Grid item xs={12} sm={12}>
+                                                    <Box sx={{ width: '100%', height: 200 }}>
+                                                        {/* <img src={item.imagePath.value} style={{ objectFit: 'cover', width: '100%', height: '60%' }}></img> */}
+                                                        <Grid container justifyContent='center' >
+                                                            <Grid item>
+                                                                <Typography variant="h2" component="h2" color="primary">
+                                                                    {item.name}
+                                                                </Typography>
+                                                            </Grid>
                                                         </Grid>
-                                                    </Grid>
-                                                    <Grid container>
-                                                        <Grid item>
-                                                            <Typography variant='caption'>
-                                                                {item.status}
-                                                            </Typography>
+                                                        <Grid container>
+                                                            <Grid item>
+                                                                <Typography variant='caption'>
+                                                                    {item.status}
+                                                                </Typography>
+                                                            </Grid>
+                                                            <Grid item>
+                                                                <Typography variant='caption'>
+                                                                    {item.time}
+                                                                </Typography>
+                                                            </Grid>
+                                                            <Grid item>
+                                                                <Typography variant='caption'>
+                                                                    Số lượng: {item.quantity}
+                                                                </Typography>
+                                                            </Grid>
                                                         </Grid>
-                                                        <Grid item>
-                                                            <Typography variant='caption'>
-                                                                {item.time}
-                                                            </Typography>
-                                                        </Grid>
-                                                        <Grid item>
-                                                            <Typography variant='caption'>
-                                                                Số lượng: {item.quantity}
-                                                            </Typography>
-                                                        </Grid>
-                                                    </Grid>
 
 
-                                                    <Grid container justifyContent='center'>
-                                                        <Grid item style={{ marginTop: 5 }}>
-                                                            <Button style={{ fontSize: 10 }} fullWidth variant="contained" color="primary" onClick={() => {
-                                                                handleAddOne(index);
-                                                            }}>
-                                                                Chế biến xong một
-                                                            </Button>
+                                                        <Grid container justifyContent='center'>
+                                                            <Grid item style={{ marginTop: 5 }}>
+                                                                <Button style={{ fontSize: 10 }} fullWidth variant="contained" color="primary" onClick={() => {
+                                                                    handleAddOne(index);
+                                                                }}>
+                                                                    Chế biến xong một
+                                                                </Button>
+                                                            </Grid>
+                                                            <Grid item style={{ marginTop: 5 }}>
+                                                                <Button style={{ fontSize: 10 }} fullWidth variant="contained" color="primary" onClick={() => {
+                                                                    handleAddAll(index);
+                                                                }}>
+                                                                    Chế biến xong tất cả
+                                                                </Button>
+                                                            </Grid>
                                                         </Grid>
-                                                        <Grid item style={{ marginTop: 5 }}>
-                                                            <Button style={{ fontSize: 10 }} fullWidth variant="contained" color="primary" onClick={() => {
-                                                                handleAddAll(index);
-                                                            }}>
-                                                                Chế biến xong tất cả
-                                                            </Button>
-                                                        </Grid>
-                                                    </Grid>
 
 
 
-                                                </Box>
-                                            </Grid>
-                                        </CardContent>
-                                    </Card>
+                                                    </Box>
+                                                </Grid>
+                                            </CardContent>
+                                        </Card>
+                                    </Box>
+
                                 </Grid>
                             )
                         })}
@@ -312,63 +315,66 @@ function Kitchen() {
                 <Typography variant='h2'>
                     Đã xong/ chờ cung ứng
                 </Typography>
-                <Box bgcolor="info.main" color="info.contrastText" p={0} height={600} paddingLeft={1} paddingTop={1} paddingRight={1}>
+                <Box bgcolor="white" p={0} height={600} paddingLeft={2} paddingTop={2} paddingRight={2} border={2} borderColor="primary.main" borderRadius={16}>
                     <TableContainer style={{ overflowX: 'hidden', maxHeight: '78vh', minHeight: '60vh' }}>
                         <Grid container spacing={1}>
                             {waitingForSupply.map((item, index) => {
                                 //let findedItem= findItem(item)
                                 return (
                                     <Grid item xs={3} >
-                                        <Card style={{ height: 320 }}>
-                                            <CardContent style={{ margin: -5 }}>
-                                                <Grid item xs={12} sm={12}>
-                                                    <Box sx={{ width: '100%', height: 200 }}>
-                                                        <img src={item.imagePath.value} style={{ objectFit: 'cover', width: '100%', height: '60%' }}></img>
-                                                        <Grid container justifyContent='center' >
-                                                            <Grid item>
-                                                                <Typography variant="h2" component="h2" color="primary">
-                                                                    {item.name}
-                                                                </Typography>
+                                        <Box boxShadow={3}>
+                                            <Card style={{ height: 200 }}>
+                                                <CardContent style={{ margin: -5 }}>
+                                                    <Grid item xs={12} sm={12}>
+                                                        <Box sx={{ width: '100%', height: 200 }}>
+                                                            {/* <img src={item.imagePath.value} style={{ objectFit: 'cover', width: '100%', height: '60%' }}></img> */}
+                                                            <Grid container justifyContent='center' >
+                                                                <Grid item>
+                                                                    <Typography variant="h2" component="h2" color="primary">
+                                                                        {item.name}
+                                                                    </Typography>
+                                                                </Grid>
                                                             </Grid>
-                                                        </Grid>
-                                                        <Grid container>
-                                                            <Grid item>
-                                                                <Typography variant='caption'>
-                                                                    {item.status}
-                                                                </Typography>
+                                                            <Grid container>
+                                                                <Grid item>
+                                                                    <Typography variant='caption'>
+                                                                        {item.status}
+                                                                    </Typography>
+                                                                </Grid>
+                                                                <Grid item>
+                                                                    <Typography variant='caption'>
+                                                                        {item.time}
+                                                                    </Typography>
+                                                                </Grid>
+                                                                <Grid item>
+                                                                    <Typography variant='caption'>
+                                                                        Số lượng: {item.quantity}
+                                                                    </Typography>
+                                                                </Grid>
                                                             </Grid>
-                                                            <Grid item>
-                                                                <Typography variant='caption'>
-                                                                    {item.time}
-                                                                </Typography>
-                                                            </Grid>
-                                                            <Grid item>
-                                                                <Typography variant='caption'>
-                                                                    Số lượng: {item.quantity}
-                                                                </Typography>
-                                                            </Grid>
-                                                        </Grid>
 
 
-                                                        <Grid container justifyContent='center'>
-                                                            <Grid item style={{ marginTop: 5 }}>
-                                                                <Button style={{ fontSize: 10 }} fullWidth variant="contained" color="primary">
-                                                                    Cung ứng một
-                                                                </Button>
+                                                            <Grid container justifyContent='center'>
+                                                                <Grid item style={{ marginTop: 5 }}>
+                                                                    <Button style={{ fontSize: 10 }} fullWidth variant="contained" color="primary">
+                                                                        Cung ứng một
+                                                                    </Button>
+                                                                </Grid>
+                                                                <Grid item style={{ marginTop: 5 }}>
+                                                                    <Button style={{ fontSize: 10 }} fullWidth variant="contained" color="primary" >
+                                                                        Cung ứng tất cả
+                                                                    </Button>
+                                                                </Grid>
                                                             </Grid>
-                                                            <Grid item style={{ marginTop: 5 }}>
-                                                                <Button style={{ fontSize: 10 }} fullWidth variant="contained" color="primary" >
-                                                                    Cung ứng tất cả
-                                                                </Button>
-                                                            </Grid>
-                                                        </Grid>
 
 
 
-                                                    </Box>
-                                                </Grid>
-                                            </CardContent>
-                                        </Card>
+                                                        </Box>
+                                                    </Grid>
+                                                </CardContent>
+                                            </Card>
+                                        </Box>
+
                                     </Grid>
                                 )
                             })}
