@@ -316,7 +316,7 @@ const Cashier = (props) => {
         var response = null;
         if(!currentCart.kitchen_notified){
           if(selectedTable.type === "away"){
-            dispatch(statusAction.successfulStatus("Chưa thông báo nên gọi api"));
+            // dispatch(statusAction.successfulStatus("Chưa thông báo nên gọi api"));
             body = {
               items : items,
               note : "away order",
