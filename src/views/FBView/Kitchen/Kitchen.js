@@ -2,10 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
+import { useDispatch, useSelector } from "react-redux";
+
+import orderApi from '../../../api/orderApi';
+
 import { AppBar, Box, Button, Grid, Tabs, Tab, Typography, TableContainer, Card, CardActionArea, CardContent, Paper } from '@material-ui/core';
 import imageSrc1 from "../../../../src/assets/img/product/1.jpg";
 import imageSrc2 from "../../../../src/assets/img/product/199.jpg";
+
+
+import { trackPromise } from "react-promise-tracker";
+
+import LoadingIndicator from '../../../components/LoadingIndicator/LoadingIndicator';
+import { statusAction } from '../../../store/slice/statusSlice';
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -49,237 +60,145 @@ const useStyles = makeStyles((theme) => ({
 const sample = {
     "id": 1,
     "name": "Lemon Juice",
-    "status": "Mang về",
-    "time": "3 phút trước bởi Huy Cao",
+    "table_name": "Mang về",
+    "table_group_name": "3 phút trước bởi Huy Cao",
     "imagePath": { imageSrc1 },
 }
-
-// const waitingForCooking = [
-//     {
-//         "id": 1,
-//         "name": "Lemon Juice",
-//         "status": "Mang về",
-//         "time": "3 phút trước bởi Huy Cao",
-//         "imagePath": { imageSrc1 },
-//         "quantity": 5
-//     },
-//     {
-//         "id": 2,
-//         "name": "Mì",
-//         "status": "Mang về",
-//         "time": "3 phút trước bởi Huy Cao",
-//         "imagePath": { imageSrc2 },
-//         "quantity": 6
-//     },
-//     {
-//         "id": 3,
-//         "name": "Mì",
-//         "status": "Mang về",
-//         "time": "3 phút trước bởi Huy Cao",
-//         "imagePath": { imageSrc2 },
-//         "quantity": 7
-//     },
-//     {
-//         "id": 4,
-//         "name": "Mì",
-//         "status": "Mang về",
-//         "time": "3 phút trước bởi Huy Cao",
-//         "imagePath": { imageSrc2 },
-//         "quantity": 8
-//     },
-// ];
-
 
 
 
 function Kitchen() {
+
+
+    // redux
+    const dispatch = useDispatch();
+    const info = useSelector((state) => state.info);
+    const store_uuid = info.store.uuid;
+    const branch = info.branch;
+    const branch_uuid = info.branch.uuid;
+
+    const [isLoadingFBOrders, setIsLoadingFBOrders] = useState(false);
+
     const [tab, setTab] = useState(0);
-    const [waitingForCooking, setWaitingForCooking] = useState([
-        {
-            "id": 1,
-            "name": "Lemon Juice",
-            "status": "Mang về",
-            "time": "3 phút trước bởi Huy Cao",
-            "imagePath": { imageSrc1 },
-            "quantity": 5
-        },
-        {
-            "id": 2,
-            "name": "Mì",
-            "status": "Mang về",
-            "time": "3 phút trước bởi Huy Cao",
-            "imagePath": { imageSrc2 },
-            "quantity": 6
-        },
-        {
-            "id": 3,
-            "name": "Rượu",
-            "status": "Mang về",
-            "time": "3 phút trước bởi Huy Cao",
-            "imagePath": { imageSrc2 },
-            "quantity": 7
-        },
-        {
-            "id": 4,
-            "name": "Mì",
-            "status": "Mang về",
-            "time": "3 phút trước bởi Huy Cao",
-            "imagePath": { imageSrc2 },
-            "quantity": 8
-        },
-        {
-            "id": 5,
-            "name": "Cocktail",
-            "status": "Mang về",
-            "time": "3 phút trước bởi Huy Cao",
-            "imagePath": { imageSrc2 },
-            "quantity": 2
-        },
-        {
-            "id": 6,
-            "name": "Cocktail",
-            "status": "Mang về",
-            "time": "3 phút trước bởi Huy Cao",
-            "imagePath": { imageSrc2 },
-            "quantity": 2
-        },
-        {
-            "id": 7,
-            "name": "Cocktail",
-            "status": "Mang về",
-            "time": "3 phút trước bởi Huy Cao",
-            "imagePath": { imageSrc2 },
-            "quantity": 2
-        },
-        {
-            "id": 8,
-            "name": "Cocktail",
-            "status": "Mang về",
-            "time": "3 phút trước bởi Huy Cao",
-            "imagePath": { imageSrc2 },
-            "quantity": 2
-        },
-        {
-            "id": 9,
-            "name": "Cocktail",
-            "status": "Mang về",
-            "time": "3 phút trước bởi Huy Cao",
-            "imagePath": { imageSrc2 },
-            "quantity": 2
-        },
-        {
-            "id": 10,
-            "name": "Cocktail",
-            "status": "Mang về",
-            "time": "3 phút trước bởi Huy Cao",
-            "imagePath": { imageSrc2 },
-            "quantity": 2
-        },
-        {
-            "id": 11,
-            "name": "Cocktail",
-            "status": "Mang về",
-            "time": "3 phút trước bởi Huy Cao",
-            "imagePath": { imageSrc2 },
-            "quantity": 2
-        },
-        {
-            "id": 12,
-            "name": "Cocktail",
-            "status": "Mang về",
-            "time": "3 phút trước bởi Huy Cao",
-            "imagePath": { imageSrc2 },
-            "quantity": 2
-        },
-
-        {
-            "id": 13,
-            "name": "Cocktail",
-            "status": "Mang về",
-            "time": "3 phút trước bởi Huy Cao",
-            "imagePath": { imageSrc2 },
-            "quantity": 2
-        },
-
-        {
-            "id": 13,
-            "name": "Cocktail",
-            "status": "Mang về",
-            "time": "3 phút trước bởi Huy Cao",
-            "imagePath": { imageSrc2 },
-            "quantity": 2
-        },
-
-        {
-            "id": 14,
-            "name": "Cocktail",
-            "status": "Mang về",
-            "time": "3 phút trước bởi Huy Cao",
-            "imagePath": { imageSrc2 },
-            "quantity": 2
-        },
-
-        {
-            "id": 15,
-            "name": "Cocktail",
-            "status": "Mang về",
-            "time": "3 phút trước bởi Huy Cao",
-            "imagePath": { imageSrc2 },
-            "quantity": 2
-        },
-
-        {
-            "id": 16,
-            "name": "Cocktail",
-            "status": "Mang về",
-            "time": "3 phút trước bởi Huy Cao",
-            "imagePath": { imageSrc2 },
-            "quantity": 2
-        },
-
-        {
-            "id": 17,
-            "name": "Cocktail",
-            "status": "Mang về",
-            "time": "3 phút trước bởi Huy Cao",
-            "imagePath": { imageSrc2 },
-            "quantity": 2
-        },
-    ]);
+    const [waitingForCooking, setWaitingForCooking] = useState([]);
     const [waitingForSupply, setWaitingForSupply] = useState([]);
-    function handleAddOne(index) {
+
+
+    useEffect(() => { 
+        const loadFBOrders = async () => {
+            try{
+                setIsLoadingFBOrders(true);
+                const response = await trackPromise(
+                    orderApi.getFBOrders(store_uuid, branch_uuid,{
+                        status : "pending"
+                    })
+                );
+
+
+                if(response.message === "Orders fetched successfully"){
+                    var fb_orders = response.data.fb_orders; 
+                    var NewWaitingForCooking = []; 
+                    fb_orders.map(fb_order => { 
+                        
+                        fb_order.fb_order_details.map(fb_order_detail =>{
+                            NewWaitingForCooking = [
+                            ...NewWaitingForCooking,    
+                            {
+                                id : fb_order_detail.id,
+                                fb_order_uuid : fb_order.uuid,
+                                name : fb_order_detail.product_name,
+                                table_name : fb_order.table.name ,
+                                table_group_name : fb_order.table.table_group.name, 
+                                quantity: Number(fb_order_detail.ordered_quantity) - Number(fb_order_detail.prepared_quantity),
+                                product_uuid : fb_order_detail.product_uuid
+
+                            }
+                            
+                        ]
+                        })
+
+
+                        
+                    });
+                    console.log("me may " + JSON.stringify(NewWaitingForCooking))
+                    setWaitingForCooking(NewWaitingForCooking);
+                    setIsLoadingFBOrders(false);
+
+
+                }else if(response.message){
+                    console.log(response.message);
+                    setIsLoadingFBOrders(false);
+                }else{
+                    console.log(response);
+                    setIsLoadingFBOrders(false);
+                }
+            }catch(e){
+                console.log("Get fb orders failed: " + e)
+            }
+        }
+
+        loadFBOrders()
+
+    }, [store_uuid, branch_uuid]);
+
+
+
+
+
+    const  handleAddOne = async (index) =>  {
         // waitingForCooking[index].quantity = waitingForCooking[index].quantity - 1;
-        let res = waitingForCooking;
-        res[index].quantity = res[index].quantity - 1;
+
+        try{
+            let res = waitingForCooking;
+
+            var items = [{
+                product_uuid : res[index].product_uuid,
+                quantity_to_prepare : 1
+            }]
+
+            const response = await orderApi.prepareFBOrder(store_uuid, branch_uuid, res[index].fb_order_uuid, {
+                items : items
+            }); 
 
 
 
 
+            if(response.message === "success"){
+                res[index].quantity = res[index].quantity - 1;
 
-        var idxx;
-        const checkExist = waitingForSupply.some(function (element, idx) {
-            idxx = idx;
-            return element.id === waitingForCooking[index].id;
-        });
-        if (checkExist) {
-            let temp = waitingForSupply;
-            temp[idxx].quantity++;
-            setWaitingForSupply(temp);
-        } else {
-            console.log("else");
-            let arr = waitingForSupply;
-            let temp = Object.assign({}, waitingForCooking[index]);
-            temp.quantity = 1;
-            arr.push(temp);
-            setWaitingForSupply(arr);
+
+                var idxx;
+                const checkExist = waitingForSupply.some(function (element, idx) {
+                    idxx = idx;
+                    return element.id === waitingForCooking[index].id;
+                });
+                if (checkExist) {
+                    let temp = waitingForSupply;
+                    temp[idxx].quantity++;
+                    setWaitingForSupply(temp);
+                } else {
+                    console.log("else");
+                    let arr = waitingForSupply;
+                    let temp = Object.assign({}, waitingForCooking[index]);
+                    temp.quantity = 1;
+                    arr.push(temp);
+                    setWaitingForSupply(arr);
+                }
+        
+                if (res[index].quantity == 0) {
+                    res.splice(index, 1);
+                }
+                setWaitingForCooking([...res]);
+                // console.log("konbanwa");
+                dispatch(statusAction.successfulStatus("Chuẩn bị món ăn thành công"));
+            }else{
+                dispatch(statusAction.failedStatus("Chuẩn bị món ăn thất bại"))
+            }
+
+        }catch(e){
+            // dispatch(statusAction.failedStatus("Chuẩn bị món ăn thất bại"))
+            console.log("Kitchen prepare fail " + e)
         }
-
-        if (res[index].quantity == 0) {
-            res.splice(index, 1);
-        }
-        setWaitingForCooking([...res]);
-        // console.log("konbanwa");
-
     }
 
     function handleAddAll(index) {
@@ -318,13 +237,13 @@ function Kitchen() {
         return (
             <>
                 <TableContainer style={{ overflowX: 'hidden', maxHeight: '62vh', minHeight: '60vh' }}>
-                    <Grid container spacing={1}>
+                    <Grid container spacing={1} style={{margin : "3px"}}>
                         {waitingForCooking.map((item, index) => {
                             //let findedItem= findItem(item)
                             return (
                                 <Grid item xs={3} >
                                     <Box boxShadow={3}>
-                                        <Card style={{ height: "100%", paddiing : "10px" }}>
+                                        <Card style={{ height: "100%", paddiing : "10px", border: '1px solid', borderColor: 'black' }}>
                                             <CardContent style={{ margin: -5 }}>
                                                 <Grid item xs={12} sm={12}>
                                                     <Box sx={{ width: '100%', height: "100%" }}>
@@ -343,12 +262,12 @@ function Kitchen() {
                                                         >
                                                             <Grid item>
                                                                 <Typography variant='caption'>
-                                                                    {item.status}
+                                                                    {item.table_name}
                                                                 </Typography>
                                                             </Grid>
                                                             <Grid item>
                                                                 <Typography variant='caption'>
-                                                                    "bàn 1"
+                                                                    {item.table_group_name}
                                                                 </Typography>
                                                             </Grid>
                                                             <Grid item>
@@ -397,6 +316,7 @@ function Kitchen() {
     };
 
     return (
+        isLoadingFBOrders ? <LoadingIndicator/> : 
         <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
                 <Typography variant="h2">
@@ -437,10 +357,10 @@ function Kitchen() {
                                 return (
                                     <Grid item xs={3} >
                                         <Box boxShadow={3}>
-                                            <Card style={{ height: 200 }}>
+                                            <Card style={{ height: "100%" , border: '1px solid', borderColor: 'black'}}>
                                                 <CardContent style={{ margin: -5 }}>
-                                                    <Grid item xs={12} sm={12}>
-                                                        <Box sx={{ width: '100%', height: 200 }}>
+                                                    <Grid item xs={12} sm={12} direction="column" >
+                                                        <Box sx={{ width: '100%', height: "100%" }} direction="column" >
                                                             {/* <img src={item.imagePath.value} style={{ objectFit: 'cover', width: '100%', height: '60%' }}></img> */}
                                                             <Grid container justifyContent='center' >
                                                                 <Grid item>
@@ -449,15 +369,15 @@ function Kitchen() {
                                                                     </Typography>
                                                                 </Grid>
                                                             </Grid>
-                                                            <Grid container>
+                                                            <Grid container direction="column" >
                                                                 <Grid item>
                                                                     <Typography variant='caption'>
-                                                                        {item.status}
+                                                                        {item.table_name}
                                                                     </Typography>
                                                                 </Grid>
                                                                 <Grid item>
                                                                     <Typography variant='caption'>
-                                                                        {item.time}
+                                                                        {item.table_group_name}
                                                                     </Typography>
                                                                 </Grid>
                                                                 <Grid item>
@@ -500,6 +420,8 @@ function Kitchen() {
                 </Box>
             </Grid>
         </Grid>
+
+    
     );
 }
 

@@ -64,6 +64,13 @@ const orderApi = {
 
 
   // fb order 
+
+  getFBOrders : (storeUuid, branchUuid, query) => {
+    const url = `/stores/${storeUuid}/branches/${branchUuid}/fb_orders`
+    return axiosClient.get(url, {params : query});
+  },
+
+
   createFBOrder : (storeUuid, branchUuid, tableUuid ,body) => {
     const url = `/stores/${storeUuid}/branches/${branchUuid}/tables/${tableUuid}/order`
     return axiosClient.post(url, body);

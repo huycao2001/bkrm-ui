@@ -225,7 +225,7 @@ const Cashier = (props) => {
 
     if(currentCart){
       try{
-
+        
         // Create the FBOrder for kitchen
         var items = currentCart.cartItem.map(item => {
           return {
@@ -254,9 +254,12 @@ const Cashier = (props) => {
         }
 
         if(response.message === "Order created successfully"){
+          // Store the fb_order_uuid for the cart
           currentCart.kitchen_notified = true;
           currentCart.fb_order_uuid = response.data.fb_order.uuid; 
           dispatch(statusAction.successfulStatus("Đã thông báo cho bếp !"));
+
+
           //Update state to BE
           if(selectedTable.type === "away"){
             var takeAwayCarts = newCashierCartList.filter(item => item.type === "away");
@@ -337,17 +340,25 @@ const Cashier = (props) => {
           const fb_order_id = currentCart.type === "away" ? currentCart.fb_order_uuid :  currentCart.kitchen_notified ? currentCart.fb_order_uuid : response.data.fb_order.uuid;
           console.log("fb order is " + fb_order_id);  
           
-          // Prepare the dishes in the order
-          var prepareDishes = { 
-            items : currentCart.cartItem.map(item => {
-              return {
-                product_uuid : item.uuid,
-                quantity_to_prepare : item.quantity
-              }
-            })
+
+
+          // For now : If the cart has been notified to the kitchen then no need to prepae at this Cashier page
+          var prepareRes = null;
+          if(!currentCart.kitchen_notified){
+            // Prepare the dishes in the order
+            var prepareDishes = { 
+              items : currentCart.cartItem.map(item => {
+                return {
+                  product_uuid : item.uuid,
+                  quantity_to_prepare : item.quantity
+                }
+              })
+            }
+            prepareRes = await orderApi.prepareFBOrder(store_uuid, branch_uuid, fb_order_id, prepareDishes); 
           }
-          const prepareRes = await orderApi.prepareFBOrder(store_uuid, branch_uuid, fb_order_id, prepareDishes); 
-          if(prepareRes.message === "success"){
+
+
+          if(prepareRes && prepareRes.message === "success" || currentCart.kitchen_notified){
               // Pay the order
             var payload = {
               "customer_uuid": null,
@@ -357,7 +368,7 @@ const Cashier = (props) => {
               "total_amount": currentCart.total_amount,
               "paid_amount": currentCart.paid_amount,
               "discount": "0",
-              "payment_method": "cash",
+              "payment_method": currentCart.payment_method,
               "tax": "0",
               "shipping": "0",
               "is_customer_order": false
