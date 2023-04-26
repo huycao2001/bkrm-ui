@@ -344,9 +344,9 @@ function Kitchen() {
                 <Box bgcolor="white" color="secondary.contrastText" p={0} height={600}>
                     <AppBar position="static">
                         <Tabs value={tab} onChange={handleChangeTab} aria-label="simple tabs example">
-                            <Tab label="ƯU TIÊN" {...a11yProps(0)} />
+                            <Tab label="THEO PHÒNG BÀN" {...a11yProps(0)} />
                             <Tab label="THEO MÓN" {...a11yProps(1)} />
-                            <Tab label="THEO PHÒNG BÀN" {...a11yProps(2)} />
+                            <Tab label="ƯU TIÊN" {...a11yProps(2)} />
                         </Tabs>
                     </AppBar>
                     <TabPanel value={tab} index={0}>
