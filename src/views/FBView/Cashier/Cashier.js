@@ -227,8 +227,7 @@ const Cashier = (props) => {
 
     if(currentCart){
       try{
-        
-        // Create the FBOrder for kitchen
+        var response = null;
         var items = currentCart.cartItem.map(item => {
           return {
             product_uuid : item.uuid,
@@ -237,8 +236,17 @@ const Cashier = (props) => {
         });
 
         var body = null; 
-        var response = null;
-        if(selectedTable.type === "away"){
+
+        if(currentCart.kitchen_notified){
+          // If this cart has been notified then we update the fb order again
+          body = {
+            items : items,
+            note : "Fix later"
+          }
+          response = await orderApi.updateFBOrder(store_uuid, branch_uuid, currentCart.fb_order_uuid, body)
+
+        }
+        else if(selectedTable.type === "away"){ // Create the FBOrder for kitchen
           // Create take away fborder
           body = {
             items : items,
@@ -255,7 +263,7 @@ const Cashier = (props) => {
           response = await orderApi.createFBOrder(store_uuid, branch_uuid, selectedTable.uuid, body)
         }
 
-        if(response.message === "Order created successfully"){
+        if(response.message === "Order created successfully" || (currentCart.kitchen_notified && response.message === "success")){
           // Store the fb_order_uuid for the cart
           currentCart.kitchen_notified = true;
           currentCart.fb_order_uuid = response.data.fb_order.uuid; 
@@ -266,14 +274,14 @@ const Cashier = (props) => {
               item.kitchen_notified_quantity = item.quantity; 
               item.kitchen_prepared_quantity = 0; 
             }else {
-              item.kitchen_notified_quantity += item.quantity; 
+              item.kitchen_notified_quantity += item.quantity - item.kitchen_notified_quantity; 
             
             }
           })
 
 
 
-          dispatch(statusAction.successfulStatus("Đã thông báo cho bếp !"));
+          dispatch(statusAction.successfulStatus("Thông báo cho bếp thành công!"));
 
 
           //Update state to BE

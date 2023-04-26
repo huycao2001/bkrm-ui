@@ -160,9 +160,6 @@ function Kitchen() {
                 items : items
             }); 
 
-
-
-
             if(response.message === "success"){
                 res[index].quantity = res[index].quantity - 1;
 
@@ -192,38 +189,60 @@ function Kitchen() {
                 // console.log("konbanwa");
                 dispatch(statusAction.successfulStatus("Chuẩn bị món ăn thành công"));
             }else{
-                dispatch(statusAction.failedStatus("Chuẩn bị món ăn thất bại"))
+                dispatch(statusAction.failedStatus("Chuẩn bị món ăn thất bại"));
             }
 
         }catch(e){
             // dispatch(statusAction.failedStatus("Chuẩn bị món ăn thất bại"))
-            console.log("Kitchen prepare fail " + e)
+            console.log("Kitchen prepare fail " + e);
         }
     }
 
-    function handleAddAll(index) {
-        let item = waitingForCooking[index];
-        let arr1 = waitingForCooking;
-        let arr2 = waitingForSupply;
+    const handleAddAll = async (index) => {
+        try{
+            let item = waitingForCooking[index];
+            var preparedItems = [
+                {
+                    product_uuid : item.product_uuid,
+                    quantity_to_prepare : item.quantity
+                }
+            ];
 
-        var idxx;
-        const checkExist = waitingForSupply.some(function (element, idx) {
-            idxx = idx;
-            return element.id === waitingForCooking[index].id;
-        });
+            const response = await orderApi.prepareFBOrder(store_uuid, branch_uuid, item.fb_order_uuid, {
+                items : preparedItems
+            }); 
 
-        if (checkExist) {
-            let temp = waitingForSupply;
-            temp[idxx].quantity += item.quantity;
-            setWaitingForSupply([...temp]);
-            arr1.splice(index, 1);
-            setWaitingForCooking([...arr1]);
-        } else {
-            arr2.push(item);
-            arr1.splice(index, 1);
+            if(response.message === "success"){
+                let arr1 = waitingForCooking;
+                let arr2 = waitingForSupply;
+        
+                var idxx;
+                const checkExist = waitingForSupply.some(function (element, idx) {
+                    idxx = idx;
+                    return element.id === waitingForCooking[index].id;
+                });
+        
+                if (checkExist) {
+                    let temp = waitingForSupply;
+                    temp[idxx].quantity += item.quantity;
+                    setWaitingForSupply([...temp]);
+                    arr1.splice(index, 1);
+                    setWaitingForCooking([...arr1]);
+                } else {
+                    arr2.push(item);
+                    arr1.splice(index, 1);
+        
+                    setWaitingForCooking([...arr1]);
+                    setWaitingForSupply([...arr2]);
+                }
+                dispatch(statusAction.successfulStatus("Chuẩn bị món ăn thành công"));
 
-            setWaitingForCooking([...arr1]);
-            setWaitingForSupply([...arr2]);
+            }else{
+                dispatch(statusAction.failedStatus("Chuẩn bị món ăn thất bại"));
+            }
+
+        }catch(e){
+            console.log("Kitchen prepare fail " + e);
         }
 
 
