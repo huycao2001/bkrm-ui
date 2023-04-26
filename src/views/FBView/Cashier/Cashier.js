@@ -14,6 +14,8 @@ import CartSummary from "../../../components/CheckoutComponent/CheckoutSummary/C
 
 import CashierCartSummary from "../../../components/CheckoutComponent/CheckoutSummary/CartSummary/CashierCartSummary";
 
+import { CashierCartTableRow } from "../../SalesView/Cart/CartTableRow/CashierCartTableRow";
+
 import LoadingIndicator from "../../../components/LoadingIndicator/LoadingIndicator";
 import { trackPromise } from "react-promise-tracker";
 import {
@@ -257,6 +259,20 @@ const Cashier = (props) => {
           // Store the fb_order_uuid for the cart
           currentCart.kitchen_notified = true;
           currentCart.fb_order_uuid = response.data.fb_order.uuid; 
+
+          // Update the kitchen notified quantity and prepared quantity for each item in cart 
+          currentCart.cartItem.map(item =>  {
+            if(item.kitchen_notified_quantity == null){ // Havent notified to the kitchen
+              item.kitchen_notified_quantity = item.quantity; 
+              item.kitchen_prepared_quantity = 0; 
+            }else {
+              item.kitchen_notified_quantity += item.quantity; 
+            
+            }
+          })
+
+
+
           dispatch(statusAction.successfulStatus("Đã thông báo cho bếp !"));
 
 
@@ -991,6 +1007,8 @@ const Cashier = (props) => {
         id: currentCart.cartItem.length,
         uuid: selectedOption.uuid,
         quantity:  1,
+        kitchen_notified_quantity : null,
+        kitchen_prepared_quantity : null,
         product_code: selectedOption.product_code,
         bar_code: selectedOption.bar_code,
         unit_price: selectedOption.list_price,
@@ -1342,14 +1360,7 @@ const Cashier = (props) => {
                     }}
                   >
                     <Table size="small">
-                      {/* <TableHead>
-                        <TableRow>
-                          <TableCell  align="right">stt</TableCell>
-                          <TableCell  align="right">Số lượng</TableCell>
-                          <TableCell  align="right">Đơn giá</TableCell>
 
-                        </TableRow>
-                      </TableHead> */}
                       <TableBody>
                       {!cashierCartList ? [] :  cashierCartList.find(item => {
                         if(selectedTable.type === "away"){
@@ -1362,7 +1373,7 @@ const Cashier = (props) => {
                         return item.table.uuid === selectedTable.uuid;
                       })?.cartItem?.map((row, index) => {
                         return (
-                          <CartRow
+                          <CashierCartTableRow
                             key={`${row.uuid}_index`}
                             row={row}
                             handleDeleteItemCart={handleDeleteItemCart}
