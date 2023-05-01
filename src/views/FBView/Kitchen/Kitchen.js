@@ -104,13 +104,14 @@ function Kitchen() {
                             NewWaitingForCooking = [
                             ...NewWaitingForCooking,    
                             {
-                                id : fb_order_detail.id,
+                                id : fb_order_detail.id, // if of the fb_order_detail mostly used to track
                                 fb_order_uuid : fb_order.uuid,
                                 name : fb_order_detail.product_name,
                                 table_name : fb_order.table.name ,
-                                table_group_name : fb_order.table.table_group.name, 
+                                table_group_name : fb_order.table.table_group ? fb_order.table.table_group.name : "Nhóm mang đi", 
                                 quantity: Number(fb_order_detail.ordered_quantity) - Number(fb_order_detail.prepared_quantity),
-                                product_uuid : fb_order_detail.product_uuid
+                                product_uuid : fb_order_detail.product_uuid,
+                                fb_order_detail_uuid : fb_order_detail.uuid
 
                             }
                             
@@ -151,13 +152,15 @@ function Kitchen() {
         try{
             let res = waitingForCooking;
 
-            var items = [{
-                product_uuid : res[index].product_uuid,
+            var fb_order_details = [{
+                uuid : res[index].fb_order_detail_uuid,
                 quantity_to_prepare : 1
             }]
 
+            // window.alert(JSON.stringify(fb_order_details)); 
+            // return;
             const response = await orderApi.prepareFBOrder(store_uuid, branch_uuid, res[index].fb_order_uuid, {
-                items : items
+                fb_order_details : fb_order_details
             }); 
 
             if(response.message === "success"){

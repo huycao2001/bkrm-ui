@@ -144,6 +144,7 @@ const initCart = {
   discountDetail: { value: 0, type: "VND" },
   selectedPromotion: null,
   otherFee: 0,
+  note : "normal table order"
 };
 
 const Cashier = (props) => {
@@ -211,9 +212,87 @@ const Cashier = (props) => {
 
   const [selectedTakeAwayCart, setSelectedTakeAwayCart] = React.useState(null);
 
+  // TemporaryOrderEvent
+  const [ws, setWs ] = useState(null);
+
+
+  // Native websockets for sending data
+  const [socket, setSocket] = useState(null);
+
+  // FBOrderPreparedEvent :received information about the prepared dishes from the kitchen
+  const [FBOrderPreparedEventWs, setFBOrderPreparedEventWs] = useState(null);
 
 
 
+
+
+  function handlePreparedDishFromKitchen (data){
+
+    console.log("ua??????")
+    dispatch(statusAction.successfulStatus("Nhận thông báo từ bếp cho bàn " ))
+    // Update the kitchen_prepared_quantity of the cart
+    var newCashierCartList = [...cashierCartList]; 
+    var notifiedFBOrder = data.fb_order;
+    var preparedItems = data.prepared[0];
+
+    // var updatedCart = data.cart;
+    // updatedCart.total_amount = 22;
+
+    // console.log("duyen1" + JSON.stringify(notifiedFBOrder));
+
+    // console.log("duyen2 cca" + JSON.stringify(cashierCartList));
+
+    // console.log("duyen2 cca" + JSON.stringify(updatedCart));
+
+    // updatedCart.cartItem.map(item => {
+    //   console.log("duyenoi");
+    // })
+
+
+    // for (let i = 0; i < updatedCart.cartItem.length; i++) {
+    //   const item = updatedCart.cartItem[i];
+    //   for (let j = 0; j < preparedItems.length; j++) {
+    //     const preparedItem = preparedItems[j];
+    //     if (preparedItem.uuid === item.uuid) {
+    //       // do something
+    //       item.kitchen_prepared_quantity += preparedItem.prepared_quantity
+    //     }
+    //   }
+    // }
+
+    // sendData({
+    //   event: 'bkrm:temporary_fborder_request_update_event',
+    //   token: localStorage.getItem("token"),
+    //   payload: {
+    //     table_uuid: updatedCart.table.uuid,
+    //     temporary_fborder: JSON.stringify(updatedCart)
+    //   },
+    // });
+
+
+
+
+
+    // //Update the state of the CashierCartList
+
+    // window.alert(JSON.stringify(updatedCart));
+    // return;
+    // sendData({
+    //   event: 'bkrm:temporary_fborder_request_update_event',
+    //   token: localStorage.getItem("token"),
+    //   payload: {
+    //     table_uuid: updatedCart.table.uuid,
+    //     temporary_fborder: JSON.stringify(updatedCart)
+    //   },
+    // });
+    
+
+
+
+
+
+
+  }
 
   const handleNotifyKitchen = async () => { 
     var newCashierCartList = [...cashierCartList]; 
@@ -264,8 +343,9 @@ const Cashier = (props) => {
         }
 
         if(response.message === "Order created successfully" || (currentCart.kitchen_notified && response.message === "success")){
-          // Store the fb_order_uuid for the cart
+          // Mark this cart has been notified to kitchen
           currentCart.kitchen_notified = true;
+          // Store the fb_order_uuid for the cart
           currentCart.fb_order_uuid = response.data.fb_order.uuid; 
 
           // Update the kitchen notified quantity and prepared quantity for each item in cart 
@@ -353,7 +433,7 @@ const Cashier = (props) => {
           }else{
             body = {
               items : items,
-              note : "normal table order"
+              note : currentCart.note
             }
             response = await orderApi.createFBOrder(store_uuid, branch_uuid, selectedTable.uuid, body)
           }
@@ -576,22 +656,67 @@ const Cashier = (props) => {
   
 
 
-  const [ws, setWs ] = useState(null);
 
-  const [socket, setSocket] = useState(null);
 
   const sendData = (data) => { 
     if(socket){
       console.log("sending data")
       try{
+
+        // if (socket.readyState === WebSocket.CLOSING || socket.readyState === WebSocket.CLOSED) {
+        //   console.log("Ope")
+        //   const wsUrl = (process.env.REACT_APP_PUSHER_PORT == 443? 'wss' : 'ws') + `://${process.env.REACT_APP_PUSHER_HOST}:${process.env.REACT_APP_PUSHER_PORT}/app/${process.env.REACT_APP_WEBSOCKET_APP_KEY}`;
+        //   let iniSocket = new WebSocket(wsUrl);
+        //   setSocket(iniSocket);
+        // }
         socket.send(JSON.stringify(data), []);
       }
       catch(e){
         console.log("Send data failed : " + e);
       }
+    }else{
+      console.log("sending data failed")
     }
   }
 
+
+
+  useEffect( async () => {
+    // if(!FBOrderPreparedEventWs){
+      const echo = new Echo({
+        broadcaster: 'pusher',
+        key: process.env.REACT_APP_WEBSOCKET_APP_KEY,
+        wsHost: process.env.REACT_APP_PUSHER_HOST,
+        wsPort: process.env.REACT_APP_PUSHER_PORT,
+        wssPort: process.env.REACT_APP_PUSHER_PORT,
+        forceTLS: false,
+        disableStats: true,
+        encrypted: false,
+        enabledTransports: ['ws', 'wss'],
+        cluster: 'ap1',
+      });
+      //Establish channel 
+      var channel = `ws.stores.${store_uuid}.branches.${branch_uuid}.waiter`
+      echo
+      .channel(channel)
+      .subscribed(() => {
+        console.log('You are subscribed to channel for cashiers:' + channel);
+      })
+      .listen('.bkrm:fborder_prepared_event', (data) => {
+        console.log("from kitchen, WS got: " + JSON.stringify(data));
+        console.log("wtfbro ???? " + JSON.stringify(cashierCartList) )
+        handlePreparedDishFromKitchen(data);
+        
+      }
+      );
+
+      setFBOrderPreparedEventWs(echo);
+      
+
+    // }
+  }, [selectedTable])
+
+  // Connecting to FBOrderUpdated event
   useEffect(async () => {
     //console.log(process.env.REACT_APP_PUSHER_APP_KEY);
     console.log("call use effect again");
@@ -628,6 +753,7 @@ const Cashier = (props) => {
         .listen('.bkrm:temporary_fborder_updated_event', (data) => {
           console.log("WS got: " + JSON.stringify(data));
           console.log("type of data " + typeof data);
+          console.log("tai sao " + JSON.stringify(cashierCartList) )
 
 
           if(data.temporary_fborder !== '[]' || selectedTable.type === "away" ){
@@ -650,6 +776,7 @@ const Cashier = (props) => {
   const handleUpdateTableCart = (tableUuid, cart) => { 
 
     var newCashierCartList = [...cashierCartList]; 
+    console.log("duyeniu" + JSON.stringify(newCashierCartList));
     let currentCart = newCashierCartList.find(item => {
       // if(selectedTakeAwayCart){
       //   return item.table.uuid === tableUuid && item.uuid === selectedTakeAwayCart; 
@@ -687,6 +814,7 @@ const Cashier = (props) => {
       return;
     }
     if(currentCart){
+      console.log("duyene")
       currentCart = JSON.parse(cart);
 
     }else{
@@ -695,7 +823,9 @@ const Cashier = (props) => {
     console.log("update state back to list")
     console.log(newCashierCartList);
 
-    console.log("debug 547")
+    console.log("debug 547");
+    console.log("duyencuaminh" + JSON.stringify(newCashierCartList));
+
     setCashierCartList(newCashierCartList);
   }
 
@@ -978,7 +1108,7 @@ const Cashier = (props) => {
     if(!currentCart){
       // new item for the table -> create a new cart
       currentCart = {
-        uuid : generateUUID(), 
+        uuid : generateUUID(),
         table : selectedTable, // mang di
         reservation : null,
         customer: null,
@@ -1157,35 +1287,28 @@ const Cashier = (props) => {
         
 
         if(response.message === "Successfully fetched tables"){          
-          setTables(prev => {
-            
-            var fetchedTables  = response.data.tables.map(table => {
+          var fetchedTables  = response.data.tables.map(table => {
 
-              if(table.is_takeaway == 1){
-                return {
-                  uuid : table.uuid,
-                  seats : table.seats, 
-                  type : "away",
-                  name : table.name,
-                  status : table.status,
-                  table_group_name : table.table_group_name
-                }   
-              }
+            if(table.is_takeaway == 1){
               return {
                 uuid : table.uuid,
                 seats : table.seats, 
+                type : "away",
                 name : table.name,
                 status : table.status,
                 table_group_name : table.table_group_name
-              }
-            });
-            
-            return [
-              // ...prev, 
-              ...fetchedTables
-
-            ]
+              }   
+            }
+            return {
+              uuid : table.uuid,
+              seats : table.seats, 
+              name : table.name,
+              status : table.status,
+              table_group_name : table.table_group_name
+            }
           });
+          setSelectedTable(fetchedTables[0]);
+          setTables(fetchedTables);
 
           setIsLoadingTables(false); 
         }else{
