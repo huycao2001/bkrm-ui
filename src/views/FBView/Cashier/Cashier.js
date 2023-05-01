@@ -322,7 +322,7 @@ const Cashier = (props) => {
             items : items,
             note : "Fix later"
           }
-          response = await orderApi.updateFBOrder(store_uuid, branch_uuid, currentCart.fb_order_uuid, body)
+          response = await orderApi.updateFBOrder(store_uuid, branch_uuid, currentCart.uuid, body)
 
         }
         else if(selectedTable.type === "away"){ // Create the FBOrder for kitchen
@@ -330,7 +330,7 @@ const Cashier = (props) => {
           body = {
             items : items,
             note : "away order",
-            fborder_uuid : currentCart.fb_order_uuid
+            fborder_uuid : currentCart.uuid
           }
           response = await orderApi.createFBTakeawayOrder(store_uuid, branch_uuid, body)
         }else{
@@ -346,7 +346,7 @@ const Cashier = (props) => {
           // Mark this cart has been notified to kitchen
           currentCart.kitchen_notified = true;
           // Store the fb_order_uuid for the cart
-          currentCart.fb_order_uuid = response.data.fb_order.uuid; 
+          currentCart.uuid = response.data.fb_order.uuid; 
 
           // Update the kitchen notified quantity and prepared quantity for each item in cart 
           currentCart.cartItem.map(item =>  {
@@ -427,7 +427,7 @@ const Cashier = (props) => {
             body = {
               items : items,
               note : "away order",
-              fborder_uuid : currentCart.fb_order_uuid
+              fborder_uuid : currentCart.uuid
             }
             response = await orderApi.createFBTakeawayOrder(store_uuid, branch_uuid, body)
           }else{
@@ -441,7 +441,7 @@ const Cashier = (props) => {
         
         if((response && response.message === "Order created successfully") || currentCart.kitchen_notified ){
           // dispatch(statusAction.successfulStatus("Tạo hóa đơn thành công"));
-          const fb_order_id = currentCart.type === "away" ? currentCart.fb_order_uuid :  currentCart.kitchen_notified ? currentCart.fb_order_uuid : response.data.fb_order.uuid;
+          const fb_order_id = currentCart.type === "away" ? currentCart.uuid :  currentCart.kitchen_notified ? currentCart.uuid : response.data.fb_order.uuid;
           console.log("fb order is " + fb_order_id);  
           
 
@@ -485,15 +485,10 @@ const Cashier = (props) => {
               // Clear the cart
               if(selectedTable.type === "away"){
                 console.log("clear away ? ")
-                var newCashierCartList = [...cashierCartList]; 
-                // var currentCartIndex = newCashierCartList.findIndex(item => item.uuid === selectedTable.uuid); 
-                // newCashierCartList.splice(currentCartIndex,1); 
-                // console.log("debug 286")
-                // setCashierCartList(newCashierCartList)
-                //Todo clear the selected cart take away cart 
+
 
                 var currentCartIndex = newCashierCartList.findIndex(item => {
-                  return item.table.uuid === selectedTable.uuid && item.uuid === selectedTakeAwayCart;
+                  return item.table.uuid === selectedTable.uuid && item.uuid === currentCart.uuid; 
                 }); 
 
                 newCashierCartList.splice(currentCartIndex,1); 
@@ -588,7 +583,6 @@ const Cashier = (props) => {
       reservation : null,
       customer: null,
       type : "away",
-      fb_order_uuid : generateUUID(), 
       kitchen_notified : false,
       cartItem: [],
       total_amount: 0,
@@ -776,7 +770,7 @@ const Cashier = (props) => {
   const handleUpdateTableCart = (tableUuid, cart) => { 
 
     var newCashierCartList = [...cashierCartList]; 
-    console.log("duyeniu" + JSON.stringify(newCashierCartList));
+    // console.log("duyeniu" + JSON.stringify(newCashierCartList));
     let currentCart = newCashierCartList.find(item => {
       // if(selectedTakeAwayCart){
       //   return item.table.uuid === tableUuid && item.uuid === selectedTakeAwayCart; 
@@ -814,7 +808,7 @@ const Cashier = (props) => {
       return;
     }
     if(currentCart){
-      console.log("duyene")
+
       currentCart = JSON.parse(cart);
 
     }else{
@@ -824,7 +818,7 @@ const Cashier = (props) => {
     console.log(newCashierCartList);
 
     console.log("debug 547");
-    console.log("duyencuaminh" + JSON.stringify(newCashierCartList));
+
 
     setCashierCartList(newCashierCartList);
   }
@@ -1113,7 +1107,6 @@ const Cashier = (props) => {
         reservation : null,
         customer: null,
         type : selectedTable.type === "away" ? "away" : "table", 
-        fb_order_uuid : selectedTable.type === "away" ? generateUUID() : null, 
         kitchen_notified : false,
         cartItem: [],
         total_amount: 0,
