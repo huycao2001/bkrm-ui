@@ -101,21 +101,25 @@ function Kitchen() {
                     fb_orders.map(fb_order => { 
                         
                         fb_order.fb_order_details.map(fb_order_detail =>{
-                            NewWaitingForCooking = [
-                            ...NewWaitingForCooking,    
-                            {
-                                id : fb_order_detail.id, // if of the fb_order_detail mostly used to track
-                                fb_order_uuid : fb_order.uuid,
-                                name : fb_order_detail.product_name,
-                                table_name : fb_order.table.name ,
-                                table_group_name : fb_order.table.table_group ? fb_order.table.table_group.name : "Nhóm mang đi", 
-                                quantity: Number(fb_order_detail.ordered_quantity) - Number(fb_order_detail.prepared_quantity),
-                                product_uuid : fb_order_detail.product_uuid,
-                                fb_order_detail_uuid : fb_order_detail.uuid
 
+                            if(fb_order_detail.prepared_quantity < fb_order_detail.ordered_quantity){
+                                NewWaitingForCooking = [
+                                    ...NewWaitingForCooking,    
+                                    {
+                                        id : fb_order_detail.id, // if of the fb_order_detail mostly used to track
+                                        fb_order_uuid : fb_order.uuid,
+                                        name : fb_order_detail.product_name,
+                                        table_name : fb_order.table.name ,
+                                        table_group_name : fb_order.table.table_group ? fb_order.table.table_group.name : "Nhóm mang đi", 
+                                        quantity: Number(fb_order_detail.ordered_quantity) - Number(fb_order_detail.prepared_quantity),
+                                        product_uuid : fb_order_detail.product_uuid,
+                                        fb_order_detail_uuid : fb_order_detail.uuid
+        
+                                    }
+                                    
+                                    ]
                             }
-                            
-                        ]
+
                         })
 
 
@@ -203,16 +207,22 @@ function Kitchen() {
 
     const handleAddAll = async (index) => {
         try{
+
+
+
+
+
+
             let item = waitingForCooking[index];
-            var preparedItems = [
+            var fb_order_details = [
                 {
-                    product_uuid : item.product_uuid,
+                    uuid : item.fb_order_detail_uuid,
                     quantity_to_prepare : item.quantity
                 }
             ];
 
             const response = await orderApi.prepareFBOrder(store_uuid, branch_uuid, item.fb_order_uuid, {
-                items : preparedItems
+                fb_order_details : fb_order_details
             }); 
 
             if(response.message === "success"){
