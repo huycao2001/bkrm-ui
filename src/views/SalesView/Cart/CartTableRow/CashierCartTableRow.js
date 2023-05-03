@@ -25,6 +25,7 @@ import DeleteForeverTwoToneIcon from '@material-ui/icons/DeleteForeverTwoTone';
 //import project
 import * as Input from "../../../../components/TextField/NumberFormatCustom";
 import ButtonQuantity from "../../../../components/Button/ButtonQuantity";
+import CashierButtonQuantity from "../../../../components/Button/CashierButtonQuantity";
 import { VNDFormat } from "../../../../components/TextField/NumberFormatCustom";
 import DiscountPopUp from "../DiscountPopup/DiscountPopup";
 import icon from "../../../../assets/img/product/tch.jpeg";
@@ -162,7 +163,7 @@ export const CashierCartTableRow = (props) => {
 
 
             <Grid container item xs={4} alignItems = "center" >
-            <ButtonQuantity
+            <CashierButtonQuantity
               // isMini={mini?true:false}
               miniCart={mini}
               quantity={row.quantity}

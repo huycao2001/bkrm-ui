@@ -917,9 +917,10 @@ const Cashier = (props) => {
 
   // }
 
-  const handleChangeItemQuantity = (itemUuid, newQuantity) => {
+  const handleChangeItemQuantity = async (itemUuid, newQuantity) => {
 
     var newCashierCartList = [...cashierCartList];
+
 
     let currentCart = newCashierCartList.find(item => {
       if(selectedTakeAwayCart){
@@ -934,6 +935,85 @@ const Cashier = (props) => {
     let item = currentCart.cartItem.find(
       (item) => item.uuid === itemUuid
     );
+
+
+    var oldQuantity  = currentCart.cartItem[itemIndex].quantity; 
+
+    var targetItem = currentCart.cartItem[itemIndex];
+
+    if(targetItem.kitchen_notified_quantity > newQuantity && currentCart.kitchen_notified){
+      // dispatch(statusAction.failedStatus("handle update or return here"));
+      // reduce the ordered_quantity when new quantity is less than the kitchen motified quantity,
+      // and the amount reduced to be updated is kitchen_notified_quantity - kitchen_prepared_quantity
+      if(targetItem.kitchen_notified_quantity > targetItem.kitchen_prepared_quantity){
+        // dispatch(statusAction.failedStatus("handle update the quanity down"));
+        // Chose the fb_order_detail that has the lowest prioriry (smallest waitime)
+        var founded = false; 
+        var targetFbOrderDetail = null;
+        var currentFBOrderDetails =  currentCart.fb_order_details;
+        var canReducedQuantity = targetItem.kitchen_notified_quantity - targetItem.kitchen_prepared_quantity;
+        console.log("update this1 : " + JSON.stringify(currentFBOrderDetails));
+
+        for (var i = 0; i < currentFBOrderDetails.length; i++) {
+            if(currentFBOrderDetails[i].product_id == targetItem.product_id){
+                if(!targetFbOrderDetail){
+                  targetFbOrderDetail = currentFBOrderDetails[i];
+                }else{
+                    if(currentFBOrderDetails[i].wait_time < targetFbOrderDetail.wait_time){
+                      targetFbOrderDetail = currentFBOrderDetails[i];
+                    }
+                }
+
+                targetFbOrderDetail = currentFBOrderDetails[i];
+        
+            }
+        }
+
+
+        
+        console.log("update this1 : " + JSON.stringify(targetItem));
+        
+        console.log("update this22 : " + JSON.stringify(targetFbOrderDetail))
+        // update the ordered_quantity.
+
+        var fb_order_details = [{
+          uuid : targetFbOrderDetail.uuid, 
+          ordered_quantity: targetFbOrderDetail.ordered_quantity - 1
+        }];
+
+
+        var body = {
+          fb_order_details : fb_order_details,
+          note : "Update fb order - reduce ordered quantity "
+        }
+        try{
+          var response = await orderApi.updateFBOrder(store_uuid, branch_uuid, currentCart.uuid, body);
+
+          if(response.message == 'success'){
+              dispatch(statusAction.successfulStatus("Cập nhật số lượng thành công"));
+              // Store the fb_order_details to the cart 
+              currentCart.fb_order_details = response.data.fb_order.fb_order_details;
+              // Update the kitchen notified quantity and prepared quantity for each item in cart 
+              currentCart.cartItem.map(item =>  {
+                if(item.product_id === targetFbOrderDetail.product_id ){
+                  item.kitchen_notified_quantity -= 1;
+                }
+              })
+          }else{
+            dispatch(statusAction.failedStatus("Failed : " + response.error));
+            return;
+
+          }
+        }catch(e){
+          console.log("Error reducing ordered quanity: " + e);
+          return;
+        }
+
+        console.log("update this3 : " + JSON.stringify(body));
+        
+      } 
+      // return;
+    }
 
 
 
@@ -953,7 +1033,7 @@ const Cashier = (props) => {
     }
 
     //let newCartList = [...cartList];
-    var oldQuantity  = currentCart.cartItem[itemIndex].quantity; 
+
     currentCart.cartItem[itemIndex].quantity = newQuantity;
     // currentCart.total_amount +=  Number(currentCart.cartItem[itemIndex].unit_price * (newQuantity - oldQuantity));
     currentCart.total_amount = currentCart.cartItem.reduce(
@@ -1164,6 +1244,7 @@ const Cashier = (props) => {
       let newCartItem = {
         id: currentCart.cartItem.length,
         uuid: selectedOption.uuid,
+        product_id : selectedOption.id, 
         quantity:  1,
         kitchen_notified_quantity : null,
         kitchen_prepared_quantity : null,
