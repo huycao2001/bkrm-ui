@@ -327,7 +327,7 @@ const Import = () => {
   };
 
   //mode
-  const [mode, setMode] = React.useState(false);
+  const [mode, setMode] = React.useState(true);
   const [showImage, setShowImage] = React.useState(true);
   const [typeShow, setTypeShow] = useState('list')
   const handleChangeMode = (event) => {
@@ -800,7 +800,7 @@ const Import = () => {
                   </Grid>
                 </Grid>
               </Grid>
-              {store_setting?.orderLowStock.status ?
+              {/* {store_setting?.orderLowStock.status ?
                 <ButtonComponent
                   variant="outlined"
                   color="primary"
@@ -812,7 +812,7 @@ const Import = () => {
                   title={" Gợi ý đặt hàng"}
                 >
                   Gợi ý đặt hàng
-                </ButtonComponent> : null}
+                </ButtonComponent> : null} */}
 
 
               {openRecommendOrderPopUp ?

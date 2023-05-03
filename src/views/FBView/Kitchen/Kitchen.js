@@ -12,11 +12,16 @@ import { AppBar, Box, Button, Grid, Tabs, Tab, Typography, TableContainer, Card,
 import imageSrc1 from "../../../../src/assets/img/product/1.jpg";
 import imageSrc2 from "../../../../src/assets/img/product/199.jpg";
 
+import Echo from "laravel-echo";
+import Pusher from "pusher-js";
+
 
 import { trackPromise } from "react-promise-tracker";
 
-import LoadingIndicator from '../../../components/LoadingIndicator/LoadingIndicator';
 import { statusAction } from '../../../store/slice/statusSlice';
+
+import LoadingIndicator from '../../../components/LoadingIndicator/LoadingIndicator';
+
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -83,6 +88,54 @@ function Kitchen() {
     const [waitingForCooking, setWaitingForCooking] = useState([]);
     const [waitingForSupply, setWaitingForSupply] = useState([]);
 
+    const [channelConnection, setChannelConnection] = useState(null);
+
+
+
+    const handleUpdateKitchenOrders = (updated_fb_orders) =>{
+        // Notify
+        
+
+        var fb_orders = updated_fb_orders; 
+        var NewWaitingForCooking = []; 
+        fb_orders.map(fb_order => { 
+            
+            fb_order.fb_order_details.map(fb_order_detail =>{
+
+                if(fb_order_detail.prepared_quantity < fb_order_detail.ordered_quantity){
+                    NewWaitingForCooking = [
+                        ...NewWaitingForCooking,    
+                        {
+                            id : fb_order_detail.id, // if of the fb_order_detail mostly used to track
+                            fb_order_uuid : fb_order.uuid,
+                            name : fb_order_detail.product_name,
+                            table_name : fb_order.table.name ,
+                            table_group_name : fb_order.table.table_group ? fb_order.table.table_group.name : "Nhóm mang đi", 
+                            quantity: Number(fb_order_detail.ordered_quantity) - Number(fb_order_detail.prepared_quantity),
+                            product_uuid : fb_order_detail.product_uuid,
+                            fb_order_detail_uuid : fb_order_detail.uuid,
+                            wait_time : fb_order_detail.wait_time
+
+                        }
+                        
+                        ]
+                }
+
+            })
+
+
+            
+        });
+
+
+        //Sort desc based on wait time
+
+        NewWaitingForCooking.sort((a, b) => b.wait_time - a.wait_time);
+
+        setWaitingForCooking(NewWaitingForCooking);
+        setIsLoadingFBOrders(false);
+    }
+
 
     useEffect(() => { 
         const loadFBOrders = async () => {
@@ -96,38 +149,8 @@ function Kitchen() {
 
 
                 if(response.message === "Orders fetched successfully"){
-                    var fb_orders = response.data.fb_orders; 
-                    var NewWaitingForCooking = []; 
-                    fb_orders.map(fb_order => { 
-                        
-                        fb_order.fb_order_details.map(fb_order_detail =>{
+                    handleUpdateKitchenOrders(response.data.fb_orders);
 
-                            if(fb_order_detail.prepared_quantity < fb_order_detail.ordered_quantity){
-                                NewWaitingForCooking = [
-                                    ...NewWaitingForCooking,    
-                                    {
-                                        id : fb_order_detail.id, // if of the fb_order_detail mostly used to track
-                                        fb_order_uuid : fb_order.uuid,
-                                        name : fb_order_detail.product_name,
-                                        table_name : fb_order.table.name ,
-                                        table_group_name : fb_order.table.table_group ? fb_order.table.table_group.name : "Nhóm mang đi", 
-                                        quantity: Number(fb_order_detail.ordered_quantity) - Number(fb_order_detail.prepared_quantity),
-                                        product_uuid : fb_order_detail.product_uuid,
-                                        fb_order_detail_uuid : fb_order_detail.uuid
-        
-                                    }
-                                    
-                                    ]
-                            }
-
-                        })
-
-
-                        
-                    });
-                    console.log("me may " + JSON.stringify(NewWaitingForCooking))
-                    setWaitingForCooking(NewWaitingForCooking);
-                    setIsLoadingFBOrders(false);
 
 
                 }else if(response.message){
@@ -145,6 +168,52 @@ function Kitchen() {
         loadFBOrders()
 
     }, [store_uuid, branch_uuid]);
+
+
+
+    useEffect(async () => {
+        if(channelConnection) return;
+        const echo = new Echo({
+        broadcaster: 'pusher',
+        key: process.env.REACT_APP_WEBSOCKET_APP_KEY,
+        wsHost: process.env.REACT_APP_PUSHER_HOST,
+        wsPort: process.env.REACT_APP_PUSHER_PORT,
+        wssPort: process.env.REACT_APP_PUSHER_PORT,
+        forceTLS: false,
+        disableStats: true,
+        encrypted: false,
+        enabledTransports: ['ws', 'wss'],
+        cluster: 'ap1',
+        });
+
+        //ws.stores.{$table->store->uuid}.branches.{$table->branch->uuid}.tables.{$table->uuid}
+        var channel = `ws.stores.${store_uuid}.branches.${branch_uuid}.kitchen`
+        echo
+            .channel(channel)
+            .subscribed(() => {
+            console.log('You are subscribed to for kitchen :' + channel);
+
+
+
+        })
+        .listen('.bkrm:fborder_updated_event', (data) => {
+            console.log("WS got from cashier: " + JSON.stringify(data));   
+            dispatch(statusAction.successfulStatus("Nhận hóa đơn mới !")) 
+            handleUpdateKitchenOrders(data.fb_orders);
+
+        }
+        );
+
+        setChannelConnection(echo);
+
+
+
+
+        return (()=>{
+            console.log("close connection for kitchen");
+            channelConnection.disconnect()
+        })  
+      } , []);
 
 
 
@@ -207,11 +276,6 @@ function Kitchen() {
 
     const handleAddAll = async (index) => {
         try{
-
-
-
-
-
 
             let item = waitingForCooking[index];
             var fb_order_details = [
@@ -357,9 +421,9 @@ function Kitchen() {
                 <Box bgcolor="white" color="secondary.contrastText" p={0} height={600}>
                     <AppBar position="static">
                         <Tabs value={tab} onChange={handleChangeTab} aria-label="simple tabs example">
-                            <Tab label="THEO PHÒNG BÀN" {...a11yProps(0)} />
+                            <Tab label="THEO THỨ TỰ" {...a11yProps(0)} />
                             <Tab label="THEO MÓN" {...a11yProps(1)} />
-                            <Tab label="ƯU TIÊN" {...a11yProps(2)} />
+                            <Tab label="THEO PHÒNG BÀN" {...a11yProps(2)} />
                         </Tabs>
                     </AppBar>
                     <TabPanel value={tab} index={0}>

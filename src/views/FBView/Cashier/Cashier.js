@@ -713,7 +713,6 @@ const Cashier = (props) => {
       })
       .listen('.bkrm:fborder_prepared_event', (data) => {
         console.log("from kitchen, WS got: " + JSON.stringify(data));
-        console.log("wtfbro ???? " + JSON.stringify(cashierCartList) )
         handlePreparedDishFromKitchen(data);
         
       }
@@ -723,6 +722,10 @@ const Cashier = (props) => {
       
 
     // }
+
+    return (() => {
+      echo.disconnect();
+    })
   }, [selectedTable])
 
   // Connecting to FBOrderUpdated event
@@ -777,6 +780,8 @@ const Cashier = (props) => {
         
       setWs(echo);
       }
+
+
       
     }
   } , [selectedTable]);
