@@ -253,22 +253,22 @@ const LoginPage = (props) => {
               />
             </RadioGroup>
           </FormControl>
-          <Typography align="center" variant="h2">
-            こんにちは {role}-san ！！！
-          </Typography>
+          {/* <Typography align="center" variant="h2">
+            Xin chào {role}-san !!!
+          </Typography> */}
           <Box className={classes.form} component="form" onSubmit={(e) => {
-              e.preventDefault();
-              handleToggle();
-              //if (role) {
-              dispatch(
-                logInHandler(
-                  loginFormik.values.user_name,
-                  loginFormik.values.password,
-                  role
-                )
-              );
+            e.preventDefault();
+            handleToggle();
+            //if (role) {
+            dispatch(
+              logInHandler(
+                loginFormik.values.user_name,
+                loginFormik.values.password,
+                role
+              )
+            );
 
-            }}>
+          }}>
 
             <TextField
               InputProps={{
