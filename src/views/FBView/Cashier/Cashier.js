@@ -232,7 +232,8 @@ const Cashier = (props) => {
   function handlePreparedDishFromKitchen (data){
 
     console.log("ua??????")
-    dispatch(statusAction.successfulStatus("Nhận thông báo từ bếp cho bàn " ))
+    dispatch(statusAction.successfulStatus("Nhận thông báo từ bếp cho bàn " ));
+    loadProducts();
     // Update the kitchen_prepared_quantity of the cart
     var newCashierCartList = [...cashierCartList]; 
     var notifiedFBOrder = data.fb_order;
@@ -715,6 +716,7 @@ const Cashier = (props) => {
         console.log("from kitchen, WS got: " + JSON.stringify(data));
         handlePreparedDishFromKitchen(data);
         
+        
       }
       );
 
@@ -959,7 +961,7 @@ const Cashier = (props) => {
                 if(!targetFbOrderDetail){
                   targetFbOrderDetail = currentFBOrderDetails[i];
                 }else{
-                    if(currentFBOrderDetails[i].wait_time < targetFbOrderDetail.wait_time){
+                    if(currentFBOrderDetails[i].wait_time < targetFbOrderDetail.wait_time){ // && prepared != ordered
                       targetFbOrderDetail = currentFBOrderDetails[i];
                     }
                 }
@@ -1621,6 +1623,29 @@ const Cashier = (props) => {
                             showImage={false}
                             handleUpdateBatches={null}
                             mini = {true}
+                            fb_order_details={cashierCartList.find(item => {
+                              if(selectedTable.type === "away"){
+                                if(selectedTakeAwayCart){
+                                  return item.table.uuid === selectedTable.uuid && item.uuid === selectedTakeAwayCart;
+                                }
+                                return item.is_takeaway == 1;
+                                
+                              }
+                              return item.table.uuid === selectedTable.uuid;
+                            })?.fb_order_details}
+
+                            fb_order_uuid = {cashierCartList.find(item => {
+                              if(selectedTable.type === "away"){
+                                if(selectedTakeAwayCart){
+                                  return item.table.uuid === selectedTable.uuid && item.uuid === selectedTakeAwayCart;
+                                }
+                                return item.is_takeaway == 1;
+                                
+                              }
+                              return item.table.uuid === selectedTable.uuid;
+                            })?.uuid}
+
+                            loadProducts = {loadProducts}
                           />
                         );
                       }) || []}

@@ -98,6 +98,9 @@ function Kitchen() {
 
         var fb_orders = updated_fb_orders; 
         var NewWaitingForCooking = []; 
+        var NewWaitingForSupply = []; 
+
+
         fb_orders.map(fb_order => { 
             
             fb_order.fb_order_details.map(fb_order_detail =>{
@@ -121,6 +124,24 @@ function Kitchen() {
                         ]
                 }
 
+                if(fb_order_detail.prepared_quantity  > 0){
+                    NewWaitingForSupply = [
+                        ...NewWaitingForSupply,
+                        {
+                            id : fb_order_detail.id, // if of the fb_order_detail mostly used to track
+                            fb_order_uuid : fb_order.uuid,
+                            name : fb_order_detail.product_name,
+                            table_name : fb_order.table.name ,
+                            table_group_name : fb_order.table.table_group ? fb_order.table.table_group.name : "Nhóm mang đi", 
+                            quantity: fb_order_detail.prepared_quantity ,
+                            product_uuid : fb_order_detail.product_uuid,
+                            fb_order_detail_uuid : fb_order_detail.uuid,
+                            wait_time : fb_order_detail.wait_time
+
+                        }
+                    ]
+                }
+
             })
 
 
@@ -131,8 +152,12 @@ function Kitchen() {
         //Sort desc based on wait time
 
         NewWaitingForCooking.sort((a, b) => b.wait_time - a.wait_time);
+        NewWaitingForSupply.sort((a, b) => b.wait_time - a.wait_time);
+
 
         setWaitingForCooking(NewWaitingForCooking);
+        setWaitingForSupply(NewWaitingForSupply);
+
         setIsLoadingFBOrders(false);
     }
 
@@ -171,7 +196,7 @@ function Kitchen() {
 
 
 
-    useEffect(async () => {
+    useEffect( () => {
         if(channelConnection) return;
         const echo = new Echo({
         broadcaster: 'pusher',
@@ -209,10 +234,13 @@ function Kitchen() {
 
 
 
-        return (()=>{
+        return ()=>{
             console.log("close connection for kitchen");
-            channelConnection.disconnect()
-        })  
+            echo.disconnect();
+            if(channelConnection) {
+                channelConnection.disconnect();
+            }
+        }  
       } , []);
 
 

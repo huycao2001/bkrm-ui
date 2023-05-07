@@ -126,7 +126,7 @@ const ReservationTableRow = (props) => {
                     {row.table.name}
                 </TableCell>
                 <TableCell className={classes.cell} align="left" style={{ color: colorText }}>
-                    {row.status}
+                    {row.status == "active" ? "Đang mở" : row.status == "closed" ? "Hủy" : "Đã nhận bàn"}
                 </TableCell>
 
 

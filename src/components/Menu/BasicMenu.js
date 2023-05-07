@@ -254,13 +254,13 @@ export const settingModule = {
 };
 
 export const fbModule = {
-  title: "FB",
+  title: "F&B",
   key: "fbModule",
 
   children: [
     {
       id: 20,
-      title: "Table",
+      title: "Quản lý bàn",
       key: "Table",
       url: "/home/fb/table",
       // icon:  <Box component="img" sx={{ height: 24, width: 24 }} src={historyIcon} style={{marginLeft:-10}} />,
@@ -270,7 +270,7 @@ export const fbModule = {
     },
     {
       id: 21,
-      title: "Reservation",
+      title: "Lịch đặt hẹn",
       key: "Reservation",
       url: "/home/fb/reservation",
       // icon:  <Box component="img" sx={{ height: 24, width: 24 }} src={branchIcon} style={{marginLeft:-10}} />,
@@ -280,7 +280,7 @@ export const fbModule = {
     },
     {
       id: 22,
-      title: "Cashier",
+      title: "Thu ngân",
       key: "Cashier",
       url: "/home/fb/cashier",
       // icon:  <Box component="img" sx={{ height: 24, width: 24 }} src={customerIcon} style={{marginLeft:-10}} />,
@@ -290,7 +290,7 @@ export const fbModule = {
     },
     {
       id: 23,
-      title: "Kitchen",
+      title: "Nhà bếp",
       key: "Kitchen",
       url: "/home/fb/kitchen",
       // icon:  <Box component="img" sx={{ height: 24, width: 24 }} src={customerIcon} style={{marginLeft:-10}} />,
@@ -362,6 +362,13 @@ const statModule = {
       title: "Tài chính (lãi lỗ)",
       key: "Tài chính (lãi lỗ)",
       url: "/home/manager/financial-report",
+    },
+
+    {
+      id: 20.12,
+      title: "Kinh doanh thông minh",
+      key: "Kinh doanh thông minh",
+      url: "/home/manager/metabase-report",
     },
   ],
 };

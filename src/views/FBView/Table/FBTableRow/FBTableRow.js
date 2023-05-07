@@ -99,7 +99,7 @@ const FBTableRow = (props) => {
           {row.seats}
         </TableCell>
         <TableCell className={classes.cell} align="left" style={{ color: colorText }}>
-          {row.status === 'empty' ? 'Trống' : row.status}
+          {row.status === 'empty' ? 'Trống' : row.status === 'occupied' ? "Đang sử dụng" : "Đã được đặt"}
         </TableCell>
       
       

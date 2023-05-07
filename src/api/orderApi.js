@@ -99,5 +99,11 @@ const orderApi = {
   },
 
 
+  returnFBOrder : (storeUuid, branchUuid, fbOrderUuid ,body) => {
+    const url = `/stores/${storeUuid}/branches/${branchUuid}/fb_orders/${fbOrderUuid}/return`
+    return axiosClient.post(url, body);
+  },
+
+
 };
 export default orderApi;

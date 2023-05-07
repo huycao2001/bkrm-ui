@@ -79,6 +79,34 @@ const ReservationDetail = (props) => {
     const handleCloseReservationUpdate = () => {
         setopenReservationUpdate(false);
     }
+
+
+    const handleCloseReservation = async () => {
+        try{
+            const response = await fbReservationApi.updateReservation(store_uuid, branch_uuid, row.uuid , {
+                name: row.name,
+                phone: row.phone,
+                reservation_datetime: row.reservation_datetime,
+                reservation_endtime: row.reservation_datetime,
+                // reservation_duration: reservationFormik.values.reservation_duration,
+                number_of_guests: row.number_of_guests,
+                timezone: "Asia/Ho_Chi_Minh",
+                table_uuid: row.table.uuid,
+                status : "closed"
+            });
+    
+            if(response.message === "Success"){
+                dispatch(statusAction.successfulStatus("Nhận bàn thành công"));
+                setReload();
+            }else{
+                dispatch(statusAction.successfulStatus("Nhận bàn thất bại "));
+    
+            }
+        }catch(e){
+            dispatch(statusAction.successfulStatus("Nhận bàn thất bại , check console"));
+        }
+
+    }
     return (
         <Collapse
             in={row.uuid === openRow}
@@ -110,7 +138,7 @@ const ReservationDetail = (props) => {
                 //   className={classes.typo}
                 >
 
-                    Tên bàn :  {row.name}
+                    Tên khách hàng :  {row.name}
                 </Typography>
 
                 <Grid container direction="row" justifyContent="flex-start">
@@ -188,7 +216,7 @@ const ReservationDetail = (props) => {
                             </Grid>
                             <Grid item sm={6}>
                                 <Typography variant="body1" gutterBottom component="div">
-                                    {row.status}{" "}
+                                    {row.status == "active" ? "Đang mở" : row.status == "closed" ? "Hủy" : "Đã nhận bàn"}{" "}
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -207,6 +235,14 @@ const ReservationDetail = (props) => {
                     justifyContent={"flex-end"}
                     style={{ marginTop: 20 }}
                 >
+                    <Button
+                        color="primary"
+                        variant="contained"
+                        size="small" style={{ marginLeft: 15 }}
+                        onClick={handleCloseReservation}
+                    >
+                        Nhận bàn
+                    </Button>
                     <Button
                         color="primary"
                         variant="contained"

@@ -25,6 +25,8 @@ import IncomeStatistics from "./Statistics/IncomeStatistics/IncomeStatistics"
 // import BranchStatistics from "./Statistics/BranchStatistics/BranchStatistics"
 import CashBook from "./Statistics/CashBook/CashBook";
 // import FinancialReport from "./Statistics/FinancialReport/FinancialReport"
+
+import Metabase from "./Statistics/Metabase/Metabase";
 const ManagerView = (props) => {
   
   const { path } = useRouteMatch();
@@ -50,6 +52,8 @@ const ManagerView = (props) => {
       <Route path={`${path}/customer-report`} component={CustomerStatistics} />
       <Route path={`${path}/employee-report`} component={EmployeeStatistics} />
       <Route path={`${path}/supplier-report`} component={SupplierStatistics} />
+      <Route path={`${path}/metabase-report`} component={Metabase} />
+
       {/* <Route path={`${path}/branch-report`} component={BranchStatistics} />
       <Route path={`${path}/financial-report`} component={FinancialReport} />
 

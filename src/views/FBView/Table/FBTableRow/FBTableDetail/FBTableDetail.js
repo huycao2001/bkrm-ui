@@ -136,7 +136,7 @@ const FBTableDetail = (props) => {
                         <Grid container direction="row" justifyContent="flex-start">
                             <Grid item xs={7} sm={6}>
                                 <Typography variant="h5" gutterBottom component="div">
-                                    Tên nhà cung cấp : {" "}
+                                    Tên bàn: {" "}
                                 </Typography>
 
                             </Grid>
@@ -188,7 +188,7 @@ const FBTableDetail = (props) => {
                             </Grid>
                             <Grid item sm={3}>
                                 <Typography variant="body1" gutterBottom component="div">
-                                    {row.status}
+                                    {row.status === 'empty' ? 'Trống' : row.status === 'occupied' ? "Đang sử dụng" : "Đã được đặt"}
                                 </Typography>
                             </Grid>
                         </Grid>

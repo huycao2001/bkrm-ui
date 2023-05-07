@@ -39,6 +39,8 @@ import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import defaultProduct from "../../../../assets/img/product/default-product.png";
 import setting from "../../../../assets/constant/setting";
 
+import OrderReturnPopUp from "../../../../components/FBOrderReturn/OrderReturnPopUp";
+
 export const CashierCartTableRow = (props) => {
   const theme = useTheme();
   const classes = useStyles();
@@ -58,7 +60,10 @@ export const CashierCartTableRow = (props) => {
     imageType,
     index,
     typeShow,
-    showImage
+    showImage,
+    fb_order_details,
+    fb_order_uuid,
+    loadProducts
   } = props;
   //console.log("cart table row", row)
   const updateQuantity = (newQuantity) => {
@@ -71,6 +76,9 @@ export const CashierCartTableRow = (props) => {
 
   const [selectBatchOpen, setSelectBatchOpen] = useState(false);
   const [selectedBatches, setSelectedBatches] = useState([]);
+
+  // Return Fb_order item
+  const [openOrderReturnPopUp, setOpenOrderReturnPopUp] = useState(false);
 
   useEffect(() => {
     if (row.batches?.length >= 1) {
@@ -143,6 +151,16 @@ export const CashierCartTableRow = (props) => {
   var color = theme.customization.mode === "Light"? typeShow==='list'?'#000':null: null
   return (
     <>
+
+      { openOrderReturnPopUp && <OrderReturnPopUp
+        openOrderReturnPopUp = {openOrderReturnPopUp}
+        handleCloseOrderReturnPopUp = {() => setOpenOrderReturnPopUp(false)}
+        fb_order_details = {fb_order_details}
+        item = {row}
+        fb_order_uuid = {fb_order_uuid}
+        loadProducts = {loadProducts}
+
+      />}
       <TableRow style={{marginTop : "2px"}}>
         <Paper elevation={4} style={{
           marginTop : "8px", 
@@ -195,12 +213,30 @@ export const CashierCartTableRow = (props) => {
               direction="column"
             >
               <Box>
-                  {"Đã thông báo cho bếp : " + row.kitchen_notified_quantity}
+                  {"Đã thông báo cho bếp: " + row.kitchen_notified_quantity}
               </Box>
 
               <Box>
-              {"Đã cung ứng : " + + row.kitchen_prepared_quantity}
+              {"Đã chế biến: " + + row.kitchen_prepared_quantity}
               </Box>
+
+              <Box>
+                <Button 
+                  size = "small"
+                  color="primary"
+                  variant="outlined"
+                  style={{
+                    marginTop : "5px"
+                  }}
+                  onClick = {() => {
+                    setOpenOrderReturnPopUp(true)
+                  }}
+                >
+                  Trả món
+                </Button> 
+              </Box>
+
+
 
             </Grid>
           </Box> : null 
