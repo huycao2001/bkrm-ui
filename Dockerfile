@@ -2,6 +2,7 @@ FROM node:14-alpine3.16 AS builder
 
 WORKDIR /app
 COPY package.json package-lock.json ./
+COPY .env ./
 COPY public/ public/
 COPY src/ src/
 RUN npm install
