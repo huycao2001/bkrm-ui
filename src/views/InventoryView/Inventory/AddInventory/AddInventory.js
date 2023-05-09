@@ -1017,7 +1017,7 @@ const AddInventory = (props) => {
                         marginRight: 7,
                         borderRadius: 2,
                       }}
-                      src={img.link}
+                      src={process.env.REACT_APP_SERVER_HOST + img.link}
                     />
                   </Button>
                 </Tooltip>

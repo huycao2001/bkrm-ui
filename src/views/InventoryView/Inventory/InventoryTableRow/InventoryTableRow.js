@@ -105,7 +105,8 @@ const InventoryTableRow = (props) => {
                   borderRadius: 10,
                   marginRight: 15,
                 }}
-                src={imageList?.at(0) || defaultProduct}
+                // src={process.env.REACT_APP_SERVER_HOST + imageList?.at(0)  || defaultProduct}
+                src = {imageList.length ? process.env.REACT_APP_SERVER_HOST + imageList.at(0) : defaultProduct }
               />
             )}
             <Typography

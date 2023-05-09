@@ -250,9 +250,11 @@ const CashierCartSummary = (props) => {
                   // style={{padding : "2px"}}
                 >
 
-                <Typography variant="h5">{selectedTable.name}</Typography>
+                <Typography variant="h5"> 
+                  {selectedTable.name + " #" + Number(takeAwayCarts.findIndex(awayCart => awayCart.uuid === selectedTakeAwayCart) + 1) }
+                </Typography>
 
-                <Typography variant="h5">{cartData.uuid}</Typography>
+                {/* <Typography variant="h5">{cartData.uuid}</Typography> */}
 
                 
                 <CashierChangeCartBtn
@@ -281,7 +283,7 @@ const CashierCartSummary = (props) => {
               
               
               
-              {selectedTable?.type && <Button 
+              {/* {selectedTable?.type && <Button 
                 size = "small"
                 color="primary"
                 variant="outlined"
@@ -294,7 +296,7 @@ const CashierCartSummary = (props) => {
                 }}
               >
                 Xóa đơn hàng
-              </Button> }
+              </Button> } */}
 
 
 

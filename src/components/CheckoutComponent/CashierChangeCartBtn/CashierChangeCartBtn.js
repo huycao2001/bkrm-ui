@@ -44,7 +44,7 @@ const CashierChangeCartBtn = (props) => {
 
   const theme = useTheme();
   const classes = useStyles(theme);
-  let hardText = isCart ? "Khách lẻ" : "Nhà cung cấp lẻ";
+  let hardText = isCart ? "Bán mang đi" : "Nhà cung cấp lẻ";
 
 
   const getTitle = (cart) => {

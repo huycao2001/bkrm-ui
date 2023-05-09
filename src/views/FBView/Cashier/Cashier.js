@@ -449,7 +449,7 @@ const Cashier = (props) => {
           }else{
             body = {
               items : items,
-              note : currentCart.note
+              note : "Sth to note about"
             }
             response = await orderApi.createFBOrder(store_uuid, branch_uuid, selectedTable.uuid, body)
           }
@@ -459,21 +459,28 @@ const Cashier = (props) => {
           // dispatch(statusAction.successfulStatus("Tạo hóa đơn thành công"));
           const fb_order_id = currentCart.type === "away" ? currentCart.uuid :  currentCart.kitchen_notified ? currentCart.uuid : response.data.fb_order.uuid;
           console.log("fb order is " + fb_order_id);  
+
+          // Store the fb_order_details to the cart 
+          currentCart.fb_order_details = response.data.fb_order.fb_order_details;
           
 
 
           // For now : If the cart has been notified to the kitchen then no need to prepae at this Cashier page
           var prepareRes = null;
           if(!currentCart.kitchen_notified){
+            // If this order hasnt been notified to the kitchen then prepare all fb order details
             // Prepare the dishes in the order
             var prepareDishes = { 
-              items : currentCart.cartItem.map(item => {
+              fb_order_details : currentCart.fb_order_details.map(fb_order_detail => {
                 return {
-                  product_uuid : item.uuid,
-                  quantity_to_prepare : item.quantity
+                  uuid : fb_order_detail.uuid,
+                  quantity_to_prepare : fb_order_detail.ordered_quantity
                 }
               })
             }
+
+
+
             prepareRes = await orderApi.prepareFBOrder(store_uuid, branch_uuid, fb_order_id, prepareDishes); 
           }
 
@@ -943,7 +950,7 @@ const Cashier = (props) => {
 
     var targetItem = currentCart.cartItem[itemIndex];
 
-    if(targetItem.kitchen_notified_quantity > newQuantity && currentCart.kitchen_notified){
+    if( newQuantity < targetItem.kitchen_notified_quantity && currentCart.kitchen_notified){
       // dispatch(statusAction.failedStatus("handle update or return here"));
       // reduce the ordered_quantity when new quantity is less than the kitchen motified quantity,
       // and the amount reduced to be updated is kitchen_notified_quantity - kitchen_prepared_quantity
@@ -961,12 +968,12 @@ const Cashier = (props) => {
                 if(!targetFbOrderDetail){
                   targetFbOrderDetail = currentFBOrderDetails[i];
                 }else{
-                    if(currentFBOrderDetails[i].wait_time < targetFbOrderDetail.wait_time){ // && prepared != ordered
+                    if(currentFBOrderDetails[i].wait_time < targetFbOrderDetail.wait_time && currentFBOrderDetails[i].ordered_quantity > currentFBOrderDetails[i].prepared_quantity ){ // && prepared != ordered
                       targetFbOrderDetail = currentFBOrderDetails[i];
                     }
                 }
 
-                targetFbOrderDetail = currentFBOrderDetails[i];
+                
         
             }
         }
@@ -1013,6 +1020,10 @@ const Cashier = (props) => {
 
         console.log("update this3 : " + JSON.stringify(body));
         
+      }else{ // The prepared quantity is equal to the notified quantity
+        // which means that we can not reduce this dish and have to use the return fb order functions
+        dispatch(statusAction.failedStatus("Món ăn này đã chế biến nên không thể giảm! Vui lòng chọn nút trả món ăn !" ));
+        return;
       } 
       // return;
     }

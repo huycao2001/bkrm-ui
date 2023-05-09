@@ -72,6 +72,30 @@ const sample = {
 
 
 
+function formatDateTime(dateString){
+    //const dateString = "2023-03-02 11:05:00";
+    const date = new Date(dateString);
+    
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear().toString();
+    
+    let hours = date.getHours();
+    const ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    const seconds = date.getSeconds().toString().padStart(2, "0");
+    const time = hours.toString().padStart(2, "0") + ":" + minutes + ":" + seconds + " " + ampm;
+    
+    return  `${day}/${month}/${year} ${time}`;
+
+
+
+}
+
+
+
 function Kitchen() {
 
 
@@ -117,7 +141,8 @@ function Kitchen() {
                             quantity: Number(fb_order_detail.ordered_quantity) - Number(fb_order_detail.prepared_quantity),
                             product_uuid : fb_order_detail.product_uuid,
                             fb_order_detail_uuid : fb_order_detail.uuid,
-                            wait_time : fb_order_detail.wait_time
+                            wait_time : fb_order_detail.wait_time,
+                            created_at : formatDateTime(fb_order_detail.created_at)
 
                         }
                         
@@ -136,7 +161,9 @@ function Kitchen() {
                             quantity: fb_order_detail.prepared_quantity ,
                             product_uuid : fb_order_detail.product_uuid,
                             fb_order_detail_uuid : fb_order_detail.uuid,
-                            wait_time : fb_order_detail.wait_time
+                            wait_time : fb_order_detail.wait_time,
+                            // created_at : fb_order_detail.wait_time
+
 
                         }
                     ]
@@ -385,18 +412,25 @@ function Kitchen() {
 
                                                         >
                                                             <Grid item>
-                                                                <Typography variant='caption'>
+                                                                <Typography variant='caption' style={{ fontWeight: 'bold' }}>
                                                                     {item.table_name}
                                                                 </Typography>
                                                             </Grid>
                                                             <Grid item>
-                                                                <Typography variant='caption'>
+                                                                <Typography variant='caption'  style={{ fontWeight: 'bold' }}>
                                                                     {item.table_group_name}
                                                                 </Typography>
                                                             </Grid>
                                                             <Grid item>
-                                                                <Typography variant='caption'>
+                                                                <Typography variant='caption'  style={{ fontWeight: 'bold' }}>
                                                                     Số lượng: {item.quantity}
+                                                                </Typography>
+                                                            </Grid>
+
+
+                                                            <Grid item>
+                                                                <Typography variant='caption'  style={{ fontWeight: 'bold' }}>
+                                                                    Thời gian tạo: {item.created_at}
                                                                 </Typography>
                                                             </Grid>
                                                         </Grid>

@@ -213,7 +213,7 @@ const  OrderReturnPopUp= (props) => {
                 <TableBody>
                     {FBOrderDetails.map((fb_order_detail,index) =>{
                         return (
-                            <TableRow>
+                            <TableRow key = {index}>
                                 <TableCell align = "center">
                                     {fb_order_detail.product_name}
                                 </TableCell>
