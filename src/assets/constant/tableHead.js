@@ -22,6 +22,33 @@ export const InventoryHeadCells = [
   },
   { id: "inventory", align: "center", disablePadding: false, label: "Tồn kho" },
 ];
+
+
+export const FBInventoryHeadCells = [
+  { id: "id", align: "left", disablePadding: true, label: "Mã SP" },
+  { id: "name", align: "center", disablePadding: false, label: "Sản phẩm" },
+  // { id: "bar_code", align: "center", disablePadding: true, label: "Mã vạch" },
+  { id: "category", align: "left", disablePadding: false, label: "Danh mục" },
+  { id: "price", align: "right", disablePadding: false, label: "Giá bán" },
+  {
+    id: "import_price",
+    align: "right",
+    disablePadding: false,
+    label: "Giá vốn",
+  },
+  {
+    id: "quantity",
+    align: "center",
+    disablePadding: false,
+    label: "Tình trạng",
+  },
+  { id: "inventory", align: "center", disablePadding: false, label: "Tồn kho" },
+
+  { id: "can_make", align: "center", disablePadding: false, label: "Có thể chế biến" },
+
+];
+
+
 export const InventoryOrderHeadCells = [
   // thêm cột Tiền hàng, Giảm giá, (tiền còn thiếu)
   { id: "id", align: "left", disablePadding: true, label: "#" },

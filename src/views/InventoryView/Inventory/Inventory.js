@@ -54,6 +54,8 @@ export default function Inventory() {
   const infoDetail = useSelector((state) => state.info);
   const store_uuid = infoDetail.store.uuid;
   const branch_uuid = infoDetail.branch.uuid;
+
+  const store_type = useSelector((state) => state.info.store.store_type);
   const store_setting = infoDetail.store.general_configuration
     ? JSON.parse(infoDetail.store.general_configuration)
     : setting;
@@ -309,6 +311,8 @@ export default function Inventory() {
           orderBy={orderBy}
           onRequestSort={handleRequestSort}
           headerData={
+
+            store_type === 'fb' ? HeadCells.FBInventoryHeadCells : 
             store_setting?.inventory.status
               ? HeadCells.InventoryHeadCells
               : HeadCells.InventoryHeadCells.filter(

@@ -72,6 +72,11 @@ const InventoryTableRow = (props) => {
       ? imageList
       : [imageList]
     : null;
+
+
+
+  const store_type = useSelector((state) => state.info.store.store_type);
+    
   return (
     <>
       <TableRow
@@ -143,8 +148,25 @@ const InventoryTableRow = (props) => {
               className={classes.fontName}
               style={{ fontWeight: 500, color: "#000" }}
             >
-              {row.branch_quantity}
+              {row.recipe_id ?  row.branch_in_stock_quantity  :  row.branch_quantity}
             </TableCell>
+
+
+            {store_type === 'fb' ?
+            
+            <TableCell
+              align="center"
+              className={classes.fontName}
+              style={{ fontWeight: 500, color: "#000" }}
+            >
+              {row.recipe_id ?  row.branch_can_make_quantity  :  '-'}
+            </TableCell> :
+              
+              
+              null
+            
+              
+            }
           </>
         ) : null}
       </TableRow>

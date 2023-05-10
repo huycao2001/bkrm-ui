@@ -460,8 +460,10 @@ const Cashier = (props) => {
           const fb_order_id = currentCart.type === "away" ? currentCart.uuid :  currentCart.kitchen_notified ? currentCart.uuid : response.data.fb_order.uuid;
           console.log("fb order is " + fb_order_id);  
 
-          // Store the fb_order_details to the cart 
-          currentCart.fb_order_details = response.data.fb_order.fb_order_details;
+          if(response && response.message === "Order created successfully"){
+            // Store the fb_order_details to the cart 
+            currentCart.fb_order_details = response.data.fb_order.fb_order_details;
+          }
           
 
 
