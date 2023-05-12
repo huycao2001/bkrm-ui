@@ -152,7 +152,7 @@ export default function Metabase() {
                 </Grid>
 
                 <Grid item>
-                  Password: *******
+                  Password: {userInfo ? userInfo.password : "******"}
                 </Grid>
 
               </Grid>

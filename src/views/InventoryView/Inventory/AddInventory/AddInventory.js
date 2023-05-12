@@ -1242,7 +1242,7 @@ const AddInventory = (props) => {
 
 
         {/* Đơn vị nguyên liệu*/}
-        {isIngredient &&
+        {isIngredient && store_type == "fb" &&
           <Card className={classes.attrCard}>
             <CardHeader
               onClick={handleExpandedIngredient}
@@ -1263,7 +1263,7 @@ const AddInventory = (props) => {
 
 
         {/* Công thức*/}
-        {!isIngredient &&
+        {!isIngredient && store_type == "fb" &&
           <Card className={classes.attrCard}>
             <CardHeader
               onClick={handleExpandedRecipe}

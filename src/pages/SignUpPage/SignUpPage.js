@@ -139,14 +139,14 @@ export default function SignUp() {
         console.log("error when creating an account");
       } else {
         dispatch(statusAction.successfulStatus("Tạo cửa hàng thành công"));
-        dispatch(
-          logInHandler(
-            user_formik.values.user_name,
-            user_formik.values.password
-          )
-        );
-        console.log("Account created successfully");
-        dispatch(authActions.logIn());
+        // dispatch(
+        //   logInHandler(
+        //     user_formik.values.user_name,
+        //     user_formik.values.password
+        //   )
+        // );
+        // console.log("Account created successfully");
+        // dispatch(authActions.logIn());
       }
     } catch (error) {
       dispatch(statusAction.failedStatus("Tạo tài khoản thất bại"));
