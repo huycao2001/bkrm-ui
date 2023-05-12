@@ -283,7 +283,7 @@ console.log(info.store.general_configuration)
         </Typography>
 
         <Grid className={classes.btngroup1} >
-          <Button variant="outlined" color="primary"style={{marginRight:15}} onClick={()=>setOpenHistory(true)}>Lịch sử thu nợ</Button>
+          {/* <Button variant="outlined" color="primary"style={{marginRight:15}} onClick={()=>setOpenHistory(true)}>Lịch sử thu nợ</Button> */}
           
           {openHistory? <DebtHistory open={openHistory}  onClose={()=>setOpenHistory(false)}/>:null} 
          
@@ -339,18 +339,18 @@ console.log(info.store.general_configuration)
           { dbName: "debt", displayName: "Còn nợ" },
         ]}
 
-        extra={<FormControlLabel
-          style={{marginLeft:10}} 
-          control={
-            <Switch
-              size="small"
-              checked={showOnlyDebt}
-              onChange={(e) => { setPagingState({ ...pagingState, page: 0 }); setShowOnlyDebt(e.target.checked)}}
-              color="primary"
-            />
-          }
-          label="Chỉ hiện khách nợ"
-        />}
+        // extra={<FormControlLabel
+        //   style={{marginLeft:10}} 
+        //   control={
+        //     <Switch
+        //       size="small"
+        //       checked={showOnlyDebt}
+        //       onChange={(e) => { setPagingState({ ...pagingState, page: 0 }); setShowOnlyDebt(e.target.checked)}}
+        //       color="primary"
+        //     />
+        //   }
+        //   label="Chỉ hiện khách nợ"
+        // />}
       />
 
       <CustomerFilter openFilter={openFilter} handleToggleFilter={handleToggleFilter} />

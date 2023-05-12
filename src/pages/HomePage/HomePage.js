@@ -150,7 +150,7 @@ const HomePage = (props) => {
                   alignItems="center"
                   justifyContent="space-between"
                 >
-                  {permissions?.find((p) => p.name === "sales") && (
+                  {/* {permissions?.find((p) => p.name === "sales") && (
                     <BasicMenu section="Bán hàng" />
                   )}
                   {permissions?.find((p) => p.name === "product") && (
@@ -161,7 +161,11 @@ const HomePage = (props) => {
                   )}
                   {permissions?.find((p) => p.name === "report") && (
                     <BasicMenu section="Quản lý" />
-                  )}
+                  )} */}
+                  <BasicMenu section="Bán hàng" />
+                  <BasicMenu section="Kho hàng" />
+                  <BasicMenu section="Nhân sự" />
+                  <BasicMenu section="Quản lý" />
                   <BasicMenu section="Cài đặt" />
                   <BasicMenu section="Thống kê" />
                   {store_type == "fb" && <BasicMenu section="FB" />}
