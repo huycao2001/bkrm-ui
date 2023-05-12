@@ -1084,8 +1084,8 @@ const AddInventory = (props) => {
 
             }
 
-            {((store_type === 'fb' && isIngredient) ||
-              store_type != 'fb') &&
+            {
+              store_type != 'fb' &&
               <FormControlLabel
                 control={
                   <Checkbox
@@ -1242,7 +1242,7 @@ const AddInventory = (props) => {
 
 
         {/* Đơn vị nguyên liệu*/}
-        {isIngredient && store_type == "fb" &&
+        {isIngredient && store_type == "fb" ?
           <Card className={classes.attrCard}>
             <CardHeader
               onClick={handleExpandedIngredient}
@@ -1258,12 +1258,13 @@ const AddInventory = (props) => {
             </Collapse>
 
 
-          </Card>
+          </Card> : 
+          null
         }
 
 
         {/* Công thức*/}
-        {!isIngredient && store_type == "fb" &&
+        {!isIngredient && store_type == "fb" ? 
           <Card className={classes.attrCard}>
             <CardHeader
               onClick={handleExpandedRecipe}
@@ -1284,7 +1285,8 @@ const AddInventory = (props) => {
             </Collapse>
 
 
-          </Card>
+          </Card> : 
+          null
         }
         {/* <div>
         <Tree />
