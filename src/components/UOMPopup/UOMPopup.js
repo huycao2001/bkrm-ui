@@ -120,7 +120,7 @@ const UOMPopup = (props) =>{
             >
             <TableHead sx={{ borderBottom: 0 }}>
               <TableRow sx={{ borderBottom: 0 }}>
-                <StyledTableCell>Mã đơn vị</StyledTableCell>
+                <StyledTableCell>STT</StyledTableCell>
                 <StyledTableCell>Tên đơn vị</StyledTableCell>
                 <StyledTableCell>Giá trị quy đổi</StyledTableCell>
                 <StyledTableCell>Tổng số lượng hiện tại</StyledTableCell>
@@ -134,7 +134,7 @@ const UOMPopup = (props) =>{
                 {product.unit_of_measurement_categories && product.unit_of_measurement_categories[0]?.unit_of_measurements?.map((uom,index) => (
                     <StyledTableRow key = {index}>
                         <StyledTableCell component="th" scope="row">
-                            {"SP001"}
+                            {Number(index + 1)}
                         </StyledTableCell>
 
                         <StyledTableCell component="th" scope="row">
@@ -142,13 +142,15 @@ const UOMPopup = (props) =>{
                         </StyledTableCell>
 
                         <StyledTableCell component="th" scope="row">
-                            {uom.quantity}
+                        <ThousandFormat
+                                value = {Number(uom.conversion)}
+                            />
                         </StyledTableCell>
 
                         <StyledTableCell component="th" scope="row">
                            
                             <ThousandFormat
-                                value = {Number(product.branch_quantity * uom.quantity)}
+                                value = {Number(uom.quantity)}
                             />
                             
                         </StyledTableCell>
@@ -156,7 +158,7 @@ const UOMPopup = (props) =>{
                         <StyledTableCell component="th" scope="row">
                             {<VNDFormat
                             
-                                value = {Number(product.standard_price* 1/uom.quantity)}
+                                value = {Number(product.standard_price/uom.conversion)}
                             />}
 
 

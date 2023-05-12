@@ -800,7 +800,7 @@ const InventoryDetail = (props) => {
                   variant="contained"
                   size="small"
                   color="primary"
-                  startIcon={<DeleteIcon />}
+                  // startIcon={<DeleteIcon />}
                   style={{ marginLeft: 15 }}
                   onClick={() => {
                     setOpenUOMPopup(true);
