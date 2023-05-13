@@ -356,7 +356,7 @@ const InventoryDetail = (props) => {
                     height: xsScreen ? 100 : 170,
                     width: xsScreen ? 100 : 170,
                     borderRadius: 2,
-                    marginLeft: 15,
+                    // marginLeft: 15,
                     marginBottom: xsScreen ? 10 : 0,
                   }}
                 >
@@ -397,6 +397,7 @@ const InventoryDetail = (props) => {
                   fontWeight: 400,
                   color: "#212121",
                   mb: 2,
+                  marginTop : "10px"
                 }}
               >
                 {productDetail.name}

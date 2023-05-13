@@ -465,7 +465,7 @@ const UpdateInventory = (props) => {
                         marginRight: 7,
                         borderRadius: 2,
                       }}
-                      src={process.env.REACT_APP_SERVER_HOST + img.link}
+                      src={img.isUrl ? process.env.REACT_APP_SERVER_HOST + img.link : img.link}
                     />
                   </Button>
                 </Tooltip>
