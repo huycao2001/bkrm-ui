@@ -231,69 +231,13 @@ const Cashier = (props) => {
 
   function handlePreparedDishFromKitchen (data){
 
-    console.log("ua??????")
+
     dispatch(statusAction.successfulStatus("Nhận thông báo từ bếp cho bàn " ));
     loadProducts();
     // Update the kitchen_prepared_quantity of the cart
     var newCashierCartList = [...cashierCartList]; 
     var notifiedFBOrder = data.fb_order;
     var preparedItems = data.prepared[0];
-
-    // var updatedCart = data.cart;
-    // updatedCart.total_amount = 22;
-
-    // console.log("duyen1" + JSON.stringify(notifiedFBOrder));
-
-    // console.log("duyen2 cca" + JSON.stringify(cashierCartList));
-
-    // console.log("duyen2 cca" + JSON.stringify(updatedCart));
-
-    // updatedCart.cartItem.map(item => {
-    //   console.log("duyenoi");
-    // })
-
-
-    // for (let i = 0; i < updatedCart.cartItem.length; i++) {
-    //   const item = updatedCart.cartItem[i];
-    //   for (let j = 0; j < preparedItems.length; j++) {
-    //     const preparedItem = preparedItems[j];
-    //     if (preparedItem.uuid === item.uuid) {
-    //       // do something
-    //       item.kitchen_prepared_quantity += preparedItem.prepared_quantity
-    //     }
-    //   }
-    // }
-
-    // sendData({
-    //   event: 'bkrm:temporary_fborder_request_update_event',
-    //   token: localStorage.getItem("token"),
-    //   payload: {
-    //     table_uuid: updatedCart.table.uuid,
-    //     temporary_fborder: JSON.stringify(updatedCart)
-    //   },
-    // });
-
-
-
-
-
-    // //Update the state of the CashierCartList
-
-    // window.alert(JSON.stringify(updatedCart));
-    // return;
-    // sendData({
-    //   event: 'bkrm:temporary_fborder_request_update_event',
-    //   token: localStorage.getItem("token"),
-    //   payload: {
-    //     table_uuid: updatedCart.table.uuid,
-    //     temporary_fborder: JSON.stringify(updatedCart)
-    //   },
-    // });
-    
-
-
-
-
 
 
   }
@@ -458,7 +402,7 @@ const Cashier = (props) => {
         if((response && response.message === "Order created successfully") || currentCart.kitchen_notified ){
           // dispatch(statusAction.successfulStatus("Tạo hóa đơn thành công"));
           const fb_order_id = currentCart.type === "away" ? currentCart.uuid :  currentCart.kitchen_notified ? currentCart.uuid : response.data.fb_order.uuid;
-          console.log("fb order is " + fb_order_id);  
+          // console.log("fb order is " + fb_order_id);  
 
           if(response && response.message === "Order created successfully"){
             // Store the fb_order_details to the cart 
@@ -509,7 +453,7 @@ const Cashier = (props) => {
               
               // Clear the cart
               if(selectedTable.type === "away"){
-                console.log("clear away ? ")
+                
 
 
                 var currentCartIndex = newCashierCartList.findIndex(item => {
@@ -623,7 +567,7 @@ const Cashier = (props) => {
 
 
     const newCashierCartList = [...cashierCartList, newCart];
-    console.log("debug 377")
+    
     setCashierCartList(newCashierCartList); 
     setSelectedTakeAwayCart(newCart.uuid);
   }
@@ -644,7 +588,7 @@ const Cashier = (props) => {
       setSelectedTakeAwayCart(awayCart.uuid); 
     }
 
-    console.log("debug 398")
+    
     setCashierCartList(newCashierCartList); 
   }
 
@@ -742,9 +686,9 @@ const Cashier = (props) => {
   // Connecting to FBOrderUpdated event
   useEffect(async () => {
     //console.log(process.env.REACT_APP_PUSHER_APP_KEY);
-    console.log("call use effect again");
+
     if(!selectedTable) {
-      console.log("denideeddd");
+
       return;
     }
     if (!ws) {
@@ -775,14 +719,13 @@ const Cashier = (props) => {
         })
         .listen('.bkrm:temporary_fborder_updated_event', (data) => {
           console.log("WS got: " + JSON.stringify(data));
-          console.log("type of data " + typeof data);
-          console.log("tai sao " + JSON.stringify(cashierCartList) )
+
 
 
           if(data.temporary_fborder !== '[]' || selectedTable.type === "away" ){
             handleUpdateTableCart(data.table_uuid, data.temporary_fborder);
           }else{
-            console.log("no ????")
+            // console.log("no ????")
           }
           
         }
@@ -819,7 +762,7 @@ const Cashier = (props) => {
 
     if(cart === 'null'){
       newCashierCartList = newCashierCartList.filter(item => item.table.uuid !== tableUuid);
-      console.log("debug 519")
+
       setCashierCartList(newCashierCartList);
       return;
 
@@ -833,7 +776,7 @@ const Cashier = (props) => {
       newCashierCartList = newCashierCartList.filter(item => item.is_takeaway != 1); 
       newCashierCartList = [...newCashierCartList, ...carts]; 
 
-      console.log("why ? " + JSON.stringify(carts));
+      
       
       setCashierCartList(newCashierCartList);
       return;
@@ -845,10 +788,10 @@ const Cashier = (props) => {
     }else{
       newCashierCartList = [...newCashierCartList, JSON.parse(cart)];
     }
-    console.log("update state back to list")
-    console.log(newCashierCartList);
+    // console.log("update state back to list")
+    // console.log(newCashierCartList);
 
-    console.log("debug 547");
+    // console.log("debug 547");
 
 
     setCashierCartList(newCashierCartList);
@@ -903,7 +846,7 @@ const Cashier = (props) => {
       return item.table.uuid === selectedTable.uuid
     });
     currentCart.paid_amount = Number(amount);
-    console.log("debug 592") 
+    // console.log("debug 592") 
     setCashierCartList(newCashierCartList);
   };
 
@@ -913,7 +856,7 @@ const Cashier = (props) => {
     let currentCart = newCashierCartList.find(item => item.table.uuid === selectedTable.uuid);
     if(currentCart){
       currentCart.payment_method = method;
-      console.log("debug 602")
+      // console.log("debug 602")
       setCashierCartList(newCashierCartList);
     }else{
       dispatch(statusAction.failedStatus("Cart không tồn tại"))
@@ -963,7 +906,7 @@ const Cashier = (props) => {
         var targetFbOrderDetail = null;
         var currentFBOrderDetails =  currentCart.fb_order_details;
         var canReducedQuantity = targetItem.kitchen_notified_quantity - targetItem.kitchen_prepared_quantity;
-        console.log("update this1 : " + JSON.stringify(currentFBOrderDetails));
+        // console.log("update this1 : " + JSON.stringify(currentFBOrderDetails));
 
         for (var i = 0; i < currentFBOrderDetails.length; i++) {
             if(currentFBOrderDetails[i].product_id == targetItem.product_id){
@@ -982,9 +925,9 @@ const Cashier = (props) => {
 
 
         
-        console.log("update this1 : " + JSON.stringify(targetItem));
+        // console.log("update this1 : " + JSON.stringify(targetItem));
         
-        console.log("update this22 : " + JSON.stringify(targetFbOrderDetail))
+        // console.log("update this22 : " + JSON.stringify(targetFbOrderDetail))
         // update the ordered_quantity.
 
         var fb_order_details = [{
@@ -1020,7 +963,7 @@ const Cashier = (props) => {
           return;
         }
 
-        console.log("update this3 : " + JSON.stringify(body));
+        // console.log("update this3 : " + JSON.stringify(body));
         
       }else{ // The prepared quantity is equal to the notified quantity
         // which means that we can not reduce this dish and have to use the return fb order functions
@@ -1037,13 +980,13 @@ const Cashier = (props) => {
     // }
     if (newQuantity === 0 && !item.has_batches) {
 
-      console.log("new quantity = 0");
+      // console.log("new quantity = 0");
 
       handleDeleteItemCart(itemUuid);
       return;
     }
     if (newQuantity < 0) {
-      console.log("quantity < 0");
+      // console.log("quantity < 0");
       return;
     }
 
@@ -1057,13 +1000,13 @@ const Cashier = (props) => {
     );
     currentCart.paid_amount =  Number(currentCart.total_amount);
 
-    console.log("update right ?" + JSON.stringify(currentCart));
+    // console.log("update right ?" + JSON.stringify(currentCart));
 
 
     if(selectedTable.type === "away"){
       // setCashierCartList(newCashierCartList);
       var takeAwayCarts = newCashierCartList.filter(item => item.is_takeaway === 1); 
-        console.log("take aways " + JSON.stringify(takeAwayCarts));
+        // console.log("take aways " + JSON.stringify(takeAwayCarts));
         sendData({
           event: 'bkrm:temporary_fborder_request_update_event',
           token: localStorage.getItem("token"),
@@ -1072,7 +1015,7 @@ const Cashier = (props) => {
             temporary_fborder: JSON.stringify(takeAwayCarts)
           },
         });
-      console.log("debug 673")
+      // console.log("debug 673")
       // setCashierCartList(newCashierCartList);
       return;
     }
@@ -1119,7 +1062,7 @@ const Cashier = (props) => {
           });
           newCashierCartList.splice(currentCartIndex, 1);
           var takeAwayCarts = newCashierCartList.filter(item => item.is_takeaway == 1); 
-          console.log("take aways " + JSON.stringify(takeAwayCarts));
+          // console.log("take aways " + JSON.stringify(takeAwayCarts));
           sendData({
             event: 'bkrm:temporary_fborder_request_update_event',
             token: localStorage.getItem("token"),
@@ -1128,12 +1071,12 @@ const Cashier = (props) => {
               temporary_fborder: JSON.stringify(takeAwayCarts)
             },
           });
-          console.log("debug 729")
+          // console.log("debug 729")
           // setCashierCartList(newCashierCartList);
 
           var awayCart = newCashierCartList.find(item => item.is_takeaway == 1);
           if(awayCart){
-            console.log("mlem" + JSON.stringify(awayCart));
+            
             setSelectedTakeAwayCart(awayCart.uuid);
           }
           else{
@@ -1164,12 +1107,12 @@ const Cashier = (props) => {
     );
     currentCart.paid_amount  =  Number(currentCart.total_amount );
 
-    console.log("delete cart" + JSON.stringify(currentCart));
+    // console.log("delete cart" + JSON.stringify(currentCart));
 
     if(selectedTable.type === "away"){
       // setCashierCartList(newCashierCartList);
       var takeAwayCarts = newCashierCartList.filter(item => item.is_takeaway == 1); 
-      console.log("take aways " + JSON.stringify(takeAwayCarts));
+      
       sendData({
         event: 'bkrm:temporary_fborder_request_update_event',
         token: localStorage.getItem("token"),
@@ -1178,7 +1121,7 @@ const Cashier = (props) => {
           temporary_fborder: JSON.stringify(takeAwayCarts)
         },
       });
-      console.log("debug 776")
+      // console.log("debug 776")
       // setCashierCartList(newCashierCartList);
       return;
     }
@@ -1210,7 +1153,7 @@ const Cashier = (props) => {
 
     let currentCart = newCashierCartList.find(item => {
       if(selectedTakeAwayCart){
-        console.log("801");
+        
         return item.table.uuid === selectedTable.uuid && item.uuid === selectedTakeAwayCart
       }
       return item.table.uuid === selectedTable.uuid
@@ -1219,7 +1162,7 @@ const Cashier = (props) => {
 
     var cartCreated = false; 
 
-    console.log("current cart " + JSON.stringify(currentCart));
+    // console.log("current cart " + JSON.stringify(currentCart));
 
     if(!currentCart){
       // new item for the table -> create a new cart
@@ -1245,8 +1188,7 @@ const Cashier = (props) => {
       cartCreated = true;
       newCashierCartList = [currentCart , ...newCashierCartList];
     }
-    //console.log("current cart" + JSON.stringify(currentCart));
-    //console.log("current value" + JSON.stringify(selectedOption));
+
 
     let itemIndex = currentCart.cartItem.findIndex(
       (item) => item.uuid === selectedOption.uuid
@@ -1299,14 +1241,14 @@ const Cashier = (props) => {
         0
       );;
 
-      console.log( "current cart "+ JSON.stringify(currentCart) + " current paid " + currentCart.paid_amount);
+      
 
       //setIsUpdateTotalAmount(!isUpdateTotalAmount);
 
       if(selectedTable.type === "away"){
         // setCashierCartList(newCashierCartList);
         var takeAwayCarts = newCashierCartList.filter(item => item.is_takeaway == 1); 
-        console.log("take aways " + JSON.stringify(takeAwayCarts));
+        
         sendData({
           event: 'bkrm:temporary_fborder_request_update_event',
           token: localStorage.getItem("token"),
@@ -1315,7 +1257,7 @@ const Cashier = (props) => {
             temporary_fborder: JSON.stringify(takeAwayCarts)
           },
         });
-        console.log("debug 909")
+        
         // setCashierCartList(newCashierCartList);
         setSelectedTakeAwayCart(currentCart.uuid);
         return ;
@@ -1369,7 +1311,7 @@ const Cashier = (props) => {
       );
       setProducts(response.data);
     } catch (err) {
-      console.log("Load product fails in Cashier.js")
+      
       console.log(err);
     }
   };
@@ -1377,10 +1319,10 @@ const Cashier = (props) => {
     loadProducts();
   }, [store_uuid,branch_uuid])
 
-  useEffect(() => {
-      var cart = cashierCartList.find(item => item.uuid === selectedTakeAwayCart); 
-      if(cart) console.log("con me no uuid " + cart.uuid + " paid amount" + cart.paid_amount + " total " + cart.total_amount )
-  }, [selectedTakeAwayCart])
+  // useEffect(() => {
+  //     var cart = cashierCartList.find(item => item.uuid === selectedTakeAwayCart); 
+  //     if(cart) console.log("con me no uuid " + cart.uuid + " paid amount" + cart.paid_amount + " total " + cart.total_amount )
+  // }, [selectedTakeAwayCart])
 
   //Load tables;
 
@@ -1443,13 +1385,13 @@ const Cashier = (props) => {
   }, [branch_uuid, store_uuid])
 
 
-  useEffect(() => {
-    console.log("cashierCarList" + JSON.stringify(cashierCartList));
-  }, [cashierCartList]);
+  // useEffect(() => {
+  //   console.log("cashierCarList" + JSON.stringify(cashierCartList));
+  // }, [cashierCartList]);
 
-  useEffect(() => {
-    console.log("selected" + JSON.stringify(selectedTable));
-  }, [selectedTable]);
+  // useEffect(() => {
+  //   console.log("selected" + JSON.stringify(selectedTable));
+  // }, [selectedTable]);
 
   // useEffect(() => {
 
@@ -1561,11 +1503,11 @@ const Cashier = (props) => {
               cartData = {selectedTable ? cashierCartList.find(item => {
                 
                 if(selectedTable.type === "away"){
-                  console.log("new" + selectedTakeAwayCart);
+                  
                   if(selectedTakeAwayCart){
                     return item.table.uuid === selectedTable.uuid && item.uuid === selectedTakeAwayCart;
                   }else{
-                    console.log("no ? " + JSON.stringify(cashierCartList))
+                    // console.log("no ? " + JSON.stringify(cashierCartList))
                     return item.is_takeaway == 1;
                   }
                   

@@ -57,10 +57,10 @@ export default function Metabase() {
       if(response.message == "success"){
         dispatch(statusAction.successfulStatus("Tạo tài khoản thành công !"));
 
-        if(response.user){
+        if(response.data.user){
           setUserInfo({
-            email : response.user.email,
-            password : response.user.password
+            email : response.data.user.email,
+            password : response.data.user.password
           })
         }
       }else{
