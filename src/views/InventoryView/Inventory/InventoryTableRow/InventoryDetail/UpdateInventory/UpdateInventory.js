@@ -48,9 +48,19 @@ const UploadImages = (img) => {
     />
   );
 };
+
+
+
+function isArray(a) {
+  return (!!a) && (a.constructor === Array);
+};
+
+
 const UpdateInventory = (props) => {
   const dispatch = useDispatch();
   const { handleClose, open,isManageInventory, productInfo } = props;
+
+  
   const [openAddCategory, setOpenAddCategory] = useState(false);
   const handleCloseCategory = () => setOpenAddCategory(false);
   const [categoryList, setCategoryList] = useState([]);
@@ -67,7 +77,8 @@ const UpdateInventory = (props) => {
           product_code : item.product_code,
           name : item.product_name,
           quantity_required : item.quantity_required,
-          standard_price : item.standard_price
+          standard_price : item.standard_price,
+          quantity_per_unit : item.quantity_per_unit
         }
       });
 
@@ -75,6 +86,34 @@ const UpdateInventory = (props) => {
     }
     return [];
   }); 
+
+
+  // UOM list 
+  const [uomc, setUomc] = useState(prev =>{
+    if(productInfo.unit_of_measurement_categories?.length > 0){
+      var newUnitList =productInfo.unit_of_measurement_categories[0].unit_of_measurements.map(item => {
+        return{
+          name : item.name, 
+          quantity : item.conversion
+        }
+      });
+
+      return{
+        uuid : productInfo.unit_of_measurement_categories[0].uuid,
+        unitList : newUnitList
+      }
+    }
+
+    return null;
+  })
+
+
+  const handleUpdateUOM = (newUnitList) =>{
+    setUomc({
+      ...uomc,
+      unitList : newUnitList
+    })
+  }
 
   const [display, setDisplay] = useState([]);
   useEffect(()=>{
@@ -124,6 +163,7 @@ const UpdateInventory = (props) => {
   const info = useSelector((state) => state.info);
   const store_uuid = info.store.uuid;
   const branch_uuid = info.branch.uuid;
+  const store_type = info.store.store_type;
 
   const theme = useTheme();
   const classes = useStyles(theme);
@@ -175,20 +215,58 @@ const UpdateInventory = (props) => {
 
 
       // Ingredients 
+      // if(ingredients.length){
+      //   var ingredients_list = ingredients.map((item) => {
+      //     return {
+      //       product_uuid : item.uuid,
+      //       quantity_required : item.quantity_required
+      //     }
+      //   });
+
+      //   var recipe = {
+      //     quantity_produced: 1, 
+      //     ingredients : ingredients_list
+      //   }
+      //   bodyFormData.append("recipe", JSON.stringify(recipe));
+      // }
+
       if(ingredients.length){
         var ingredients_list = ingredients.map((item) => {
+
+
+          if(item.uom){
+            return {
+              product_uuid : item.uom, 
+              quantity_required : item.quantity_required
+            }
+          }
           return {
             product_uuid : item.uuid,
             quantity_required : item.quantity_required
           }
         });
 
+
         var recipe = {
           quantity_produced: 1, 
           ingredients : ingredients_list
         }
+
         bodyFormData.append("recipe", JSON.stringify(recipe));
+
       }
+
+
+      // UOM
+      if(uomc && uomc.unitList.length){
+        var unit_of_measurement_categories = [{
+          uuid : uomc.uuid,
+          unit_of_measurements : uomc.unitList
+        }];
+
+        bodyFormData.append("unit_of_measurement_categories", JSON.stringify(unit_of_measurement_categories));
+      }
+
       const response = await productApi.updateProduct(
         store_uuid,
         productInfo.uuid,
@@ -439,12 +517,24 @@ const UpdateInventory = (props) => {
             </>:null}
           </Grid>
 
-          {productInfo.recipe_data.ingredients && <AddRecipe
+          {productInfo.recipe_data.ingredients && store_type == "fb" && <AddRecipe
             ingredients = {ingredients}
             setIngredients = {setIngredients}
             products = {products}
           
           />}
+
+
+          {
+          productInfo.unit_of_measurement_categories && isArray(productInfo.recipe_data) && store_type == "fb" &&
+            <AddUnit
+              unitList = {uomc ? uomc.unitList : []}
+              setUnitList = {handleUpdateUOM}
+            />
+          }
+
+
+
         </Grid>
         <Grid container spacing={2}>          <Grid item xs>
             <Box

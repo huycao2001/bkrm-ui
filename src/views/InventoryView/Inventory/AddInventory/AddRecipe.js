@@ -14,7 +14,7 @@ import TableBody from "@mui/material/TableBody";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { ThousandFormat } from "../../../../components/TextField/NumberFormatCustom";
-import {Select, TreeSelect} from 'antd';
+import {Row, Select, TreeSelect} from 'antd';
 
 // import TextField from '@mui/material/TextField';
 import DeleteForeverOutlinedIcon from "@material-ui/icons/DeleteForeverOutlined";
@@ -352,7 +352,7 @@ const AddRecipe = (props) => {
 
                       } }
                       options={handleFindUOMs(ingredient.uuid) }
-                    /> : "Cái"}
+                    /> : ingredient.quantity_per_unit}
 
                     {/* {"cais"} */}
                   </StyledTableCell>

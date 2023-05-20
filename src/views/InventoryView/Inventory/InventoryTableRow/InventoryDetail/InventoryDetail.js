@@ -31,6 +31,11 @@ import LocalOfferTwoToneIcon from "@material-ui/icons/LocalOfferTwoTone";
 import VerifiedUserTwoToneIcon from "@material-ui/icons/VerifiedUserTwoTone";
 //import image
 import avaUpload from "../../../../../assets/img/product/img.jpeg";
+
+//loading
+import LoadingIndicator from "../../../../../components/LoadingIndicator/LoadingIndicator.js";
+
+import { trackPromise } from "react-promise-tracker";
 //import project
 import {
   StyledMenu,
@@ -187,9 +192,11 @@ const InventoryDetail = (props) => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await productApi.getProduct(store_uuid, row.uuid, {
-          branch_uuid: branch_uuid,
-        });
+        const response = await trackPromise(
+          productApi.getProduct(store_uuid, row.uuid, {
+            branch_uuid: branch_uuid,
+          })
+        );
         setProductDetail(response.data);
       } catch (err) {
         console.log(err);
@@ -308,6 +315,7 @@ const InventoryDetail = (props) => {
       timeout="auto"
       unmountOnExit
     >
+      <LoadingIndicator/>
       {isOpenUpdate && (
         <UpdateInventory
           handleClose={handleCloseUpdate}
