@@ -873,6 +873,8 @@ const Cashier = (props) => {
 
   const handleChangeItemQuantity = async (itemUuid, newQuantity) => {
 
+    if(newQuantity == 0 )
+
     var newCashierCartList = [...cashierCartList];
 
 
@@ -890,6 +892,10 @@ const Cashier = (props) => {
       (item) => item.uuid === itemUuid
     );
 
+    if(newQuantity == 0 && currentCart.kitchen_notified == true ){
+      
+      return;
+    }
 
     var oldQuantity  = currentCart.cartItem[itemIndex].quantity; 
 
@@ -1042,6 +1048,11 @@ const Cashier = (props) => {
       }
       return item.table.uuid === selectedTable.uuid
     });
+
+    // if(currentCart.kitchen_notified){
+    //   dispatch(statusAction.failedStatus("Món ăn đang được chế biến nên không thể xóa !"))
+    //   return; 
+    // }
 
     let itemIndex = currentCart.cartItem.findIndex(
       (item) => item.uuid === itemUuid

@@ -498,10 +498,10 @@ export default () => {
         )
       );
       if (response.message === "Success") {
-        console.log("YAY I DID IT");
+        setReload(!reload);
         dispatch(statusAction.successfulStatus("Cập nhật thành công"));
       } else {
-        console.log("WAT DA FUCH");
+        
         dispatch(statusAction.failedStatus("Cập nhật thất bại"));
       }
     } catch (error) {
